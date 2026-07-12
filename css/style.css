@@ -1,4 +1,214 @@
 /* =====================================
+   IT HAWK_RW 3D BACKGROUND BRANDING
+===================================== */
+
+
+.brand-3d{
+
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    pointer-events:none;
+
+
+    overflow:hidden;
+
+
+    z-index:-1;
+
+
+    perspective:1200px;
+
+}
+
+
+
+.brand-3d span{
+
+
+    font-size:
+
+    clamp(5rem,15vw,15rem);
+
+
+    font-weight:900;
+
+
+    letter-spacing:25px;
+
+
+    color:
+
+    rgba(255,255,255,.025);
+
+
+
+    text-transform:uppercase;
+
+
+
+    transform:
+
+    rotateX(65deg)
+
+    rotateZ(-20deg)
+
+    translateZ(-200px);
+
+
+
+    white-space:nowrap;
+
+
+
+    text-shadow:
+
+
+    0 0 40px rgba(0,194,255,.25),
+
+
+    0 0 90px rgba(0,255,156,.15);
+
+
+
+    animation:
+
+    hawkFloat 12s ease-in-out infinite;
+
+
+}
+
+
+
+/* Moving depth layers */
+
+
+.brand-3d::before{
+
+
+    content:"IT HAWK_RW";
+
+
+    position:absolute;
+
+
+    font-size:
+
+    clamp(5rem,15vw,15rem);
+
+
+
+    font-weight:900;
+
+
+    letter-spacing:25px;
+
+
+    color:
+
+    rgba(0,194,255,.04);
+
+
+
+    transform:
+
+    translateZ(-300px)
+
+    rotateX(65deg)
+
+    rotateZ(-20deg);
+
+
+
+    animation:
+
+    hawkGlow 8s infinite alternate;
+
+
+}
+
+
+
+/* Animation */
+
+
+@keyframes hawkFloat{
+
+
+    0%,100%{
+
+
+        transform:
+
+        rotateX(65deg)
+
+        rotateZ(-20deg)
+
+        translateY(0)
+
+        translateZ(-200px);
+
+
+    }
+
+
+    50%{
+
+
+        transform:
+
+        rotateX(65deg)
+
+        rotateZ(-20deg)
+
+        translateY(-40px)
+
+        translateZ(-100px);
+
+
+    }
+
+}
+
+
+
+@keyframes hawkGlow{
+
+
+    from{
+
+        opacity:.3;
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+main,
+.navbar,
+.hero,
+.movies-section,
+footer{
+
+    position:relative;
+
+    z-index:2;
+
+}
+/* =====================================
    KIVUSTREAM CINEMATIC GLOBAL SYSTEM
 ===================================== */
 
