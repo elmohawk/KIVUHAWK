@@ -19,3 +19,27 @@ async function currentUser(){
 
     return user;
 }
+
+async function getMovies(){
+
+    const {data,error}=await supabaseClient
+    .from("movies")
+    .select("*")
+    .order("id",{ascending:false});
+
+
+    if(error){
+
+        console.error(
+            "SUPABASE ERROR:",
+            error
+        );
+
+        return [];
+
+    }
+
+
+    return data;
+
+}
