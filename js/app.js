@@ -1,9 +1,20 @@
-/* ================================
-      KIVUSTREAM APP
-================================ */
+document.addEventListener("DOMContentLoaded", async ()=>{
 
-document.addEventListener("DOMContentLoaded",()=>{
+    await buildHeroSlider();
 
-    loadHome();
+    renderSection(
+        endpoints.trending,
+        "trendingMovies"
+    );
+
+    renderSection(
+        endpoints.popular,
+        "popularMovies"
+    );
+
+    renderSection(
+        endpoints.tv,
+        "tvShows"
+    );
 
 });
