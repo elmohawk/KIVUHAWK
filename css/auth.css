@@ -1,0 +1,443 @@
+/* ==========================================
+   KIVUSTREAM 3D AUTH PAGE
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    min-height:100vh;
+
+    overflow:hidden;
+
+    font-family:'Poppins',;
+
+    background:
+    radial-gradient(circle at top,#112033,#05070A 70%);
+
+    perspective:1500px;
+
+}
+
+/* Animated Background */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:
+
+    radial-gradient(circle,#00C2FF33 2px,transparent 3px);
+
+    background-size:45px 45px;
+
+    animation:moveBackground 15s linear infinite;
+
+    opacity:.25;
+
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:700px;
+    height:700px;
+
+    border-radius:50%;
+
+    background:
+
+    radial-gradient(circle,
+    rgba(0,194,255,.25),
+    transparent 70%);
+
+    filter:blur(120px);
+
+    animation:rotateGlow 18s linear infinite;
+
+}
+
+/* Floating Glass Card */
+
+.auth-box{
+
+    position:relative;
+
+    width:420px;
+
+    padding:40px;
+
+    border-radius:28px;
+
+    background:
+    rgba(255,255,255,.06);
+
+    backdrop-filter:blur(25px);
+
+    border:
+    1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+
+    0 25px 60px rgba(0,0,0,.45),
+
+    0 0 50px rgba(0,194,255,.18);
+
+    transform-style:preserve-3d;
+
+    animation:
+
+    floating 5s ease-in-out infinite;
+
+    transition:.4s;
+
+}
+
+.auth-box:hover{
+
+    transform:
+
+    rotateY(8deg)
+
+    rotateX(6deg)
+
+    translateY(-10px);
+
+}
+
+/* Neon Border */
+
+.auth-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:30px;
+
+    background:
+
+    linear-gradient(
+    135deg,
+
+    #00C2FF,
+
+    transparent,
+
+    #00FF9C,
+
+    transparent,
+
+    #00C2FF
+
+    );
+
+    background-size:400% 400%;
+
+    animation:borderFlow 8s linear infinite;
+
+    z-index:-1;
+
+    filter:blur(8px);
+
+}
+
+/* Logo */
+
+.auth-box h1{
+
+    text-align:center;
+
+    font-size:2.2rem;
+
+    margin-bottom:30px;
+
+    color:#fff;
+
+    text-shadow:
+
+    0 0 20px #00C2FF,
+
+    0 0 45px #00FF9C;
+
+}
+
+/* Inputs */
+
+.auth-box input{
+
+    width:100%;
+
+    padding:16px 18px;
+
+    margin-bottom:18px;
+
+    border-radius:15px;
+
+    border:1px solid rgba(255,255,255,.1);
+
+    outline:none;
+
+    background:
+
+    rgba(255,255,255,.08);
+
+    color:white;
+
+    font-size:15px;
+
+    transition:.35s;
+
+}
+
+.auth-box input::placeholder{
+
+    color:#9EA8B7;
+
+}
+
+.auth-box input:focus{
+
+    border-color:#00C2FF;
+
+    box-shadow:
+
+    0 0 18px rgba(0,194,255,.4);
+
+    transform:
+
+    translateZ(15px);
+
+}
+
+/* Buttons */
+
+.auth-box button{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-top:12px;
+
+    border:none;
+
+    border-radius:50px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+}
+
+/* Login */
+
+#loginBtn{
+
+    color:#000;
+
+    background:
+
+    linear-gradient(
+    135deg,
+
+    #00C2FF,
+
+    #00FF9C);
+
+}
+
+#loginBtn:hover{
+
+    transform:
+
+    translateY(-5px)
+
+    scale(1.03);
+
+    box-shadow:
+
+    0 12px 30px rgba(0,194,255,.4);
+
+}
+
+/* Signup */
+
+#signupBtn{
+
+    background:
+
+    rgba(255,255,255,.08);
+
+    color:white;
+
+}
+
+#signupBtn:hover{
+
+    background:
+
+    rgba(255,255,255,.15);
+
+    transform:
+
+    translateY(-5px);
+
+}
+
+/* Floating Orbs */
+
+.orb{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(4px);
+
+    animation:floatOrb 10s ease-in-out infinite;
+
+}
+
+.orb.one{
+
+    width:180px;
+    height:180px;
+
+    left:10%;
+    top:10%;
+
+    background:#00C2FF55;
+
+}
+
+.orb.two{
+
+    width:240px;
+    height:240px;
+
+    right:8%;
+    bottom:8%;
+
+    background:#00FF9C55;
+
+    animation-delay:3s;
+
+}
+
+/* Animations */
+
+@keyframes floating{
+
+    0%,100%{
+
+        transform:
+        translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+        translateY(-15px);
+
+    }
+
+}
+
+@keyframes borderFlow{
+
+    0%{
+
+        background-position:0% 50%;
+
+    }
+
+    100%{
+
+        background-position:400% 50%;
+
+    }
+
+}
+
+@keyframes rotateGlow{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@keyframes moveBackground{
+
+    from{
+
+        background-position:0 0;
+
+    }
+
+    to{
+
+        background-position:300px 300px;
+
+    }
+
+}
+
+@keyframes floatOrb{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-40px);
+
+    }
+
+}
+
+/* Mobile */
+
+@media(max-width:600px){
+
+    .auth-box{
+
+        width:92%;
+        padding:30px;
+
+    }
+
+}
