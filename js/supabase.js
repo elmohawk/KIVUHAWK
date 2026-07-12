@@ -43,3 +43,39 @@ async function getMovies(){
     return data;
 
 }
+async function getSupabaseMovies(){
+
+
+    const {
+        data,
+        error
+
+    } = await supabaseClient
+
+    .from("movies")
+
+    .select("*")
+
+    .order(
+        "created_at",
+        {
+            ascending:false
+        }
+    );
+
+
+    if(error){
+
+        console.error(
+            "Database Error:",
+            error
+        );
+
+        return [];
+
+    }
+
+
+    return data || [];
+
+}
