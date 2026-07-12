@@ -17,7 +17,7 @@ loginBtn.onclick = async ()=>{
     document.getElementById("password").value;
 
     const {error} =
-    await supabase.auth.signInWithPassword({
+    await supabaseClient.auth.signInWithPassword({
 
         email,
 
@@ -50,7 +50,7 @@ signupBtn.onclick = async ()=>{
     document.getElementById("password").value;
 
     const {error} =
-    await supabase.auth.signUp({
+    await supabaseClient.auth.signUp({
 
         email,
 
