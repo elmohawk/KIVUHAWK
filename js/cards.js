@@ -1,43 +1,82 @@
-/* ===========================
-   3D CARD EFFECT
-=========================== */
+/* =====================================
+   KIVUSTREAM CINEMATIC CARD INTERACTION
+   Stable 3D Hover Effect
+===================================== */
 
-document.addEventListener("mousemove",(e)=>{
 
-    document.querySelectorAll(".movie-card").forEach(card=>{
+document.querySelectorAll(".movie-card")
+.forEach(card=>{
+
+
+    card.addEventListener("mousemove",(e)=>{
+
 
         const rect = card.getBoundingClientRect();
 
-        const x = e.clientX - rect.left;
 
-        const y = e.clientY - rect.top;
+        const x =
+        e.clientX - rect.left;
 
-        const centerX = rect.width/2;
 
-        const centerY = rect.height/2;
+        const y =
+        e.clientY - rect.top;
 
-        const rotateY = (x-centerX)/18;
 
-        const rotateX = -(y-centerY)/18;
+        const centerX =
+        rect.width / 2;
 
-        card.style.transform =
-        `
-        perspective(900px)
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-        scale(1.02)
+
+        const centerY =
+        rect.height / 2;
+
+
+        const rotateX =
+        ((y - centerY) / centerY) * -4;
+
+
+        const rotateY =
+        ((x - centerX) / centerX) * 4;
+
+
+
+        card.style.transform = `
+
+            perspective(900px)
+
+            rotateX(${rotateX}deg)
+
+            rotateY(${rotateY}deg)
+
+            translateY(-10px)
+
+            scale(1.03)
+
         `;
 
-    });
-
-});
-
-document.addEventListener("mouseleave",()=>{
-
-    document.querySelectorAll(".movie-card").forEach(card=>{
-
-        card.style.transform="";
 
     });
+
+
+
+    card.addEventListener("mouseleave",()=>{
+
+
+        card.style.transform = `
+
+            perspective(900px)
+
+            rotateX(0deg)
+
+            rotateY(0deg)
+
+            translateY(0)
+
+            scale(1)
+
+        `;
+
+
+    });
+
 
 });
