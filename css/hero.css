@@ -1,92 +1,490 @@
+/* ==========================================
+   KIVUSTREAM CINEMATIC 3D HERO
+========================================== */
+
+
 .hero{
 
     position:relative;
 
+    height:100vh;
+
     overflow:hidden;
 
-    padding:0;
+    perspective:1200px;
 
 }
+
+
+
+/* Swiper */
 
 .heroSwiper{
 
     width:100%;
 
-    height:100vh;
+    height:100%;
 
 }
+
+
 
 .hero-slide{
 
-    width:100%;
-
-    height:100vh;
-
-    background-size:cover;
-
-    background-position:center;
-
-    display:flex;
-
-    align-items:center;
-
-}
-
-.hero-overlay{
+    position:relative;
 
     width:100%;
 
     height:100%;
 
-    background:
-    linear-gradient(
-        90deg,
-        rgba(5,7,10,.95),
-        rgba(5,7,10,.35)
-    );
 
     display:flex;
 
     align-items:center;
 
-}
 
-.hero-info{
+    background-size:cover;
 
-    width:45%;
+    background-position:center;
 
-    margin-left:8%;
 
-}
+    transform-style:preserve-3d;
 
-.hero-info h1{
 
-    font-size:4rem;
+    animation:
 
-    margin:20px 0;
+    heroZoom 18s ease infinite;
 
 }
 
-.hero-info p{
 
-    line-height:1.8;
 
-    color:var(--text);
+/* Dark Cinematic Overlay */
 
-    margin-bottom:30px;
+.hero-overlay{
 
-}
-
-.hero-gradient{
 
     position:absolute;
 
     inset:0;
 
-    pointer-events:none;
+
+    display:flex;
+
+    align-items:center;
+
 
     background:
-    radial-gradient(circle at top right,
-    rgba(0,255,156,.15),
-    transparent 40%);
+
+
+    linear-gradient(
+
+    90deg,
+
+    rgba(5,7,10,.95),
+
+    rgba(5,7,10,.45),
+
+    rgba(5,7,10,.15)
+
+    );
+
+
+}
+
+
+
+/* Content */
+
+.hero-info{
+
+
+    position:relative;
+
+
+    width:50%;
+
+
+    margin-left:8%;
+
+
+    padding:35px;
+
+
+    border-radius:25px;
+
+
+    background:
+
+
+    rgba(10,15,25,.35);
+
+
+
+    backdrop-filter:
+
+    blur(15px);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.08);
+
+
+
+    transform:
+
+    translateZ(80px);
+
+
+
+    box-shadow:
+
+
+    0 30px 80px rgba(0,0,0,.45);
+
+
+}
+
+
+
+/* Title */
+
+
+.hero-info h1{
+
+
+    font-size:
+
+    clamp(2.5rem,5vw,5rem);
+
+
+    line-height:1.1;
+
+
+    font-weight:800;
+
+
+    margin-bottom:20px;
+
+
+    background:
+
+
+    linear-gradient(
+
+    90deg,
+
+    white,
+
+    #00C2FF
+
+    );
+
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+
+
+}
+
+
+
+/* Description */
+
+
+.hero-info p{
+
+
+    color:
+
+    var(--text);
+
+
+    line-height:1.8;
+
+
+    max-width:650px;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+/* Buttons */
+
+
+.hero-buttons{
+
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+
+
+.hero-buttons button{
+
+
+    padding:
+
+    14px 28px;
+
+
+    border-radius:50px;
+
+
+    font-weight:700;
+
+
+    transition:.35s;
+
+
+}
+
+
+
+.hero-buttons .watch{
+
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #00C2FF,
+
+    #00FF9C
+
+    );
+
+
+    color:#000;
+
+}
+
+
+
+.hero-buttons button:hover{
+
+
+    transform:
+
+    translateY(-6px);
+
+
+    box-shadow:
+
+
+    0 15px 40px rgba(0,194,255,.35);
+
+
+}
+
+
+
+/* Bottom Fade */
+
+
+.hero-gradient{
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+    pointer-events:none;
+
+
+
+    background:
+
+
+    linear-gradient(
+
+    transparent 60%,
+
+    var(--bg)
+
+    ),
+
+
+    radial-gradient(
+
+    circle at top right,
+
+    rgba(0,255,156,.22),
+
+    transparent 40%
+
+    );
+
+
+}
+
+
+
+/* Floating Light */
+
+
+.hero::after{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:500px;
+
+
+    height:500px;
+
+
+    right:-150px;
+
+
+    top:100px;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+    circle,
+
+    rgba(0,194,255,.25),
+
+    transparent
+
+    );
+
+
+    filter:blur(80px);
+
+
+    animation:
+
+    heroLight 8s infinite;
+
+
+}
+
+
+
+/* Animations */
+
+
+@keyframes heroZoom{
+
+
+    0%,100%{
+
+
+        background-size:100%;
+
+
+    }
+
+
+    50%{
+
+
+        background-size:110%;
+
+
+    }
+
+}
+
+
+
+@keyframes heroLight{
+
+
+    50%{
+
+
+        transform:
+
+        translate(-80px,50px);
+
+
+    }
+
+}
+
+
+
+/* Mobile */
+
+
+@media(max-width:900px){
+
+
+.heroSwiper,
+
+.hero-slide{
+
+
+    height:80vh;
+
+}
+
+
+
+.hero-info{
+
+
+    width:90%;
+
+
+    margin:auto;
+
+
+    padding:25px;
+
+
+}
+
+
+
+.hero-info h1{
+
+
+    font-size:2.3rem;
+
+
+}
+
+
+
+.hero-buttons{
+
+
+    flex-direction:column;
+
+}
+
+
+.hero-buttons button{
+
+
+    width:100%;
+
+}
+
+
 }
