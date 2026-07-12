@@ -1,54 +1,106 @@
-document.addEventListener("DOMContentLoaded", async ()=>{
+document.addEventListener(
+"DOMContentLoaded",
+async()=>{
 
 
-    console.log("KivuStream Loading...");
+    console.log(
+    "Loading KivuStream..."
+    );
 
 
-    // Load Hero from Supabase
-    await buildHeroSlider();
-
-
-
-    // Load Movies from Supabase
-
-    const movies = await getMovies();
+    const movies =
+    await getSupabaseMovies();
 
 
 
     console.log(
-        "Supabase Content:",
-        movies
+    "Supabase:",
+    movies
+    );
+
+
+
+    // Recently added
+
+    renderMovies(
+        movies.slice(0,20),
+        "recentMovies"
+    );
+
+
+
+    // Categories
+
+    renderMovies(
+        filterCategory(
+            movies,
+            "action"
+        ),
+        "actionMovies"
     );
 
 
 
     renderMovies(
-        movies.filter(
-            movie=>movie.type==="movie"
+        filterCategory(
+            movies,
+            "indian"
         ),
-        "trendingMovies"
+        "indianMovies"
     );
 
 
 
     renderMovies(
-        movies.filter(
-            movie=>movie.category==="popular"
+        filterCategory(
+            movies,
+            "highschool"
         ),
-        "popularMovies"
+        "highschoolMovies"
     );
 
 
 
     renderMovies(
-        movies.filter(
-            movie=>movie.type==="series"
+        filterCategory(
+            movies,
+            "comedy"
         ),
-        "tvShows"
+        "comedyMovies"
     );
 
 
 });
+function filterCategory(
+movies,
+category
+){
+
+
+return movies.filter(movie=>{
+
+
+if(!movie.category)
+
+return false;
+
+
+
+return movie.category
+
+.toLowerCase()
+
+.includes(
+
+category.toLowerCase()
+
+);
+
+
+});
+
+
+}
 async function getMovies(){
 
 
@@ -86,83 +138,111 @@ async function getMovies(){
 
 
 }
-function renderMovies(items, containerID){
+function renderMovies(
+movies,
+containerID
+){
 
 
-    const container =
-    document.getElementById(containerID);
-
-
-    if(!container){
-
-        console.error(
-        "Missing:",
-        containerID
-        );
-
-        return;
-
-    }
+const container =
+document.getElementById(containerID);
 
 
 
-    container.innerHTML="";
+if(!container)
+
+return;
 
 
 
-    items.forEach(movie=>{
+container.innerHTML="";
 
 
-        container.innerHTML += `
 
-        <div class="movie-card">
-
-
-            <img src="${movie.poster}">
+movies.forEach(movie=>{
 
 
-            <div class="movie-overlay">
+container.innerHTML += `
 
 
-                <h3 class="movie-title">
-
-                    ${movie.title}
-
-                </h3>
+<div class="movie-card">
 
 
-                <div class="movie-meta">
-
-                    <span>
-                    ⭐ ${movie.rating || "N/A"}
-                    </span>
+<img src="${movie.poster || 'assets/logo.png'}">
 
 
-                    <span>
-                    ${movie.year || ""}
-                    </span>
-
-                </div>
+<div class="movie-overlay">
 
 
-                <div class="badges">
+<h3 class="movie-title">
 
-                    <span class="badge-chip hd">
-                    HD
-                    </span>
+${movie.title}
 
-                </div>
+</h3>
 
 
-            </div>
+
+<div class="movie-meta">
+
+<span>
+
+⭐ ${movie.rating || "N/A"}
+
+</span>
 
 
-        </div>
+<span>
 
-        `;
+${movie.year || ""}
+
+</span>
+
+</div>
 
 
-    });
+
+<div class="badges">
+
+<span class="badge-chip hd">
+
+HD
+
+</span>
+
+
+<span class="badge-chip k4">
+
+4K
+
+</span>
+
+
+</div>
+
+
+<div class="card-buttons">
+
+
+<button class="play-btn">
+
+▶ Watch
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+`;
+
+
+});
 
 
 }
