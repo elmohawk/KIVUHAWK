@@ -65,36 +65,71 @@ async function loadHero(){
 
 function movieCard(movie){
 
+    const title = movie.title || movie.name;
+
+    const year =
+        (movie.release_date || movie.first_air_date || "")
+        .slice(0,4);
+
     return `
 
     <div class="movie-card">
 
-        <img src="${IMAGE_BASE}${movie.poster_path}"
-             alt="${movie.title || movie.name}">
+        <img
+        src="${IMAGE_BASE}${movie.poster_path}"
+        alt="${title}">
 
-        <div class="movie-info">
+        <div class="movie-overlay">
 
-            <h3>${movie.title || movie.name}</h3>
+            <div class="movie-title">
+
+                ${title}
+
+            </div>
 
             <div class="movie-meta">
 
-                <span class="rating">
+                <span>⭐ ${movie.vote_average.toFixed(1)}</span>
 
-                    ⭐ ${movie.vote_average.toFixed(1)}
+                <span>${year}</span>
+
+            </div>
+
+            <div class="badges">
+
+                <span class="badge-chip hd">
+
+                    HD
 
                 </span>
 
-                <span>
+                <span class="badge-chip k4">
 
-                    ${(movie.release_date || movie.first_air_date || "").slice(0,4)}
+                    4K
+
+                </span>
+
+                <span class="badge-chip">
+
+                    KivuStream
 
                 </span>
 
             </div>
 
-            <div class="translator-tag">
+            <div class="card-buttons">
 
-                KivuStream
+                <button class="play-btn">
+
+                    ▶ Play
+
+                </button>
+
+                <button class="watchlist-btn">
+
+                    ❤
+
+                </button>
 
             </div>
 
@@ -103,7 +138,6 @@ function movieCard(movie){
     </div>
 
     `;
-
 }
 
 /* ------------------------------
