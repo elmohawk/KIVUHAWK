@@ -1,17 +1,21 @@
-/* ===========================
-   MOVIE GRID
-=========================== */
+/* ==========================================
+   KIVUSTREAM PREMIUM MOVIE CARDS
+========================================== */
 
 .movie-grid{
+
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(240px,1fr));
+
     gap:28px;
-    padding-top:15px;
+
+    padding-top:20px;
+
 }
 
-/* ===========================
-   CARD
-=========================== */
+/* ========================= */
 
 .movie-card{
 
@@ -21,20 +25,29 @@
 
     overflow:hidden;
 
-    border-radius:22px;
+    border-radius:24px;
 
-    background:#12151c;
+    background:#11141b;
 
-    transform-style:preserve-3d;
+    border:1px solid rgba(255,255,255,.08);
 
     transition:
-    transform .25s ease,
-    box-shadow .25s ease;
+
+        transform .35s ease,
+
+        box-shadow .35s ease,
+
+        border-color .35s ease;
+
+    will-change:transform;
 
     cursor:pointer;
 
-    border:1px solid rgba(255,255,255,.06);
+    isolation:isolate;
+
 }
+
+/* Animated Border */
 
 .movie-card::before{
 
@@ -42,63 +55,124 @@
 
     position:absolute;
 
-    inset:0;
+    inset:-1px;
 
-    background:
-    linear-gradient(
-    135deg,
-    rgba(0,194,255,.15),
-    transparent 35%,
-    transparent 70%,
-    rgba(0,255,156,.12)
+    border-radius:24px;
+
+    background:linear-gradient(
+        135deg,
+
+        transparent,
+
+        rgba(0,194,255,.8),
+
+        transparent,
+
+        rgba(0,255,156,.8),
+
+        transparent
+
     );
+
+    background-size:300% 300%;
 
     opacity:0;
 
-    transition:.35s;
+    transition:.4s;
+
+    animation:borderMove 6s linear infinite;
+
+    z-index:-2;
+
 }
 
-.movie-card:hover::before{
-    opacity:1;
+/* Glass Layer */
+
+.movie-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:24px;
+
+    background:
+
+    linear-gradient(
+
+    rgba(255,255,255,.05),
+
+    transparent 30%
+
+    );
+
+    pointer-events:none;
+
 }
+
+/* Hover */
 
 .movie-card:hover{
 
+    transform:
+
+        translateY(-10px)
+
+        scale(1.03);
+
+    border-color:
+
+        rgba(0,194,255,.5);
+
     box-shadow:
-    0 15px 40px rgba(0,194,255,.25);
+
+        0 20px 45px rgba(0,194,255,.20),
+
+        0 0 35px rgba(0,255,156,.08);
 
 }
 
-/* ===========================
-   POSTER
-=========================== */
+.movie-card:hover::before{
+
+    opacity:1;
+
+}
+
+/* ========================= */
 
 .movie-card img{
 
     width:100%;
+
     height:100%;
+
     object-fit:cover;
 
-    transition:transform .5s;
+    transition:
+
+        transform .6s ease,
+
+        filter .6s ease;
+
 }
 
 .movie-card:hover img{
+
     transform:scale(1.08);
+
+    filter:brightness(1.05);
+
 }
 
-/* ===========================
-   OVERLAY
-=========================== */
+/* ========================= */
 
 .movie-overlay{
 
     position:absolute;
-    inset:0;
 
-    background:
-    linear-gradient(
-    transparent,
-    rgba(5,7,10,.95));
+    inset:0;
 
     display:flex;
 
@@ -106,25 +180,37 @@
 
     justify-content:flex-end;
 
-    padding:20px;
+    padding:22px;
+
+    background:
+
+    linear-gradient(
+
+    transparent 20%,
+
+    rgba(5,7,10,.25),
+
+    rgba(5,7,10,.98)
+
+    );
+
 }
 
-/* ===========================
-   TITLE
-=========================== */
+/* ========================= */
 
 .movie-title{
 
-    font-size:1.1rem;
+    font-size:1.08rem;
 
     font-weight:700;
 
     margin-bottom:10px;
+
+    color:#fff;
+
 }
 
-/* ===========================
-   META
-=========================== */
+/* ========================= */
 
 .movie-meta{
 
@@ -132,52 +218,73 @@
 
     justify-content:space-between;
 
-    color:#d6d9e0;
-
-    font-size:.9rem;
+    align-items:center;
 
     margin-bottom:15px;
+
+    color:#d0d6e2;
+
+    font-size:.85rem;
+
 }
 
-/* ===========================
-   BADGES
-=========================== */
+.rating{
+
+    color:#FFD700;
+
+    font-weight:700;
+
+}
+
+/* ========================= */
 
 .badges{
 
     display:flex;
+
     gap:8px;
+
     flex-wrap:wrap;
+
+    margin-bottom:15px;
+
 }
 
 .badge-chip{
 
-    padding:4px 10px;
+    padding:5px 11px;
 
     border-radius:50px;
 
-    font-size:.75rem;
+    font-size:.72rem;
 
     font-weight:600;
 
     background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,.05);
+
 }
 
 .badge-chip.hd{
 
-    background:#00c2ff;
+    background:#00C2FF;
+
     color:#000;
+
 }
 
 .badge-chip.k4{
 
-    background:#00ff9c;
+    background:#00FF9C;
+
     color:#000;
+
 }
 
-/* ===========================
-   BUTTONS
-=========================== */
+/* ========================= */
 
 .card-buttons{
 
@@ -185,38 +292,144 @@
 
     gap:10px;
 
-    margin-top:15px;
 }
 
 .card-buttons button{
 
     flex:1;
 
-    padding:11px;
+    padding:12px;
+
+    border:none;
 
     border-radius:50px;
 
     font-weight:600;
 
     transition:.3s;
+
 }
+
+/* Play */
 
 .play-btn{
 
-    background:#00C2FF;
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #00C2FF,
+
+    #00FF9C);
 
     color:#000;
+
 }
+
+.play-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 10px 25px rgba(0,194,255,.35);
+
+}
+
+/* Wishlist */
 
 .watchlist-btn{
 
-    background:rgba(255,255,255,.12);
+    background:
 
-    color:#fff;
+    rgba(255,255,255,.10);
+
+    color:white;
+
+    border:1px solid rgba(255,255,255,.08);
+
 }
 
-.card-buttons button:hover{
+.watchlist-btn:hover{
 
-    transform:translateY(-3px);
+    background:#ff3d71;
+
+    border-color:#ff3d71;
+
+}
+
+/* Shine Effect */
+
+.movie-card .shine{
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:50%;
+
+    height:100%;
+
+    background:
+
+    linear-gradient(
+
+        90deg,
+
+        transparent,
+
+        rgba(255,255,255,.28),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+    pointer-events:none;
+
+}
+
+.movie-card:hover .shine{
+
+    animation:shine 1s forwards;
+
+}
+
+/* ========================= */
+
+@keyframes shine{
+
+    from{
+
+        left:-150%;
+
+    }
+
+    to{
+
+        left:180%;
+
+    }
+
+}
+
+@keyframes borderMove{
+
+    0%{
+
+        background-position:0% 50%;
+
+    }
+
+    100%{
+
+        background-position:300% 50%;
+
+    }
 
 }
