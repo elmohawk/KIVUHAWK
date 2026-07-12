@@ -1,21 +1,21 @@
-/* ===========================
+/* ==========================================
    SUPABASE CLIENT
-=========================== */
+========================================== */
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 
-/* ===========================
-   CURRENT USER
-=========================== */
+async function currentUser(){
 
-async function currentUser() {
+    const { data:{ user }, error } =
+        await supabaseClient.auth.getUser();
 
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
+    if(error){
+        console.error(error);
+        return null;
+    }
 
     return user;
 }
