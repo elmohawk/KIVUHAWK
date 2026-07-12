@@ -2,7 +2,7 @@
    SUPABASE CLIENT
 =========================== */
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
@@ -11,12 +11,11 @@ const supabase = window.supabase.createClient(
    CURRENT USER
 =========================== */
 
-async function currentUser(){
+async function currentUser() {
 
     const {
-        data:{user}
-    } = await supabase.auth.getUser();
+        data: { user }
+    } = await supabaseClient.auth.getUser();
 
     return user;
-
 }
