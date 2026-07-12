@@ -68,45 +68,21 @@
 </header>
 
 <!-- ================= HERO ================= -->
+<!-- ================= HERO ================= -->
+
 <section class="hero">
 
-    <div class="hero-overlay"></div>
+    <div class="swiper heroSwiper">
 
-    <div class="hero-content">
+        <div class="swiper-wrapper" id="heroSlider">
 
-        <span class="badge">
-            NOW STREAMING
-        </span>
-
-        <h1 id="heroTitle">
-            Loading...
-        </h1>
-
-        <p id="heroOverview">
-            Loading description...
-        </p>
-
-        <div class="hero-buttons">
-
-            <button class="watchBtn">
-
-                <i class="fa-solid fa-play"></i>
-
-                Watch Now
-
-            </button>
-
-            <button class="infoBtn">
-
-                <i class="fa-solid fa-circle-info"></i>
-
-                More Info
-
-            </button>
+            <!-- Slides loaded from TMDB -->
 
         </div>
 
     </div>
+
+    <div class="hero-gradient"></div>
 
 </section>
 <!-- ================= TRENDING ================= -->
@@ -156,7 +132,8 @@
     </div>
 
 </section>
-
+<div class="glow left"></div>
+<div class="glow right"></div>
 <!-- ================= FOOTER ================= -->
 
 <footer>
@@ -182,6 +159,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <!-- JS -->
+<script src="js/hero.js"></script>
+<script src="js/app.js"></script>    
 <script src="js/config.js"></script>
 <script src="js/tmdb.js"></script>
 <script src="js/app.js"></script>
