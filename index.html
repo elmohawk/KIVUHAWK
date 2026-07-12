@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KivuStream | 3D Movie Streaming</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Swiper -->
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/hero.css">
+    <link rel="stylesheet" href="css/cards.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+
+        <i class="fa-solid fa-play"></i>
+
+        <span>KivuStream</span>
+
+    </div>
+
+    <nav>
+
+        <a href="#">Home</a>
+
+        <a href="#">Movies</a>
+
+        <a href="#">TV Shows</a>
+
+        <a href="#">Anime</a>
+
+        <a href="#">Trending</a>
+
+    </nav>
+
+    <div class="nav-right">
+
+        <button id="searchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <button id="profileBtn">
+            <i class="fa-solid fa-user"></i>
+        </button>
+
+    </div>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+
+        <span class="badge">NOW STREAMING</span>
+
+        <h1 id="heroTitle">
+            Loading...
+        </h1>
+
+        <p id="heroOverview">
+            Movie description...
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="watchBtn">
+
+                <i class="fa-solid fa-play"></i>
+
+                Watch Now
+
+            </button>
+
+            <button class="infoBtn">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                More Info
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= TRENDING ================= -->
+
+<section class="movies-section">
+
+    <div class="section-title">
+
+        Trending Movies
+
+    </div>
+
+    <div id="trendingMovies" class="movie-grid">
+
+    </div>
+
+</section>
+
+<!-- ================= POPULAR ================= -->
+
+<section class="movies-section">
+
+    <div class="section-title">
+
+        Popular Movies
+
+    </div>
+
+    <div id="popularMovies" class="movie-grid">
+
+    </div>
+
+</section>
+
+<!-- ================= TV ================= -->
+
+<section class="movies-section">
+
+    <div class="section-title">
+
+        TV Shows
+
+    </div>
+
+    <div id="tvShows" class="movie-grid">
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <h2>KivuStream</h2>
+
+    <p>
+        © 2026 KivuStream
+    </p>
+
+</footer>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- Swiper -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- JS -->
+<script src="js/config.js"></script>
+<script src="js/tmdb.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
