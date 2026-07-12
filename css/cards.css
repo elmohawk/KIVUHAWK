@@ -1,146 +1,68 @@
 /* ==========================================
-   KIVUSTREAM PREMIUM MOVIE CARDS
+   KIVUSTREAM CINEMATIC MOVIE CARDS PRO
 ========================================== */
+
 
 .movie-grid{
 
     display:grid;
 
     grid-template-columns:
-    repeat(auto-fill,minmax(240px,1fr));
+    repeat(auto-fill,minmax(210px,1fr));
 
-    gap:28px;
-
-    padding-top:20px;
+    gap:26px;
 
 }
 
-/* ========================= */
+
+
+/* CARD */
 
 .movie-card{
 
     position:relative;
 
-    height:430px;
+    height:380px;
+
+    border-radius:18px;
 
     overflow:hidden;
 
-    border-radius:24px;
-
-    background:#11141b;
-
-    border:1px solid rgba(255,255,255,.08);
-
-    transition:
-
-        transform .35s ease,
-
-        box-shadow .35s ease,
-
-        border-color .35s ease;
-
-    will-change:transform;
+    background:#0d1117;
 
     cursor:pointer;
 
-    isolation:isolate;
+    transform:translateZ(0);
+
+    transition:
+
+    transform .45s cubic-bezier(.2,.8,.2,1),
+
+    box-shadow .45s;
 
 }
 
-/* Animated Border */
 
-.movie-card::before{
 
-    content:"";
-
-    position:absolute;
-
-    inset:-1px;
-
-    border-radius:24px;
-
-    background:linear-gradient(
-        135deg,
-
-        transparent,
-
-        rgba(0,194,255,.8),
-
-        transparent,
-
-        rgba(0,255,156,.8),
-
-        transparent
-
-    );
-
-    background-size:300% 300%;
-
-    opacity:0;
-
-    transition:.4s;
-
-    animation:borderMove 6s linear infinite;
-
-    z-index:-2;
-
-}
-
-/* Glass Layer */
-
-.movie-card::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    border-radius:24px;
-
-    background:
-
-    linear-gradient(
-
-    rgba(255,255,255,.05),
-
-    transparent 30%
-
-    );
-
-    pointer-events:none;
-
-}
-
-/* Hover */
+/* cinematic shadow */
 
 .movie-card:hover{
 
     transform:
 
-        translateY(-10px)
-
-        scale(1.03);
-
-    border-color:
-
-        rgba(0,194,255,.5);
+    translateY(-12px);
 
     box-shadow:
 
-        0 20px 45px rgba(0,194,255,.20),
+    0 25px 60px
 
-        0 0 35px rgba(0,255,156,.08);
-
-}
-
-.movie-card:hover::before{
-
-    opacity:1;
+    rgba(0,0,0,.65);
 
 }
 
-/* ========================= */
+
+
+/* POSTER */
 
 .movie-card img{
 
@@ -152,21 +74,23 @@
 
     transition:
 
-        transform .6s ease,
-
-        filter .6s ease;
+    transform .8s ease;
 
 }
+
+
 
 .movie-card:hover img{
 
-    transform:scale(1.08);
+    transform:
 
-    filter:brightness(1.05);
+    scale(1.08);
 
 }
 
-/* ========================= */
+
+
+/* DARK CINEMA GRADIENT */
 
 .movie-overlay{
 
@@ -180,37 +104,52 @@
 
     justify-content:flex-end;
 
-    padding:22px;
+    padding:20px;
+
 
     background:
 
     linear-gradient(
 
-    transparent 20%,
+    to top,
 
-    rgba(5,7,10,.25),
+    rgba(0,0,0,.95),
 
-    rgba(5,7,10,.98)
+    rgba(0,0,0,.25) 55%,
+
+    transparent
 
     );
 
 }
 
-/* ========================= */
+
+
+/* TITLE */
+
 
 .movie-title{
 
-    font-size:1.08rem;
+    font-size:1.15rem;
 
     font-weight:700;
 
-    margin-bottom:10px;
+    color:white;
 
-    color:#fff;
+    margin-bottom:8px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
 
 }
 
-/* ========================= */
+
+
+/* INFO */
+
 
 .movie-meta{
 
@@ -218,73 +157,77 @@
 
     justify-content:space-between;
 
-    align-items:center;
-
-    margin-bottom:15px;
-
-    color:#d0d6e2;
+    color:#c5cbd5;
 
     font-size:.85rem;
 
+    margin-bottom:12px;
+
 }
+
+
 
 .rating{
 
-    color:#FFD700;
-
-    font-weight:700;
+    color:#ffd700;
 
 }
 
-/* ========================= */
+
+
+/* BADGES */
 
 .badges{
 
     display:flex;
 
-    gap:8px;
-
-    flex-wrap:wrap;
-
-    margin-bottom:15px;
+    gap:6px;
 
 }
+
+
 
 .badge-chip{
 
-    padding:5px 11px;
+    padding:
 
-    border-radius:50px;
+    4px 9px;
 
-    font-size:.72rem;
+    border-radius:6px;
 
-    font-weight:600;
+    font-size:.7rem;
 
-    background:rgba(255,255,255,.08);
+    background:
+
+    rgba(255,255,255,.12);
 
     backdrop-filter:blur(10px);
 
-    border:1px solid rgba(255,255,255,.05);
-
 }
+
+
 
 .badge-chip.hd{
 
-    background:#00C2FF;
+    color:white;
 
-    color:#000;
+    background:#1677ff;
 
 }
+
 
 .badge-chip.k4{
 
-    background:#00FF9C;
+    color:white;
 
-    color:#000;
+    background:#00a86b;
 
 }
 
-/* ========================= */
+
+
+/* BUTTON AREA */
+
 
 .card-buttons{
 
@@ -292,17 +235,39 @@
 
     gap:10px;
 
+    margin-top:15px;
+
+    opacity:0;
+
+    transform:
+
+    translateY(20px);
+
+    transition:.35s;
+
 }
+
+
+
+.movie-card:hover .card-buttons{
+
+    opacity:1;
+
+    transform:
+
+    translateY(0);
+
+}
+
+
 
 .card-buttons button{
 
-    flex:1;
+    height:38px;
 
-    padding:12px;
+    border-radius:20px;
 
     border:none;
-
-    border-radius:50px;
 
     font-weight:600;
 
@@ -310,125 +275,99 @@
 
 }
 
-/* Play */
+
+
+/* WATCH */
+
 
 .play-btn{
 
-    background:
+    flex:3;
 
-    linear-gradient(
+    background:white;
 
-    135deg,
-
-    #00C2FF,
-
-    #00FF9C);
-
-    color:#000;
+    color:black;
 
 }
+
+
 
 .play-btn:hover{
 
-    transform:translateY(-3px);
-
-    box-shadow:
-
-    0 10px 25px rgba(0,194,255,.35);
+    background:#00C2FF;
 
 }
 
-/* Wishlist */
+
+
+/* FAVORITE */
+
 
 .watchlist-btn{
 
+    flex:1;
+
     background:
 
-    rgba(255,255,255,.10);
+    rgba(255,255,255,.15);
 
     color:white;
 
-    border:1px solid rgba(255,255,255,.08);
-
 }
 
-.watchlist-btn:hover{
 
-    background:#ff3d71;
 
-    border-color:#ff3d71;
+/* TOP FLOATING TAG */
 
-}
 
-/* Shine Effect */
-
-.movie-card .shine{
+.movie-card .top-tag{
 
     position:absolute;
 
-    top:0;
+    top:15px;
 
-    left:-150%;
+    left:15px;
 
-    width:50%;
+    padding:
 
-    height:100%;
+    5px 12px;
+
+    border-radius:20px;
 
     background:
 
-    linear-gradient(
+    rgba(0,0,0,.55);
 
-        90deg,
+    backdrop-filter:blur(10px);
 
-        transparent,
+    color:white;
 
-        rgba(255,255,255,.28),
+    font-size:.7rem;
 
-        transparent
-
-    );
-
-    transform:skewX(-25deg);
-
-    pointer-events:none;
+    z-index:3;
 
 }
 
-.movie-card:hover .shine{
 
-    animation:shine 1s forwards;
 
-}
+/* MOBILE */
 
-/* ========================= */
+@media(max-width:600px){
 
-@keyframes shine{
+    .movie-grid{
 
-    from{
+        grid-template-columns:
 
-        left:-150%;
+        repeat(2,1fr);
 
-    }
-
-    to{
-
-        left:180%;
+        gap:15px;
 
     }
 
-}
 
-@keyframes borderMove{
+    .movie-card{
 
-    0%{
-
-        background-position:0% 50%;
-
-    }
-
-    100%{
-
-        background-position:300% 50%;
+        height:300px;
 
     }
 
