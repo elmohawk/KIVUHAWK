@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>KivuStream | TV Series</title>
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Swiper -->
+
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- CSS -->
+
+    <link
+    rel="stylesheet"
+    href="css/style.css">
+
+    <link
+    rel="stylesheet"
+    href="css/navbar.css">
+
+    <link
+    rel="stylesheet"
+    href="css/cards.css">
+
+    <link
+    rel="stylesheet"
+    href="css/series.css">
+
+</head>
+
+<body>
+
+<!-- ==========================================
+     3D BACKGROUND
+========================================== -->
+
+<div class="brand-3d">
+
+    <span>
+
+        IT HAWK_RW
+
+    </span>
+
+</div>
+
+<div class="light one"></div>
+
+<div class="light two"></div>
+
+<div class="glow left"></div>
+
+<div class="glow right"></div>
+
+<!-- Dynamic Navbar -->
+
+<div id="navbar-container"></div>
+
+<!-- ==========================================
+     HERO
+========================================== -->
+
+<section class="movies-hero">
+
+    <div
+        class="hero-backdrop"
+        id="heroBackdrop">
+
+    </div>
+
+    <div class="hero-overlay">
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+
+                <i class="fa-solid fa-tv"></i>
+
+                KivuStream Series
+
+            </span>
+
+            <h1 id="heroTitle">
+
+                Unlimited TV Series
+
+            </h1>
+
+            <p id="heroDescription">
+
+                Watch the newest TV Shows,
+                K-Dramas,
+                Anime,
+                African Series,
+                Indian Series,
+                Netflix Originals
+                and thousands of episodes
+                in HD & 4K.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <button id="heroWatchBtn">
+
+                    <i class="fa-solid fa-play"></i>
+
+                    Watch Now
+
+                </button>
+
+                <button id="heroInfoBtn">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    Details
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+     SEARCH
+========================================== -->
+
+<section class="movies-toolbar">
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+
+            id="seriesSearch"
+
+            type="search"
+
+            placeholder="Search TV Series..."
+
+            autocomplete="off">
+
+    </div>
+
+    <div
+
+        class="genre-filter"
+
+        id="genreFilter">
+
+        <button
+
+            class="genre-btn active"
+
+            data-genre="all">
+
+            All
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="drama">
+
+            Drama
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="action">
+
+            Action
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="romance">
+
+            Romance
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="anime">
+
+            Anime
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="comedy">
+
+            Comedy
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="kdrama">
+
+            K-Drama
+
+        </button>
+
+        <button
+
+            class="genre-btn"
+
+            data-genre="indian">
+
+            Indian
+
+        </button>
+
+    </div>
+
+</section>
+
+  <!-- ==========================================
+     TRENDING SERIES
+========================================== -->
+
+<section class="movies-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            🔥 Trending Series
+
+        </h2>
+
+    </div>
+
+    <div
+        id="trendingSeries"
+        class="movie-grid">
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     RECENTLY ADDED
+========================================== -->
+
+<section class="movies-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            🆕 Recently Added
+
+        </h2>
+
+    </div>
+
+    <div
+        id="recentSeries"
+        class="movie-grid">
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     TOP RATED
+========================================== -->
+
+<section class="movies-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            ⭐ Top Rated
+
+        </h2>
+
+    </div>
+
+    <div
+        id="topRatedSeries"
+        class="movie-grid">
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     LATEST EPISODES
+========================================== -->
+
+<section class="movies-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            📺 Latest Episodes
+
+        </h2>
+
+    </div>
+
+    <div
+        id="latestEpisodes"
+        class="movie-grid">
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     ALL SERIES
+========================================== -->
+
+<section class="movies-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            🎬 Browse TV Series
+
+        </h2>
+
+    </div>
+
+    <div
+        id="allSeries"
+        class="movie-grid">
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     LOAD MORE
+========================================== -->
+
+<section class="load-more-section">
+
+    <button
+        id="loadMoreBtn">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Load More Series
+
+    </button>
+
+</section>
+
+
+<!-- ==========================================
+     LOADING SCREEN
+========================================== -->
+
+<div
+    id="loadingScreen"
+    class="loading-screen">
+
+    <div class="loader"></div>
+
+    <h2>
+
+        KivuStream
+
+    </h2>
+
+    <p>
+
+        Loading TV Series...
+
+    </p>
+
+</div>
+
+
+<!-- ==========================================
+     SCROLL TO TOP
+========================================== -->
+
+<button
+    id="scrollTopBtn"
+    class="scroll-top">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
+<footer class="footer-3d">
+
+    <div class="footer-glow"></div>
+
+    <div class="footer-content">
+
+        <!-- BRAND -->
+
+        <div class="footer-brand">
+
+            <h2>
+
+                KivuStream
+
+            </h2>
+
+            <p>
+
+                Watch unlimited TV Series,
+                K-Dramas,
+                Anime,
+                African Series,
+                Indian Series,
+                and Originals
+                in HD & 4K with a premium
+                streaming experience.
+
+            </p>
+
+        </div>
+
+        <!-- LINKS -->
+
+        <div class="footer-links">
+
+            <h3>
+
+                Explore
+
+            </h3>
+
+            <a href="index.html">
+
+                Home
+
+            </a>
+
+            <a href="movies.html">
+
+                Movies
+
+            </a>
+
+            <a href="series.html">
+
+                Series
+
+            </a>
+
+            <a href="watch.html">
+
+                Watch
+
+            </a>
+
+        </div>
+
+        <!-- SOCIAL -->
+
+        <div class="footer-social">
+
+            <h3>
+
+                Follow
+
+            </h3>
+
+            <div class="social-icons">
+
+                <a href="#">
+
+                    <i class="fab fa-facebook-f"></i>
+
+                </a>
+
+                <a href="#">
+
+                    <i class="fab fa-instagram"></i>
+
+                </a>
+
+                <a href="#">
+
+                    <i class="fab fa-x-twitter"></i>
+
+                </a>
+
+                <a href="#">
+
+                    <i class="fab fa-youtube"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        © 2026
+
+        <strong>
+
+            KivuStream
+
+        </strong>
+
+        |
+
+        Designed by
+
+        <span>
+
+            IT HAWK_RW
+
+        </span>
+
+    </div>
+
+</footer>
+
+
+<!-- ==========================================
+     THREE JS
+========================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- ==========================================
+     GSAP
+========================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- ==========================================
+     SWIPER
+========================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- ==========================================
+     SUPABASE
+========================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- ==========================================
+     CONFIG
+========================================== -->
+
+<script src="js/config.js"></script>
+
+<!-- ==========================================
+     SUPABASE CLIENT
+========================================== -->
+
+<script src="js/supabase.js"></script>
+
+<!-- ==========================================
+     TMDB
+========================================== -->
+
+<script src="js/tmdb.js"></script>
+
+<!-- ==========================================
+     CARD SYSTEM
+========================================== -->
+
+<script src="js/cards.js"></script>
+
+<!-- ==========================================
+     NAVBAR
+========================================== -->
+
+<script src="js/navbar.js"></script>
+
+<!-- ==========================================
+     SERIES LOGIC
+========================================== -->
+
+<script src="js/series.js"></script>
+
+</body>
+
+</html>
