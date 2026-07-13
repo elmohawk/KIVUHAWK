@@ -322,141 +322,87 @@ return {
 /* ==========================================================
    IMPORT MOVIE TO SUPABASE
 ========================================================== */
+/* ==========================================================
+   IMPORT MOVIE WITH STORAGE IMAGES
+========================================================== */
 
 
 async function importMovieToSupabase(
 
-    tmdbMovie,
-    videoURL="",
-    category=""
+tmdbMovie,
+
+videoURL="",
+
+category=""
 
 ){
 
 
-    try{
+try{
 
 
-        console.log(
-            "Importing Movie:",
-            tmdbMovie.title
-        );
+console.log(
 
+"Importing Movie:",
 
+tmdbMovie.title
 
-        // Get full details
+);
 
-        const details =
 
-        await getTMDBMovieDetails(
 
-            tmdbMovie.id
 
-        );
 
+const details =
 
+await getTMDBMovieDetails(
 
-        // Prepare data
+tmdbMovie.id
 
-        const movieData =
+);
 
-        prepareTMDBMovie(
 
-            tmdbMovie,
 
-            details
 
-        );
 
+/* =========================
+   CREATE FILE NAMES
+========================= */
 
 
-        movieData.video_url = videoURL;
+const safeName =
 
+tmdbMovie.title
 
-        movieData.category = category;
+.toLowerCase()
 
+.replace(/[^a-z0-9]+/g,"-");
 
 
 
-        // Insert into Supabase
 
-        const {
 
-            data,
+/* =========================
+   UPLOAD POSTER
+========================= */
 
-            error
 
-        } = await supabaseClient
+let posterURL = null;
 
 
-        .from("movies")
 
+if(details.poster_path){
 
-        .insert([
 
-            movieData
+posterURL =
 
-        ])
+await uploadImageToStorage(
 
-        .select();
+`https://image.tmdb.org/t/p/original${details.poster_path}`,
 
+`posters/${safeName}-poster.jpg`
 
-
-
-
-        if(error){
-
-
-            console.error(
-
-                "Movie Import Error:",
-
-                error
-
-            );
-
-
-            return null;
-
-
-        }
-
-
-
-
-
-        console.log(
-
-            "Movie Imported Successfully 🚀",
-
-            data
-
-        );
-
-
-
-        return data[0];
-
-
-
-    }
-
-
-    catch(error){
-
-
-        console.error(
-
-            "TMDB Movie Import Failed:",
-
-            error
-
-        );
-
-
-        return null;
-
-
-    }
+);
 
 
 }
@@ -466,146 +412,453 @@ async function importMovieToSupabase(
 
 
 
+/* =========================
+   UPLOAD BACKDROP
+========================= */
+
+
+let backdropURL = null;
+
+
+
+if(details.backdrop_path){
+
+
+backdropURL =
+
+await uploadImageToStorage(
+
+`https://image.tmdb.org/t/p/original${details.backdrop_path}`,
+
+`posters/${safeName}-backdrop.jpg`
+
+);
+
+
+}
+
+
+
+
+
+
+
+const movieData = {
+
+
+title:
+
+details.title,
+
+
+
+tmdb_id:
+
+details.id,
+
+
+
+poster:
+
+posterURL,
+
+
+
+backdrop:
+
+backdropURL,
+
+
+
+overview:
+
+details.overview,
+
+
+
+rating:
+
+details.vote_average,
+
+
+
+year:
+
+details.release_date
+
+?
+
+Number(
+
+details.release_date.substring(0,4)
+
+)
+
+:
+
+null,
+
+
+
+genres:
+
+details.genres
+
+.map(g=>g.name)
+
+.join(","),
+
+
+
+category:category,
+
+
+
+video_url:videoURL
+
+
+
+};
+
+
+
+
+
+
+
+const {
+
+data,
+
+error
+
+}=
+
+await supabaseClient
+
+
+.from("movies")
+
+
+.insert([movieData])
+
+
+.select();
+
+
+
+
+
+
+
+if(error){
+
+
+console.error(
+
+"Movie Save Error:",
+
+error
+
+);
+
+
+return null;
+
+
+}
+
+
+
+
+
+console.log(
+
+"Movie Saved 🚀",
+
+data
+
+);
+
+
+
+return data[0];
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+
+"Import Failed:",
+
+error
+
+);
+
+
+return null;
+
+
+}
+
+
+
+}
 /* ==========================================================
-   IMPORT SERIES TO SUPABASE
+   IMPORT SERIES WITH STORAGE IMAGES
 ========================================================== */
 
 
 async function importSeriesToSupabase(
 
-    tmdbSeries,
-    category=""
+tmdbSeries,
+
+category=""
 
 ){
 
 
-    try{
+try{
 
 
-        console.log(
+const details =
 
-            "Importing Series:",
+await getTMDBSeriesDetails(
 
-            tmdbSeries.name
+tmdbSeries.id
 
-        );
+);
 
 
 
-        // Get details
 
-        const details =
 
-        await getTMDBSeriesDetails(
+const safeName =
 
-            tmdbSeries.id
+details.name
 
-        );
+.toLowerCase()
 
+.replace(/[^a-z0-9]+/g,"-");
 
 
 
 
-        // Prepare data
 
-        const seriesData =
 
-        prepareTMDBSeries(
+let posterURL=null;
 
-            tmdbSeries,
 
-            details
+let backdropURL=null;
 
-        );
 
 
 
-        seriesData.category = category;
 
 
+if(details.poster_path){
 
 
+posterURL =
 
-        const {
+await uploadImageToStorage(
 
-            data,
+`https://image.tmdb.org/t/p/original${details.poster_path}`,
 
-            error
+`posters/${safeName}-poster.jpg`
 
-        } = await supabaseClient
+);
 
 
+}
 
-        .from("series")
 
 
 
-        .insert([
 
-            seriesData
 
-        ])
+if(details.backdrop_path){
 
-        .select();
 
+backdropURL =
 
+await uploadImageToStorage(
 
+`https://image.tmdb.org/t/p/original${details.backdrop_path}`,
 
+`posters/${safeName}-backdrop.jpg`
 
-        if(error){
+);
 
 
-            console.error(
+}
 
-                "Series Import Error:",
 
-                error
 
-            );
 
 
-            return null;
 
 
-        }
+const seriesData={
 
 
+title:
 
+details.name,
 
 
-        console.log(
 
-            "Series Imported Successfully 🚀",
+tmdb_id:
 
-            data
+details.id,
 
-        );
 
 
+poster:
 
-        return data[0];
+posterURL,
 
 
 
-    }
+backdrop:
 
+backdropURL,
 
-    catch(error){
 
 
-        console.error(
+overview:
 
-            "TMDB Series Import Failed:",
+details.overview,
 
-            error
 
-        );
 
+rating:
 
-        return null;
+details.vote_average,
 
 
-    }
+
+year:
+
+details.first_air_date
+
+?
+
+Number(
+
+details.first_air_date.substring(0,4)
+
+)
+
+:
+
+null,
+
+
+
+genres:
+
+details.genres
+
+.map(g=>g.name)
+
+.join(","),
+
+
+
+category:category
+
+
+
+};
+
+
+
+
+
+
+const {
+
+data,
+
+error
+
+}=
+
+await supabaseClient
+
+
+.from("series")
+
+
+.insert([seriesData])
+
+
+.select();
+
+
+
+
+
+
+if(error){
+
+
+console.error(
+
+"Series Save Error:",
+
+error
+
+);
+
+
+return null;
+
+
+}
+
+
+
+
+
+console.log(
+
+"Series Imported 🚀",
+
+data
+
+);
+
+
+
+return data[0];
+
+
+
+}
+
+
+catch(error){
+
+
+console.error(
+
+"Series Import Failed:",
+
+error
+
+);
+
+
+return null;
+
+
+}
 
 
 }
