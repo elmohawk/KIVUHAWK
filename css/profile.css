@@ -1,0 +1,391 @@
+/* ==========================================================
+   KIVUSTREAM PROFILE PAGE
+========================================================== */
+
+:root{
+
+    --bg:#050B18;
+    --card:#0D1628;
+    --primary:#00C2FF;
+    --secondary:#00D084;
+    --text:#ffffff;
+    --muted:#9AA6B2;
+
+}
+
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+
+body{
+
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,Arial,;
+
+}
+
+
+
+/* ==========================================================
+   HERO
+========================================================== */
+
+.profile-hero{
+
+    position:relative;
+
+    height:420px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+    linear-gradient(
+        rgba(5,11,24,.45),
+        rgba(5,11,24,.92)
+    ),
+
+    url("../assets/default-backdrop.jpg");
+
+    background-size:cover;
+    background-position:center;
+    overflow:hidden;
+
+}
+
+
+.hero-overlay{
+
+    position:absolute;
+    inset:0;
+
+    backdrop-filter:blur(8px);
+
+}
+
+
+.profile-info{
+
+    position:relative;
+    z-index:5;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+}
+
+
+
+.avatar{
+
+    width:170px;
+    height:170px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:5px solid var(--primary);
+
+    box-shadow:
+
+    0 0 30px rgba(0,194,255,.45);
+
+    transition:.4s;
+
+}
+
+
+.avatar:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+
+#profileName{
+
+    margin-top:20px;
+
+    font-size:2.3rem;
+
+    font-weight:700;
+
+}
+
+
+
+#membership{
+
+    color:var(--secondary);
+
+    margin-top:8px;
+
+}
+
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.profile-buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:30px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.profile-buttons button{
+
+    padding:13px 24px;
+
+    border:none;
+
+    border-radius:40px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    transition:.35s;
+
+}
+
+
+
+#editProfile{
+
+    background:var(--primary);
+
+    color:#000;
+
+}
+
+
+
+#settingsBtn{
+
+    background:#1D2A44;
+
+    color:white;
+
+}
+
+
+
+#logoutBtn{
+
+    background:#C62828;
+
+    color:white;
+
+}
+
+
+
+.profile-buttons button:hover{
+
+    transform:translateY(-4px);
+
+}
+
+
+
+/* ==========================================================
+   CONTENT
+========================================================== */
+
+.profile-container{
+
+    width:92%;
+
+    max-width:1500px;
+
+    margin:auto;
+
+    padding:50px 0;
+
+}
+
+
+
+.profile-container section{
+
+    margin-bottom:60px;
+
+}
+
+
+
+.profile-container h2{
+
+    margin-bottom:20px;
+
+    font-size:1.6rem;
+
+}
+
+
+
+/* ==========================================================
+   GRID
+========================================================== */
+
+.movie-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fill,minmax(210px,1fr));
+
+    gap:22px;
+
+}
+
+
+
+/* ==========================================================
+   STATS
+========================================================== */
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+}
+
+
+
+.stat-card{
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(16px);
+
+    border-radius:18px;
+
+    padding:30px;
+
+    text-align:center;
+
+    transition:.4s;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+
+
+.stat-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:var(--primary);
+
+    box-shadow:
+
+    0 18px 45px rgba(0,194,255,.18);
+
+}
+
+
+
+.stat-card h3{
+
+    font-size:2.5rem;
+
+    color:var(--primary);
+
+}
+
+
+
+.stat-card p{
+
+    margin-top:10px;
+
+    color:var(--muted);
+
+}
+
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:768px){
+
+.profile-hero{
+
+    height:340px;
+
+}
+
+
+.avatar{
+
+    width:130px;
+    height:130px;
+
+}
+
+
+#profileName{
+
+    font-size:1.8rem;
+
+}
+
+
+.profile-buttons{
+
+    justify-content:center;
+
+}
+
+
+.movie-grid{
+
+    grid-template-columns:
+
+    repeat(2,1fr);
+
+}
+
+
+.stats{
+
+    grid-template-columns:1fr;
+
+}
+
+}
