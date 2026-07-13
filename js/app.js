@@ -1,83 +1,41 @@
-document.addEventListener(
-"DOMContentLoaded",
-async()=>{
-
-
-    console.log(
-    "Loading KivuStream..."
-    );
-
-
-    const movies =
-    await getSupabaseMovies();
-
-
-
-    console.log(
-    "Supabase:",
-    movies
-    );
 document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Loading KivuStream...");
 
+    // Build hero slider first
     await buildHeroSlider();
 
-    const movies = await getSupabaseMovies();
+    // Load movies from Supabase
+    const movies = await getMovies();
 
-    ...
-});
+    console.log("Supabase:", movies);
 
-
-    // Recently added
-
+    // Recently Added
     renderMovies(
-        movies.slice(0,20),
+        movies.slice(0, 20),
         "recentMovies"
     );
 
-
-
     // Categories
-
     renderMovies(
-        filterCategory(
-            movies,
-            "action"
-        ),
+        filterCategory(movies, "action"),
         "actionMovies"
     );
 
-
-
     renderMovies(
-        filterCategory(
-            movies,
-            "indian"
-        ),
+        filterCategory(movies, "indian"),
         "indianMovies"
     );
 
-
-
     renderMovies(
-        filterCategory(
-            movies,
-            "highschool"
-        ),
+        filterCategory(movies, "highschool"),
         "highschoolMovies"
     );
 
-
-
     renderMovies(
-        filterCategory(
-            movies,
-            "comedy"
-        ),
+        filterCategory(movies, "comedy"),
         "comedyMovies"
     );
-
 
 });
 function filterCategory(
