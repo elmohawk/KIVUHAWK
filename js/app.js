@@ -726,10 +726,7 @@ function formatRating(value){
 /* ==========================================================
    PREPARE CONTENT DATA
 ========================================================== */
-
-
 function prepareContent(item){
-
 
 
     return {
@@ -740,7 +737,7 @@ function prepareContent(item){
 
         poster:
 
-        safeImage(
+        getStorageImage(
 
             item.poster
 
@@ -750,7 +747,7 @@ function prepareContent(item){
 
         backdrop:
 
-        safeImage(
+        getStorageImage(
 
             item.backdrop
 
@@ -791,13 +788,7 @@ function prepareContent(item){
     };
 
 
-
 }
-
-
-
-
-
 /* ==========================================================
    NORMALIZE ALL CONTENT
 ========================================================== */
