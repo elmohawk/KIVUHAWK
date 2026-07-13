@@ -1,61 +1,72 @@
 /* ===========================
-   HERO 3D SWIPER
+   HERO SWIPER
 =========================== */
 
 let heroSwiper;
 
-async function buildHeroSlider(){
+async function buildHeroSlider() {
 
-const {
+    try {
 
-data,
+        const [moviesResult, seriesResult] = await Promise.all([
 
-error
+            supabaseClient
+                .from("movies")
+                .select("*")
+                .order("created_at", { ascending: false })
+                .limit(5),
 
-}=await supabaseClient
+            supabaseClient
+                .from("series")
+                .select("*")
+                .order("created_at", { ascending: false })
+                .limit(5)
 
-.from("movies")
+        ]);
 
-.select("*")
+        const movies = (moviesResult.data || []).map(movie => ({
+            ...movie,
+            type: "movie"
+        }));
 
-.order(
+        const series = (seriesResult.data || []).map(show => ({
+            ...show,
+            type: "series"
+        }));
 
-"created_at",
+        const latest = [...movies, ...series]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 8);
 
-{
+        renderHero(latest);
 
-ascending:false
+    } catch (err) {
+
+        console.error("Hero Error:", err);
+
+    }
 
 }
 
-)
+function renderHero(items) {
 
-.limit(8);
+    const hero = document.getElementById("heroSlider");
 
-if(error){
+    if (!hero) return;
 
-console.error(error);
+    hero.innerHTML = "";
 
-return;
+    items.forEach(item => {
 
-}
+        const backdrop =
+            item.backdrop ||
+            item.poster ||
+            "assets/default-backdrop.jpg";
 
-renderHero(data);
-
-}
-function renderHero(movies){
-
-const hero=document.getElementById("heroSlider");
-
-hero.innerHTML="";
-
-movies.forEach(movie=>{
-
-hero.innerHTML+=`
+        hero.innerHTML += `
 
 <div class="swiper-slide hero-slide"
-
-style="background-image:url('${movie.backdrop}')">
+style="background-image:url('${backdrop}')">
 
 <div class="hero-overlay">
 
@@ -63,29 +74,22 @@ style="background-image:url('${movie.backdrop}')">
 
 <span class="hero-badge">
 
-Recently Added
+${item.type.toUpperCase()}
 
 </span>
 
-<h1>
+<h1>${item.title}</h1>
 
-${movie.title}
-
-</h1>
-
-<p>
-
-${movie.description}
-
-</p>
+<p>${item.description || ""}</p>
 
 <div class="hero-buttons">
 
 <button
+onclick="window.location.href='watch.html?id=${item.id}'">
 
-onclick="location.href='watch.html?id=${movie.id}'">
+<i class="fa-solid fa-play"></i>
 
-▶ Watch Now
+Watch Now
 
 </button>
 
@@ -99,83 +103,45 @@ onclick="location.href='watch.html?id=${movie.id}'">
 
 `;
 
-});
+    });
 
-new Swiper(".heroSwiper",{
+    if (heroSwiper) {
 
-loop:true,
+        heroSwiper.destroy(true, true);
 
-autoplay:{
+    }
 
-delay:5000
+    heroSwiper = new Swiper(".heroSwiper", {
 
-},
+        effect: "coverflow",
 
-effect:"fade",
+        grabCursor: true,
 
-speed:1000
+        centeredSlides: true,
 
-});
+        slidesPerView: 1.15,
 
-}
-const [moviesResult, seriesResult] = await Promise.all([
-    supabaseClient
-        .from("movies")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(5),
+        loop: true,
 
-    supabaseClient
-        .from("series")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(5)
-]);
+        speed: 900,
 
-const movies = (moviesResult.data || []).map(item => ({
-    ...item,
-    type: "movie"
-}));
+        autoplay: {
 
-const series = (seriesResult.data || []).map(item => ({
-    ...item,
-    type: "series"
-}));
+            delay: 5000,
 
-const latest = [...movies, ...series]
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 8);
+            disableOnInteraction: false
 
-renderHero(latest);
-    heroSwiper = new Swiper(".heroSwiper",{
-
-        effect:"coverflow",
-
-        grabCursor:true,
-
-        centeredSlides:true,
-
-        slidesPerView:1.2,
-
-        loop:true,
-
-        speed:900,
-
-        autoplay:{
-            delay:5000
         },
 
-        coverflowEffect:{
+        coverflowEffect: {
 
-            rotate:20,
+            rotate: 20,
 
-            stretch:0,
+            depth: 250,
 
-            depth:220,
+            modifier: 1,
 
-            modifier:1,
-
-            slideShadows:false
+            slideShadows: false
 
         }
 
