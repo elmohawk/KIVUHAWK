@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>KivuStream PRO ROOM</title>
+
+
+<link rel="stylesheet" href="admin.css">
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="admin-container">
+
+
+
+<h1>
+🎬 Add Movie To KivuStream
+</h1>
+
+
+
+
+<!-- SEARCH AREA -->
+
+<section class="search-box">
+
+
+<input
+
+id="movieSearch"
+
+placeholder="Search movie title..."
+
+>
+
+
+<select id="contentType">
+
+<option value="movie">
+Movie
+</option>
+
+
+<option value="series">
+Series
+</option>
+
+
+</select>
+
+
+
+<button id="searchBtn">
+
+Search TMDB
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- SEARCH RESULTS -->
+
+<section>
+
+
+<h2>
+TMDB Results
+</h2>
+
+
+
+<div
+
+id="tmdbResults"
+
+class="tmdb-results"
+
+>
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- SELECTED CONTENT -->
+
+<section
+
+class="import-panel"
+
+>
+
+
+
+<h2>
+Selected Content
+</h2>
+
+
+
+
+<img
+
+id="selectedPoster"
+
+src="assets/logo.png"
+
+>
+
+
+
+<div>
+
+
+<h3 id="selectedTitle">
+
+No Content Selected
+
+</h3>
+
+
+
+<p id="selectedYear">
+
+</p>
+
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- VIDEO INFORMATION -->
+
+<section class="upload-panel">
+
+
+<label>
+
+Video URL
+
+</label>
+
+
+<input
+
+id="videoURL"
+
+placeholder="Video streaming URL"
+
+>
+
+
+
+<label>
+
+Category
+
+</label>
+
+
+<input
+
+id="category"
+
+placeholder="Action, Comedy..."
+
+>
+
+
+
+
+<button
+
+id="importBtn"
+
+>
+
+🚀 Import To Supabase
+
+</button>
+
+
+
+</section>
+
+
+
+</div>
+
+<script src="../js/config.js"></script>
+
+<script src="../js/supabase.js"></script>
+
+<script src="../js/tmdb-engine.js"></script>
+
+<script src="admin.js"></script>
+
+
+</body>
+
+</html>
