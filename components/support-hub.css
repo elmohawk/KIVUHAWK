@@ -1,0 +1,509 @@
+/* ==========================================================
+   KIVUSTREAM SUPPORT HUB PRO
+   Version 3.0
+========================================================== */
+
+:root{
+
+    --primary:#00C2FF;
+    --secondary:#00D084;
+
+    --dark:#07111E;
+
+    --glass:rgba(10,18,30,.72);
+
+    --border:rgba(255,255,255,.08);
+
+}
+
+/* ==========================================================
+   HUB
+========================================================== */
+
+.support-hub{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:30px;
+
+    z-index:999999;
+
+    perspective:1200px;
+
+}
+
+/* ==========================================================
+   ONLINE BADGE
+========================================================== */
+
+.support-badge{
+
+    position:absolute;
+
+    top:-48px;
+
+    right:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 16px;
+
+    border-radius:40px;
+
+    background:rgba(0,0,0,.65);
+
+    backdrop-filter:blur(12px);
+
+    color:#fff;
+
+    font-size:.82rem;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+
+}
+
+.online-dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#00D084;
+
+    animation:onlinePulse 1.5s infinite;
+
+}
+
+@keyframes onlinePulse{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.5);
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+/* ==========================================================
+   MAIN BUTTON
+========================================================== */
+
+.support-toggle{
+
+    position:relative;
+
+    width:74px;
+
+    height:74px;
+
+    border:none;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:28px;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    var(--primary),
+
+    var(--secondary)
+
+    );
+
+    overflow:hidden;
+
+    transition:.35s;
+
+    box-shadow:
+
+    0 0 20px rgba(0,194,255,.45),
+
+    0 0 50px rgba(0,208,132,.25);
+
+}
+
+.support-toggle:hover{
+
+    transform:
+
+    scale(1.08)
+
+    rotate(8deg);
+
+}
+
+/* ==========================================================
+   WAVES
+========================================================== */
+
+.wave{
+
+position:absolute;
+
+left:50%;
+
+top:50%;
+
+width:74px;
+
+height:74px;
+
+border-radius:50%;
+
+border:2px solid rgba(0,194,255,.45);
+
+transform:
+
+translate(-50%,-50%);
+
+}
+
+.wave1{
+
+animation:wave 2s infinite;
+
+}
+
+.wave2{
+
+animation:wave 2s infinite .7s;
+
+}
+
+.wave3{
+
+animation:wave 2s infinite 1.4s;
+
+}
+
+@keyframes wave{
+
+0%{
+
+transform:
+
+translate(-50%,-50%)
+
+scale(1);
+
+opacity:1;
+
+}
+
+100%{
+
+transform:
+
+translate(-50%,-50%)
+
+scale(2.3);
+
+opacity:0;
+
+}
+
+}
+
+/* ==========================================================
+   PANEL
+========================================================== */
+
+.support-panel{
+
+position:absolute;
+
+bottom:95px;
+
+right:0;
+
+width:330px;
+
+border-radius:26px;
+
+background:var(--glass);
+
+backdrop-filter:blur(25px);
+
+border:1px solid var(--border);
+
+overflow:hidden;
+
+opacity:0;
+
+pointer-events:none;
+
+transform:
+
+translateY(25px)
+
+rotateX(10deg);
+
+transition:.35s;
+
+box-shadow:
+
+0 30px 80px rgba(0,0,0,.45);
+
+}
+
+.support-hub.active .support-panel{
+
+opacity:1;
+
+pointer-events:auto;
+
+transform:
+
+translateY(0)
+
+rotateX(0deg);
+
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.support-header{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:20px;
+
+border-bottom:
+
+1px solid rgba(255,255,255,.08);
+
+}
+
+.support-logo{
+
+width:58px;
+
+height:58px;
+
+border-radius:14px;
+
+object-fit:cover;
+
+}
+
+.support-header h3{
+
+margin:0;
+
+color:white;
+
+}
+
+.support-header small{
+
+color:#9fb3c8;
+
+}
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.support-buttons{
+
+padding:18px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:14px;
+
+}
+
+.support-btn{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:15px;
+
+border-radius:16px;
+
+text-decoration:none;
+
+border:none;
+
+cursor:pointer;
+
+font-size:.95rem;
+
+font-weight:600;
+
+color:white;
+
+transition:.35s;
+
+background:rgba(255,255,255,.05);
+
+}
+
+.support-btn i{
+
+width:38px;
+
+height:38px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:50%;
+
+font-size:18px;
+
+}
+
+/* Individual Colors */
+
+.whatsapp i{
+
+background:#25D366;
+
+}
+
+.channel i{
+
+background:#00C2FF;
+
+}
+
+.call i{
+
+background:#00D084;
+
+}
+
+.email i{
+
+background:#6C63FF;
+
+}
+
+.bug i{
+
+background:#FF9800;
+
+}
+
+.feature i{
+
+background:#E91E63;
+
+}
+
+/* Hover */
+
+.support-btn:hover{
+
+transform:
+
+translateX(-8px)
+
+scale(1.03);
+
+background:
+
+rgba(255,255,255,.12);
+
+box-shadow:
+
+0 10px 25px rgba(0,194,255,.15);
+
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.support-footer{
+
+padding:18px;
+
+text-align:center;
+
+color:#9fb3c8;
+
+font-size:.85rem;
+
+border-top:
+
+1px solid rgba(255,255,255,.08);
+
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:768px){
+
+.support-hub{
+
+right:18px;
+
+bottom:20px;
+
+}
+
+.support-panel{
+
+width:290px;
+
+}
+
+.support-toggle{
+
+width:64px;
+
+height:64px;
+
+font-size:24px;
+
+}
+
+}
