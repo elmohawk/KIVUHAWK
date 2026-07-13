@@ -57,24 +57,16 @@ async function loadKivuStream(){
 
         // Load database
 
-
-        allContent =
-
-        await getSupabaseContent();
+allContent = await getSupabaseContent();
 
 
-
-        console.log(
-
-            "Supabase Content:",
-
-            allContent
-
-        );
+normalizeContent();
 
 
-
-
+console.log(
+"Supabase Content:",
+allContent
+);
         // Recently added
 
 
@@ -338,6 +330,7 @@ async function getSupabaseContent(){
         new Date(a.created_at)
 
     );
+}
 /* ==========================================================
    CATEGORY SYSTEM
    PART 2
@@ -603,8 +596,6 @@ function loadLatest(){
 /* ==========================================================
    SAFE REFRESH
 ========================================================== */
-
-
 async function refreshKivuStream(){
 
 
@@ -630,6 +621,7 @@ async function refreshKivuStream(){
         "Content refreshed"
 
     );
+}
 /* ==========================================================
    KIVUSTREAM DATA POLISH
    PART 3
@@ -955,24 +947,27 @@ async function startKivuStream(){
 /* ==========================================================
    CONNECT WITH MAIN LOADER
 ========================================================== */
+async function startKivuStream(){
 
 
-const originalLoadKivuStream =
-
-loadKivuStream;
+    normalizeContent();
 
 
-
-loadKivuStream = async function(){
-
+    loadLatest();
 
 
-    await originalLoadKivuStream();
+    loadTrending();
 
 
-
-    startKivuStream();
-
+    loadSeriesSection();
 
 
-};
+    enableAutoRefresh();
+
+
+    console.log(
+        "KivuStream Ready 🚀"
+    );
+
+
+}
