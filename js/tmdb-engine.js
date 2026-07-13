@@ -161,13 +161,8 @@ return {
 
 
 
-    poster:
-
-    movie.poster_path
-    ?
-    `https://image.tmdb.org/t/p/original${movie.poster_path}`
-    :
-    null,
+   poster:null,
+backdrop:null,
 
 
 
