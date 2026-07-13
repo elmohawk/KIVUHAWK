@@ -98,14 +98,7 @@ function renderCards(
 
 
 
-            <img src="${
-
-            movie.poster ||
-
-            'assets/logo.png'
-
-            }"
-
+            <img src="${getPoster(movie)}
             loading="lazy"
 
             >
@@ -352,3 +345,743 @@ document
 
 
 }
+/* =====================================
+   KIVUSTREAM CARD PREMIUM FEATURES
+   PART 2
+===================================== */
+
+
+/* =====================================
+   SAFE POSTER HANDLER
+===================================== */
+
+
+function getPoster(movie){
+
+
+    if(
+
+        movie.poster &&
+
+        movie.poster.trim() !== ""
+
+    ){
+
+        return movie.poster;
+
+    }
+
+
+
+    if(
+
+        movie.backdrop &&
+
+        movie.backdrop.trim() !== ""
+
+    ){
+
+        return movie.backdrop;
+
+    }
+
+
+
+    return "assets/logo.png";
+
+
+}
+
+
+
+
+
+/* =====================================
+   QUALITY SYSTEM
+===================================== */
+
+
+function getQuality(movie){
+
+
+    if(movie.quality)
+
+        return movie.quality;
+
+
+
+    if(movie.resolution)
+
+        return movie.resolution;
+
+
+
+    return "HD";
+
+
+}
+
+
+
+
+
+/* =====================================
+   SERIES EPISODE COUNT
+===================================== */
+
+
+function episodeLabel(movie){
+
+
+    if(
+
+        movie.type === "series"
+
+        &&
+
+        movie.episodes
+
+    ){
+
+
+        return `${movie.episodes} Episodes`;
+
+
+    }
+
+
+    return "";
+
+}
+
+
+
+
+
+/* =====================================
+   UPDATE CARD IMAGE
+===================================== */
+
+
+function refreshCardImages(){
+
+
+
+    document
+
+    .querySelectorAll(".movie-card img")
+
+    .forEach(img=>{
+
+
+
+        img.onerror = ()=>{
+
+
+            img.src =
+
+            "assets/logo.png";
+
+
+        };
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   CARD SHINE EFFECT
+===================================== */
+
+
+function enableCardShine(){
+
+
+
+document
+
+.querySelectorAll(".movie-card")
+
+.forEach(card=>{
+
+
+
+    card.addEventListener(
+
+    "mousemove",
+
+    e=>{
+
+
+        const rect =
+
+        card.getBoundingClientRect();
+
+
+
+        const x =
+
+        e.clientX -
+
+        rect.left;
+
+
+
+        const y =
+
+        e.clientY -
+
+        rect.top;
+
+
+
+        card.style.setProperty(
+
+            "--shine-x",
+
+            `${x}px`
+
+        );
+
+
+
+        card.style.setProperty(
+
+            "--shine-y",
+
+            `${y}px`
+
+        );
+
+
+
+    });
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   WATCH BUTTON CONTROL
+===================================== */
+
+
+document.addEventListener(
+
+"click",
+
+e=>{
+
+
+    if(
+
+        e.target.classList
+
+        .contains("play-btn")
+
+    ){
+
+
+        const card =
+
+        e.target.closest(
+
+        ".movie-card"
+
+        );
+
+
+
+        if(card){
+
+
+            card.click();
+
+
+        }
+
+
+    }
+
+
+
+});
+
+
+
+
+
+
+
+/* =====================================
+   WISHLIST SYSTEM
+===================================== */
+
+
+function addWishlist(id){
+
+
+
+    let list =
+
+    JSON.parse(
+
+    localStorage.getItem(
+
+    "kivustreamWishlist"
+
+    )
+
+    )
+
+    || [];
+
+
+
+
+    if(
+
+        !list.includes(id)
+
+    ){
+
+
+        list.push(id);
+
+
+        localStorage.setItem(
+
+        "kivustreamWishlist",
+
+        JSON.stringify(list)
+
+        );
+
+
+    }
+
+
+
+    console.log(
+
+        "Added wishlist",
+
+        id
+
+    );
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   FINAL CARD UPDATE
+===================================== */
+
+
+function updateCardSystem(){
+
+
+
+    refreshCardImages();
+
+
+
+    enableCardShine();
+
+
+
+    activateCard3D();
+
+
+
+    console.log(
+
+        "KivuStream Cards Ready 🎬"
+
+    );
+
+
+
+}
+/* =====================================
+   KIVUSTREAM ADVANCED CARD SYSTEM
+   PART 3
+===================================== */
+
+
+/* =====================================
+   LAZY IMAGE LOADING
+===================================== */
+
+
+function enableLazyImages(){
+
+
+    const images =
+
+    document.querySelectorAll(
+
+        ".movie-card img"
+
+    );
+
+
+
+    images.forEach(img=>{
+
+
+        img.loading = "lazy";
+
+
+
+        img.onerror = ()=>{
+
+
+            img.src =
+
+            "assets/logo.png";
+
+
+        };
+
+
+
+    });
+
+
+}
+
+
+
+
+
+/* =====================================
+   RATING STARS
+===================================== */
+
+
+function createStars(rating){
+
+
+
+    let value =
+
+    Number(rating || 0);
+
+
+
+    let stars = "";
+
+
+
+    for(
+
+        let i = 1;
+
+        i <= 5;
+
+        i++
+
+    ){
+
+
+
+        if(value >= i){
+
+            stars += "★";
+
+        }
+
+        else{
+
+            stars += "☆";
+
+        }
+
+
+    }
+
+
+
+    return stars;
+
+
+}
+
+
+
+
+
+/* =====================================
+   VIEW COUNTER
+===================================== */
+
+
+async function increaseViews(movieId){
+
+
+
+    if(!movieId)
+
+        return;
+
+
+
+    try{
+
+
+        await supabaseClient
+
+        .from("movies")
+
+        .update({
+
+            views:
+
+            supabaseClient
+
+            .rpc(
+
+            "increment"
+
+            )
+
+
+        })
+
+        .eq(
+
+            "id",
+
+            movieId
+
+        );
+
+
+
+    }
+
+
+    catch(error){
+
+
+        console.log(
+
+            "View update skipped"
+
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   CARD OBSERVER
+===================================== */
+
+
+function observeCards(){
+
+
+
+    const cards =
+
+    document.querySelectorAll(
+
+        ".movie-card"
+
+    );
+
+
+
+    const observer =
+
+    new IntersectionObserver(
+
+        entries=>{
+
+
+            entries.forEach(entry=>{
+
+
+                if(entry.isIntersecting){
+
+
+                    entry.target
+
+                    .classList
+
+                    .add(
+
+                    "show-card"
+
+                    );
+
+
+                }
+
+
+            });
+
+
+
+        },
+
+        {
+
+            threshold:.15
+
+        }
+
+    );
+
+
+
+    cards.forEach(card=>{
+
+
+        observer.observe(card);
+
+
+    });
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   INFINITE SCROLL READY
+===================================== */
+
+
+let currentPage = 1;
+
+
+
+function loadMoreReady(){
+
+
+
+    window.addEventListener(
+
+    "scroll",
+
+    ()=>{
+
+
+        const bottom =
+
+        window.innerHeight +
+
+        window.scrollY >=
+
+        document.body.offsetHeight - 300;
+
+
+
+        if(bottom){
+
+
+            console.log(
+
+            "Ready for more content"
+
+            );
+
+
+
+        }
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+/* =====================================
+   FINAL CARD BOOT
+===================================== */
+
+
+function initCards(){
+
+
+
+    enableLazyImages();
+
+
+    observeCards();
+
+
+    loadMoreReady();
+
+
+    updateCardSystem();
+
+
+
+    console.log(
+
+    "KivuStream Premium Cards Loaded 🚀"
+
+    );
+
+
+
+}
+
+
+
+
+
+/* Auto start */
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+    initCards();
+
+
+});
