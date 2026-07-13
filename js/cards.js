@@ -1067,21 +1067,3 @@ function initCards(){
 
 
 }
-
-
-
-
-
-/* Auto start */
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-    initCards();
-
-
-});
