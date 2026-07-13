@@ -622,25 +622,33 @@ async function refreshKivuStream(){
 
     );
 }
-/* ==========================================================
-   KIVUSTREAM DATA POLISH
-   PART 3
-========================================================== */
-
 
 /* ==========================================================
-   IMAGE PROTECTION
+   KIVUSTREAM SUPABASE IMAGE SYSTEM
 ========================================================== */
 
 
 function safeImage(url){
 
 
+
+    if(!url)
+
+        return "assets/logo.png";
+
+
+
+
+
+    // Already Supabase Storage URL
+
     if(
 
-        url &&
+        url.includes(
 
-        url.trim() !== ""
+        "supabase.co/storage"
+
+        )
 
     ){
 
@@ -649,15 +657,33 @@ function safeImage(url){
     }
 
 
-    return "assets/logo.png";
+
+
+
+    // Old TMDB URLs are blocked
+
+    if(
+
+        url.includes(
+
+        "image.tmdb.org"
+
+        )
+
+    ){
+
+        return "assets/logo.png";
+
+    }
+
+
+
+
+    return url;
+
 
 
 }
-
-
-
-
-
 /* ==========================================================
    FORMAT YEAR
 ========================================================== */
