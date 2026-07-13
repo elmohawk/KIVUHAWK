@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>KivuStream | My Profile</title>
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/footer.css">
+
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<header class="profile-hero">
+
+<div class="hero-overlay"></div>
+
+<div class="profile-info">
+
+<img
+id="profileAvatar"
+src="assets/default-avatar.png"
+class="avatar"
+>
+
+<h1 id="profileName">
+
+Loading...
+
+</h1>
+
+<p id="membership">
+
+Premium Member
+
+</p>
+
+<div class="profile-buttons">
+
+<button id="editProfile">
+
+Edit Profile
+
+</button>
+
+<button id="settingsBtn">
+
+Settings
+
+</button>
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+<main class="profile-container">
+
+<section>
+
+<h2>
+
+Continue Watching
+
+</h2>
+
+<div
+id="continueWatching"
+class="movie-grid">
+
+</div>
+
+</section>
+
+<section>
+
+<h2>
+
+My Watchlist
+
+</h2>
+
+<div
+id="watchlistMovies"
+class="movie-grid">
+
+</div>
+
+</section>
+
+<section>
+
+<h2>
+
+Favorites
+
+</h2>
+
+<div
+id="favoriteMovies"
+class="movie-grid">
+
+</div>
+
+</section>
+
+<section class="stats">
+
+<div class="stat-card">
+
+<h3 id="moviesWatched">
+
+0
+
+</h3>
+
+<p>
+
+Movies
+
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3 id="seriesWatched">
+
+0
+
+</h3>
+
+<p>
+
+Series
+
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3 id="hoursWatched">
+
+0
+
+</h3>
+
+<p>
+
+Hours
+
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3 id="favoriteCount">
+
+0
+
+</h3>
+
+<p>
+
+Favorites
+
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<div id="footer"></div>
+
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/profile.js"></script>
+
+</body>
+
+</html>
