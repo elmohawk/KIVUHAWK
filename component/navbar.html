@@ -1,35 +1,42 @@
+<!-- ======================================================
+     KIVUSTREAM PREMIUM 3D NAVBAR
+====================================================== -->
+
 <nav class="ks-navbar">
 
-    <!-- Logo -->
-    <a href="index.html" class="logo">
+    <!-- ================= LOGO ================= -->
 
-        <div class="logo-circle">
+    <a href="index.html" class="ks-logo">
+
+        <div class="logo-glow"></div>
+
+        <div class="logo-icon">
 
             <i class="fa-solid fa-play"></i>
 
         </div>
 
-        <div>
+        <div class="logo-text">
 
             <h2>KivuStream</h2>
 
-            <small>IT HAWK_RW</small>
+            <small>Powered by IT HAWK_RW</small>
 
         </div>
 
     </a>
 
-    <!-- Navigation -->
+    <!-- ================= MENU ================= -->
 
-    <ul class="nav-menu">
+    <ul class="ks-menu">
 
         <li>
 
-            <a href="index.html">
+            <a href="index.html" class="active">
 
                 <i class="fa-solid fa-house"></i>
 
-                Home
+                <span>Home</span>
 
             </a>
 
@@ -41,7 +48,7 @@
 
                 <i class="fa-solid fa-film"></i>
 
-                Movies
+                <span>Movies</span>
 
             </a>
 
@@ -53,7 +60,7 @@
 
                 <i class="fa-solid fa-tv"></i>
 
-                Series
+                <span>Series</span>
 
             </a>
 
@@ -65,7 +72,19 @@
 
                 <i class="fa-solid fa-fire"></i>
 
-                Trending
+                <span>Trending</span>
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="mylist.html">
+
+                <i class="fa-solid fa-heart"></i>
+
+                <span>My List</span>
 
             </a>
 
@@ -73,47 +92,62 @@
 
     </ul>
 
-    <!-- Search -->
+    <!-- ================= SEARCH ================= -->
 
-    <div class="search-area">
+    <div class="search-container">
 
         <i class="fa-solid fa-magnifying-glass"></i>
 
         <input
-
             id="searchInput"
-
             type="text"
+            placeholder="Search Movies & Series">
 
-            placeholder="Search movies & series">
+        <button id="searchClear">
 
-        <div
+            <i class="fa-solid fa-xmark"></i>
 
-            id="searchResults"
+        </button>
 
-            class="search-results">
+        <div id="searchResults" class="search-results">
+
+            <!-- Loaded by navbar.js -->
 
         </div>
 
     </div>
 
-    <!-- Right -->
+    <!-- ================= RIGHT ================= -->
 
-    <div class="nav-right">
+    <div class="nav-actions">
 
-        <button id="notificationBtn">
+        <!-- Notifications -->
+
+        <button
+        class="nav-btn"
+        id="notificationBtn">
 
             <i class="fa-solid fa-bell"></i>
 
+            <span class="notification-dot"></span>
+
         </button>
 
-        <button id="profileBtn">
+        <!-- Profile -->
+
+        <button
+        class="nav-btn"
+        id="profileBtn">
 
             <i class="fa-solid fa-user"></i>
 
         </button>
 
-        <button id="mobileMenu">
+        <!-- Mobile -->
+
+        <button
+        class="nav-btn mobile-btn"
+        id="menuToggle">
 
             <i class="fa-solid fa-bars"></i>
 
@@ -122,3 +156,115 @@
     </div>
 
 </nav>
+
+<!-- ======================================================
+     MOBILE MENU
+====================================================== -->
+
+<aside
+id="mobileMenu"
+class="mobile-menu">
+
+    <div class="mobile-header">
+
+        <div class="mobile-logo">
+
+            <i class="fa-solid fa-play"></i>
+
+            <span>KivuStream</span>
+
+        </div>
+
+        <button id="closeMobile">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+    <a href="index.html">
+
+        <i class="fa-solid fa-house"></i>
+
+        Home
+
+    </a>
+
+    <a href="movies.html">
+
+        <i class="fa-solid fa-film"></i>
+
+        Movies
+
+    </a>
+
+    <a href="series.html">
+
+        <i class="fa-solid fa-tv"></i>
+
+        TV Series
+
+    </a>
+
+    <a href="trending.html">
+
+        <i class="fa-solid fa-fire"></i>
+
+        Trending
+
+    </a>
+
+    <a href="mylist.html">
+
+        <i class="fa-solid fa-heart"></i>
+
+        My List
+
+    </a>
+
+    <hr>
+
+    <a href="profile.html">
+
+        <i class="fa-solid fa-user"></i>
+
+        Profile
+
+    </a>
+
+    <a href="login.html">
+
+        <i class="fa-solid fa-right-to-bracket"></i>
+
+        Login
+
+    </a>
+
+</aside>
+
+<!-- ======================================================
+     SEARCH LOADING
+====================================================== -->
+
+<div
+id="searchLoading"
+class="search-loading">
+
+    <div class="loader"></div>
+
+</div>
+
+<!-- ======================================================
+     SEARCH EMPTY
+====================================================== -->
+
+<div
+id="searchEmpty"
+class="search-empty">
+
+    <i class="fa-solid fa-film"></i>
+
+    <p>No Movies or Series Found</p>
+
+</div>
