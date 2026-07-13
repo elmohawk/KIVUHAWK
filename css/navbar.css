@@ -1436,3 +1436,56 @@ to{
 
 
 }
+.ks-notification{
+
+    position:fixed;
+
+    right:30px;
+
+    top:100px;
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    padding:15px 22px;
+
+    border-radius:18px;
+
+    background:
+
+    rgba(10,15,22,.9);
+
+    color:white;
+
+    border:
+
+    1px solid rgba(255,255,255,.1);
+
+    transform:
+
+    translateX(150%);
+
+    transition:.5s;
+
+    z-index:999999;
+
+}
+
+
+.ks-notification.show{
+
+    transform:
+
+    translateX(0);
+
+}
+
+
+.ks-notification i{
+
+    color:#00FF9C;
+
+}
