@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KivuStream | Watch</title>
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- FontAwesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<!-- Swiper -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/navbar.css">
+
+<link rel="stylesheet" href="css/watch.css">
+
+<link rel="stylesheet" href="css/responsive.css">
+
+</head>
+
+<body>
+
+<!-- ==========================
+3D BACKGROUND
+========================== -->
+
+<div class="brand-3d">
+
+<span>IT HAWK_RW</span>
+
+</div>
+
+<div class="light one"></div>
+
+<div class="light two"></div>
+
+<div class="glow left"></div>
+
+<div class="glow right"></div>
+
+<!-- ==========================
+NAVBAR
+========================== -->
+
+<header class="navbar">
+
+<div class="logo">
+
+<i class="fa-solid fa-play"></i>
+
+<span>KivuStream</span>
+
+</div>
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="#">Movies</a>
+
+<a href="#">Series</a>
+
+<a href="#">Trending</a>
+
+</nav>
+
+<div class="nav-right">
+
+<button id="searchBtn">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+</button>
+
+<button id="profileBtn">
+
+<i class="fa-solid fa-user"></i>
+
+</button>
+
+</div>
+
+</header>
+
+<!-- ==========================
+BACKDROP
+========================== -->
+
+<section
+class="watch-hero">
+
+<div
+id="backdrop"
+class="watch-backdrop">
+
+<div class="backdrop-overlay">
+
+<div class="watch-content">
+
+<div class="poster-box">
+
+<img
+id="poster"
+src=""
+
+alt="Poster">
+
+</div>
+
+<div class="movie-details">
+
+<div class="movie-type"
+id="typeBadge">
+
+MOVIE
+
+</div>
+
+<h1
+id="title">
+
+Loading...
+
+</h1>
+
+<div class="movie-meta">
+
+<span
+id="rating">
+
+⭐ 0
+
+</span>
+
+<span
+id="year">
+
+2026
+
+</span>
+
+<span
+id="runtime">
+
+0 min
+
+</span>
+
+</div>
+
+<div
+id="genres"
+class="genres">
+
+</div>
+
+<p
+id="overview">
+
+Loading movie description...
+
+</p>
+
+<div class="action-buttons">
+
+<button
+id="playMovie">
+
+<i class="fa-solid fa-play"></i>
+
+Watch Now
+
+</button>
+
+<button
+id="wishlist">
+
+<i class="fa-solid fa-bookmark"></i>
+
+My List
+
+</button>
+
+<button
+id="likeMovie">
+
+<i class="fa-solid fa-heart"></i>
+
+Like
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================
+VIDEO PLAYER
+========================== -->
+
+<section class="player-section">
+
+<div class="player-wrapper">
+
+<video
+
+id="videoPlayer"
+
+controls
+
+playsinline
+
+preload="metadata"
+
+poster="">
+
+</video>
+
+</div>
+
+</section>
+
+<!-- ==========================
+SERIES SECTION
+========================== -->
+
+<section
+id="seriesSection"
+
+class="series-section">
+
+<div class="section-header">
+
+<h2>
+
+Episodes
+
+</h2>
+
+<select
+id="seasonSelector">
+
+<option>
+
+Season 1
+
+</option>
+
+</select>
+
+</div>
+
+<div
+id="episodesContainer"
+
+class="episode-grid">
+
+</div>
+
+</section>
+
+<!-- ==========================
+CAST
+========================== -->
+
+<section
+class="movies-section">
+
+<h2
+class="section-title">
+
+Cast
+
+</h2>
+
+<div
+id="castContainer"
+
+class="cast-grid">
+
+</div>
+
+</section>
+
+<!-- ==========================
+MORE LIKE THIS
+========================== -->
+
+<section
+class="movies-section">
+
+<h2
+class="section-title">
+
+More Like This
+
+</h2>
+
+<div
+id="recommendations"
+
+class="movie-grid">
+
+</div>
+
+</section>
+
+<!-- ==========================
+COMMENTS
+========================== -->
+
+<section
+class="movies-section">
+
+<h2
+class="section-title">
+
+Comments
+
+</h2>
+
+<div
+class="comment-form">
+
+<textarea
+
+id="commentText"
+
+placeholder="Write something...">
+
+</textarea>
+
+<button
+id="sendComment">
+
+Post
+
+</button>
+
+</div>
+
+<div
+id="commentsList">
+
+</div>
+
+</section>
+
+<!-- ==========================
+FOOTER
+========================== -->
+
+<footer class="footer">
+
+<div class="footer-container">
+
+<div>
+
+<h2>
+
+Kivu<span>Stream</span>
+
+</h2>
+
+<p>
+
+Powered by
+
+TMDB +
+
+Supabase
+
+</p>
+
+</div>
+
+<div>
+
+<p>
+
+© 2026
+
+IT HAWK_RW
+
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- ==========================
+LIBRARIES
+========================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- ==========================
+PROJECT
+========================== -->
+
+<script src="js/config.js"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/tmdb.js"></script>
+
+<script src="js/navbar.js"></script>
+
+<script src="js/watch.js"></script>
+
+</body>
+
+</html>
