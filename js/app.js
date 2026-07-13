@@ -17,7 +17,16 @@ async()=>{
     "Supabase:",
     movies
     );
+document.addEventListener("DOMContentLoaded", async () => {
 
+    console.log("Loading KivuStream...");
+
+    await buildHeroSlider();
+
+    const movies = await getSupabaseMovies();
+
+    ...
+});
 
 
     // Recently added
