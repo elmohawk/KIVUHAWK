@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KivuStream | My List</title>
+
+<link
+rel="icon"
+href="assets/favicon.png">
+
+<link
+rel="stylesheet"
+href="css/global.css">
+
+<link
+rel="stylesheet"
+href="css/navbar.css">
+
+<link
+rel="stylesheet"
+href="css/cards.css">
+
+<link
+rel="stylesheet"
+href="css/footer.css">
+
+<link
+rel="stylesheet"
+href="css/mylist.css">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div id="navbar"></div>
+
+<!-- Hero -->
+
+<section class="mylist-hero">
+
+<div class="hero-overlay"></div>
+
+<div class="hero-content">
+
+<h1>
+
+<i class="fa-solid fa-bookmark"></i>
+
+My List
+
+</h1>
+
+<p>
+
+Your personal collection of movies and series.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- Statistics -->
+
+<section class="stats">
+
+<div class="stat-card">
+
+<h2 id="movieCount">
+
+0
+
+</h2>
+
+<p>Movies</p>
+
+</div>
+
+<div class="stat-card">
+
+<h2 id="seriesCount">
+
+0
+
+</h2>
+
+<p>Series</p>
+
+</div>
+
+<div class="stat-card">
+
+<h2 id="totalCount">
+
+0
+
+</h2>
+
+<p>Total Saved</p>
+
+</div>
+
+</section>
+
+<!-- Search -->
+
+<section class="search-area">
+
+<div class="search-box">
+
+<i class="fa-solid fa-search"></i>
+
+<input
+
+type="text"
+
+id="searchMyList"
+
+placeholder="Search My List...">
+
+</div>
+
+</section>
+
+<!-- Filters -->
+
+<section class="filters">
+
+<button
+class="filter active"
+data-filter="all">
+
+All
+
+</button>
+
+<button
+class="filter"
+data-filter="movie">
+
+Movies
+
+</button>
+
+<button
+class="filter"
+data-filter="series">
+
+Series
+
+</button>
+
+<button
+class="filter"
+data-filter="recent">
+
+Recently Added
+
+</button>
+
+</section>
+
+<!-- Grid -->
+
+<section class="content">
+
+<div
+id="myListContainer"
+class="movie-grid">
+
+</div>
+
+</section>
+
+<!-- Empty -->
+
+<section
+id="emptyState"
+class="empty-state"
+style="display:none;">
+
+<i class="fa-solid fa-film"></i>
+
+<h2>
+
+Your List is Empty
+
+</h2>
+
+<p>
+
+Start adding your favorite movies and TV series.
+
+</p>
+
+<a
+href="movies.html"
+class="browse-btn">
+
+Browse Content
+
+</a>
+
+</section>
+
+<!-- Footer -->
+
+<div id="footer"></div>
+
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/guard.js"></script>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+
+<script src="js/cards.js"></script>
+<script src="js/mylist.js"></script>
+
+</body>
+
+</html>
