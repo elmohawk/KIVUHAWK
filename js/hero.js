@@ -6,66 +6,147 @@ let heroSwiper;
 
 async function buildHeroSlider(){
 
-    const movies = await fetchTMDB(endpoints.trending);
+const {
 
-    const slider = document.getElementById("heroSlider");
+data,
 
-    slider.innerHTML = "";
+error
 
-    movies.slice(0,8).forEach(movie=>{
+}=await supabaseClient
 
-        slider.innerHTML += `
+.from("movies")
 
-        <div class="swiper-slide">
+.select("*")
 
-            <div class="hero-slide"
+.order(
 
-            style="background-image:url(
-            https://image.tmdb.org/t/p/original${movie.backdrop_path}
-            )">
+"created_at",
 
-                <div class="hero-overlay">
+{
 
-                    <div class="hero-info">
+ascending:false
 
-                        <span class="badge">
+}
 
-                            ⭐ ${movie.vote_average.toFixed(1)}
+)
 
-                        </span>
+.limit(8);
 
-                        <h1>${movie.title}</h1>
+if(error){
 
-                        <p>${movie.overview}</p>
+console.error(error);
 
-                        <div class="hero-buttons">
+return;
 
-                            <button class="watchBtn">
+}
 
-                                ▶ Watch
+renderHero(data);
 
-                            </button>
+}
+function renderHero(movies){
 
-                            <button class="infoBtn">
+const hero=document.getElementById("heroSlider");
 
-                                Details
+hero.innerHTML="";
 
-                            </button>
+movies.forEach(movie=>{
 
-                        </div>
+hero.innerHTML+=`
 
-                    </div>
+<div class="swiper-slide hero-slide"
 
-                </div>
+style="background-image:url('${movie.backdrop}')">
 
-            </div>
+<div class="hero-overlay">
 
-        </div>
+<div class="hero-info">
 
-        `;
+<span class="hero-badge">
 
-    });
+Recently Added
 
+</span>
+
+<h1>
+
+${movie.title}
+
+</h1>
+
+<p>
+
+${movie.description}
+
+</p>
+
+<div class="hero-buttons">
+
+<button
+
+onclick="location.href='watch.html?id=${movie.id}'">
+
+▶ Watch Now
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+new Swiper(".heroSwiper",{
+
+loop:true,
+
+autoplay:{
+
+delay:5000
+
+},
+
+effect:"fade",
+
+speed:1000
+
+});
+
+}
+const [moviesResult, seriesResult] = await Promise.all([
+    supabaseClient
+        .from("movies")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(5),
+
+    supabaseClient
+        .from("series")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(5)
+]);
+
+const movies = (moviesResult.data || []).map(item => ({
+    ...item,
+    type: "movie"
+}));
+
+const series = (seriesResult.data || []).map(item => ({
+    ...item,
+    type: "series"
+}));
+
+const latest = [...movies, ...series]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 8);
+
+renderHero(latest);
     heroSwiper = new Swiper(".heroSwiper",{
 
         effect:"coverflow",
