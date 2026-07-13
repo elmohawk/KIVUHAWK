@@ -1,6 +1,10 @@
 /* ==========================================================
    KIVUSTREAM SUPABASE STORAGE ENGINE
-   POSTERS BUCKET
+========================================================== */
+
+
+/* ==========================================================
+   STORAGE SETTINGS
 ========================================================== */
 
 
@@ -8,72 +12,165 @@ const STORAGE_BUCKET = "posters";
 
 
 
-function getStorageImage(path){
-
-    if(!path)
-
-        return "assets/logo.png";
 
 
-    // already full URL
+/* ==========================================================
+   UPLOAD IMAGE TO SUPABASE STORAGE
+========================================================== */
 
-    if(path.startsWith("http"))
 
-        return path;
+async function uploadImageToStorage(
+
+imageURL,
+
+fileName
+
+){
+
+
+try{
+
+
+    const response =
+
+    await fetch(imageURL);
+
+
+
+    const blob =
+
+    await response.blob();
+
+
+
+    const file =
+
+    new File(
+
+        [blob],
+
+        fileName,
+
+        {
+
+        type:blob.type
+
+        }
+
+    );
+
+
+
 
 
 
     const {
 
-        data
+        data,
 
-    } = supabaseClient
-        .storage
-        .from(STORAGE_BUCKET)
-        .getPublicUrl(path);
+        error
 
+    } = await supabaseClient
 
 
-    return data.publicUrl;
+    .storage
+
+
+    .from(STORAGE_BUCKET)
+
+
+    .upload(
+
+        fileName,
+
+        file,
+
+        {
+
+        upsert:true
+
+        }
+
+    );
+
+
+
+
+
+
+    if(error){
+
+
+        console.error(
+
+            "Storage Upload Error:",
+
+            error
+
+        );
+
+
+        return null;
+
+
+    }
+
+
+
+
+
+
+
+    const publicURL =
+
+    supabaseClient
+
+
+    .storage
+
+
+    .from(STORAGE_BUCKET)
+
+
+    .getPublicUrl(
+
+        fileName
+
+    );
+
+
+
+
+
+    return publicURL
+
+    .data
+
+    .publicUrl;
+
 
 
 }
 
 
 
-
-function prepareStorageContent(item){
-
-
-    return {
+catch(error){
 
 
-        ...item,
+console.error(
+
+"Image Upload Failed:",
+
+error
+
+);
 
 
-        poster:
+return null;
 
 
-        getStorageImage(
+}
 
-            item.poster
-
-        ),
-
-
-
-        backdrop:
-
-
-        getStorageImage(
-
-            item.backdrop
-
-        )
-
-
-
-    };
 
 
 }
