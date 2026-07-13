@@ -3,10 +3,7 @@
    PART 1
 ========================================================== */
 
-
 let allContent = [];
-
-
 
 /* ==========================================================
    START WEBSITE
@@ -680,6 +677,54 @@ function safeImage(url){
 
 
     return url;
+
+
+
+}
+/* ==========================================================
+   SUPABASE STORAGE IMAGE HELPER
+========================================================== */
+
+
+function getStorageImage(path){
+
+
+
+    if(!path)
+
+        return "assets/logo.png";
+
+
+
+
+
+    // Already full URL
+
+    if(
+
+        path.startsWith("http")
+
+    ){
+
+        return path;
+
+    }
+
+
+
+
+
+    // Supabase storage file path
+
+    return (
+
+        SUPABASE_URL +
+
+        "/storage/v1/object/public/posters/" +
+
+        path
+
+    );
 
 
 
