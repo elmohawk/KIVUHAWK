@@ -79,3 +79,60 @@ async function getSupabaseMovies(){
     return data || [];
 
 }
+/* ==========================================================
+   LOAD MOVIES + SERIES
+========================================================== */
+
+async function getSupabaseContent(){
+
+    const [
+
+        moviesResult,
+
+        seriesResult
+
+    ] = await Promise.all([
+
+        supabaseClient
+        .from("movies")
+        .select("*")
+        .order("created_at",{ascending:false}),
+
+        supabaseClient
+        .from("series")
+        .select("*")
+        .order("created_at",{ascending:false})
+
+    ]);
+
+    const movies=(moviesResult.data||[]).map(movie=>({
+
+        ...movie,
+
+        type:"movie"
+
+    }));
+
+    const series=(seriesResult.data||[]).map(series=>({
+
+        ...series,
+
+        type:"series"
+
+    }));
+
+    return [
+
+        ...movies,
+
+        ...series
+
+    ].sort(
+
+        (a,b)=>
+
+        new Date(b.created_at)-new Date(a.created_at)
+
+    );
+
+}
