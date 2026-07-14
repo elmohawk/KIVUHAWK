@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>
+
+KivuStream | PRO LOOK
+
+</title>
+
+<link
+rel="icon"
+href="assets/logo.png">
+
+<link
+rel="stylesheet"
+href="css/style.css">
+
+<link
+rel="stylesheet"
+href="css/navbar.css">
+
+<link
+rel="stylesheet"
+href="css/cards.css">
+
+<link
+rel="stylesheet"
+href="css/footer.css">
+
+<link
+rel="stylesheet"
+href="css/viewall.css">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div id="navbar"></div>
+
+<!-- HERO -->
+
+<section class="viewall-hero">
+
+<div class="overlay"></div>
+
+<div class="hero-content">
+
+<span id="categoryBadge">
+
+Browse
+
+</span>
+
+<h1 id="pageTitle">
+
+Loading...
+
+</h1>
+
+<p id="pageDescription">
+
+Discover the complete collection.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- TOOLBAR -->
+
+<section class="view-toolbar">
+
+<div class="search-box">
+
+<i class="fa-solid fa-search"></i>
+
+<input
+
+id="searchInput"
+
+type="text"
+
+placeholder="Search...">
+
+</div>
+
+<div class="toolbar-right">
+
+<select id="sortSelect">
+
+<option value="latest">
+
+Latest
+
+</option>
+
+<option value="rating">
+
+Top Rated
+
+</option>
+
+<option value="az">
+
+A-Z
+
+</option>
+
+<option value="year">
+
+Release Year
+
+</option>
+
+</select>
+
+</div>
+
+</section>
+
+<!-- RESULTS -->
+
+<section class="results-header">
+
+<h2>
+
+<span id="resultsTitle">
+
+Results
+
+</span>
+
+<span id="resultCount">
+
+(0)
+
+</span>
+
+</h2>
+
+</section>
+
+<!-- GRID -->
+
+<section class="view-grid">
+
+<div
+
+id="viewAllContainer"
+
+class="movie-grid">
+
+</div>
+
+</section>
+
+<!-- LOAD MORE -->
+
+<section class="load-section">
+
+<button
+
+id="loadMoreBtn"
+
+class="load-more">
+
+Load More
+
+</button>
+
+</section>
+
+<!-- FOOTER -->
+
+<div id="footer"></div>
+
+<!-- SCRIPTS -->
+
+<script src="js/config.js"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/storage.js"></script>
+
+<script src="js/cards.js"></script>
+
+<script src="js/navbar.js"></script>
+
+<script src="js/footer.js"></script>
+
+<script src="js/viewall.js"></script>
+
+<script src="js/support-hub.js"></script>
+
+</body>
+
+</html>
