@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+
+<title>
+
+KivuStream | Manage Series
+
+</title>
+
+
+
+<link rel="icon"
+href="../assets/logo.png">
+
+
+
+<link rel="stylesheet"
+href="css/admin.css">
+
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="admin-wrapper">
+
+
+
+
+
+<!-- =========================
+ SIDEBAR
+========================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="sidebar-logo">
+
+
+<img src="../assets/logo.png">
+
+
+<h2>
+
+KivuStream
+
+</h2>
+
+
+<span>
+
+ADMIN
+
+</span>
+
+
+</div>
+
+
+
+
+
+<nav class="sidebar-menu">
+
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+
+
+
+<a href="add-series.html">
+
+<i class="fa-solid fa-plus"></i>
+
+Add Series
+
+</a>
+
+
+
+
+
+<a class="active"
+
+href="manage-series.html">
+
+
+<i class="fa-solid fa-tv"></i>
+
+Manage Series
+
+</a>
+
+
+
+
+
+<a href="manage-episodes.html">
+
+
+<i class="fa-solid fa-list"></i>
+
+Episodes
+
+</a>
+
+
+
+
+</nav>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+ MAIN
+========================= -->
+
+
+<main class="admin-main">
+
+
+
+
+
+<header class="admin-topbar">
+
+
+<h1>
+
+Manage Series
+
+</h1>
+
+
+
+
+<div class="admin-profile">
+
+
+<img src="../assets/logo.png">
+
+
+<span>
+
+Admin
+
+</span>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<section class="dashboard-header">
+
+
+<div>
+
+
+<h2>
+
+Series Library 📺
+
+</h2>
+
+
+<p>
+
+Manage TV shows, seasons and episodes.
+
+</p>
+
+
+</div>
+
+
+
+<a href="add-series.html"
+
+class="primary-btn">
+
+
+<i class="fa-solid fa-plus"></i>
+
+
+Add Series
+
+
+</a>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+ TOOLBAR
+========================= -->
+
+
+<section class="admin-panel">
+
+
+
+<div class="manage-toolbar">
+
+
+
+<div class="search-box">
+
+
+<i class="fa-solid fa-search"></i>
+
+
+<input
+
+id="seriesSearch"
+
+placeholder="Search series...">
+
+
+</div>
+
+
+
+
+
+
+
+<select id="seriesFilter">
+
+
+<option value="all">
+
+All Categories
+
+</option>
+
+
+<option>
+
+Action
+
+</option>
+
+
+<option>
+
+Indian
+
+</option>
+
+
+<option>
+
+Comedy
+
+</option>
+
+
+<option>
+
+Drama
+
+</option>
+
+
+<option>
+
+Highschool
+
+</option>
+
+
+</select>
+
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+ TABLE
+========================= -->
+
+
+<section class="admin-panel">
+
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Series
+
+<span id="seriesTotal">
+
+0
+
+</span>
+
+
+</h2>
+
+
+
+</div>
+
+<div class="table-container">
+
+<table class="admin-table">
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Poster
+
+</th>
+
+
+
+<th>
+
+Title
+
+</th>
+
+
+
+<th>
+
+Category
+
+</th>
+
+
+
+<th>
+
+Seasons
+
+</th>
+
+
+
+<th>
+
+TMDB
+
+</th>
+
+
+
+<th>
+
+Actions
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+<tbody id="seriesTable">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</div>
+
+
+</section>
+/* ======================================================
+   EDIT SERIES MODAL
+====================================================== */
+
+
+<div
+
+id="editSeriesModal"
+
+class="admin-modal">
+
+
+
+<div class="modal-box">
+
+
+
+<div class="modal-header">
+
+
+<h2>
+
+Edit Series
+
+</h2>
+
+
+
+<button
+
+id="closeSeriesModal"
+
+class="close-btn">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Series Title
+
+</label>
+
+
+<input
+
+id="editSeriesTitle"
+
+type="text">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Description
+
+</label>
+
+
+<textarea
+
+id="editSeriesDescription">
+
+</textarea>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Category
+
+</label>
+
+
+
+<select id="editSeriesCategory">
+
+
+<option>
+
+Action
+
+</option>
+
+
+<option>
+
+Indian
+
+</option>
+
+
+<option>
+
+Comedy
+
+</option>
+
+
+<option>
+
+Drama
+
+</option>
+
+
+<option>
+
+Highschool
+
+</option>
+
+
+<option>
+
+Other
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Quality
+
+</label>
+
+
+
+<select id="editSeriesQuality">
+
+
+<option>
+
+480p
+
+</option>
+
+
+<option>
+
+720p HD
+
+</option>
+
+
+<option>
+
+1080p Full HD
+
+</option>
+
+
+<option>
+
+4K UHD
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<button
+
+id="saveSeriesEdit"
+
+class="primary-btn">
+
+
+<i class="fa-solid fa-save"></i>
+
+
+Save Changes
+
+
+</button>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+   SEASON / EPISODE MODAL
+====================================================== -->
+
+
+<div
+
+id="seasonModal"
+
+class="admin-modal">
+
+
+
+<div class="modal-box large">
+
+
+
+<div class="modal-header">
+
+
+<h2>
+
+Season Manager
+
+</h2>
+
+
+
+<button
+
+id="closeSeasonModal"
+
+class="close-btn">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div id="seasonManagerContent">
+
+
+<div class="empty-state">
+
+
+<i class="fa-solid fa-tv"></i>
+
+
+<p>
+
+Select a series to manage seasons
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+   FOOTER
+====================================================== -->
+
+
+<footer class="admin-footer">
+
+
+<img
+
+src="../assets/logo.png"
+
+class="footer-logo">
+
+<p>
+
+© 2026 KivuStream Admin
+
+</p>
+
+<span>
+
+Powered by IT HAWK_RW
+
+</span>
+
+
+
+</footer>
+
+
+</main>
+
+</div>
+
+<!-- ======================================================
+   SCRIPTS
+====================================================== -->
+
+
+<script src="../js/config.js"></script>
+
+
+<script src="../js/supabase.js"></script>
+
+
+<script src="js/admin.js"></script>
+
+
+<script src="js/manage-series.js"></script>
+
+
+
+
+</body>
+
+</html>
