@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KivuStream Admin Dashboard</title>
+
+<link rel="icon" href="../assets/logo.png">
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/cards.css">
+<link rel="stylesheet" href="../css/navbar.css">
+<link rel="stylesheet" href="../css/footer.css">
+
+<link rel="stylesheet" href="css/admin.css">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ======================================================
+     ADMIN WRAPPER
+====================================================== -->
+
+<div class="admin-wrapper">
+
+<!-- ======================================================
+     SIDEBAR
+====================================================== -->
+
+<aside class="sidebar">
+
+<div class="sidebar-logo">
+
+<img
+src="../assets/logo.png"
+alt="KivuStream">
+
+<h2>KivuStream</h2>
+
+<span>ADMIN PANEL</span>
+
+</div>
+
+<nav class="sidebar-menu">
+
+<a class="active" href="index.html">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</a>
+
+<a href="add-movie.html">
+<i class="fa-solid fa-film"></i>
+<span>Add Movie</span>
+</a>
+
+<a href="add-series.html">
+<i class="fa-solid fa-tv"></i>
+<span>Add Series</span>
+</a>
+
+<a href="manage-movies.html">
+<i class="fa-solid fa-clapperboard"></i>
+<span>Manage Movies</span>
+</a>
+
+<a href="manage-series.html">
+<i class="fa-solid fa-layer-group"></i>
+<span>Manage Series</span>
+</a>
+
+<a href="manage-users.html">
+<i class="fa-solid fa-users"></i>
+<span>Users</span>
+</a>
+
+<a href="analytics.html">
+<i class="fa-solid fa-chart-line"></i>
+<span>Analytics</span>
+</a>
+
+<a href="settings.html">
+<i class="fa-solid fa-gear"></i>
+<span>Settings</span>
+</a>
+
+<a id="logoutBtn" href="#">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Logout</span>
+</a>
+
+</nav>
+
+</aside>
+
+<!-- ======================================================
+     MAIN CONTENT
+====================================================== -->
+
+<div class="admin-main">
+
+<!-- ======================================================
+     TOPBAR
+====================================================== -->
+
+<header class="admin-topbar">
+
+<div class="left">
+
+<button id="menuToggle">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
+<h1>
+
+Dashboard
+
+</h1>
+
+</div>
+
+<div class="center">
+
+<div class="search-box">
+
+<i class="fa-solid fa-search"></i>
+
+<input
+
+type="text"
+
+id="globalSearch"
+
+placeholder="Search movies, users, series...">
+
+</div>
+
+</div>
+
+<div class="right">
+
+<button class="notification-btn">
+
+<i class="fa-solid fa-bell"></i>
+
+<span class="badge">
+
+5
+
+</span>
+
+</button>
+
+<div class="admin-profile">
+
+<img
+
+src="../assets/logo.png"
+
+alt="Admin">
+
+<div>
+
+<h4 id="adminName">
+
+Administrator
+
+</h4>
+
+<p>
+
+Super Admin
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- ======================================================
+     PAGE HEADER
+====================================================== -->
+
+<section class="dashboard-header">
+
+<div>
+
+<h2>
+
+Welcome Back 👋
+
+</h2>
+
+<p>
+
+Manage KivuStream Movies, Series, Users and Analytics.
+
+</p>
+
+</div>
+
+<div class="header-buttons">
+
+<a
+
+href="add-movie.html"
+
+class="primary-btn">
+
+<i class="fa-solid fa-plus"></i>
+
+Add Movie
+
+</a>
+
+<a
+
+href="add-series.html"
+
+class="secondary-btn">
+
+<i class="fa-solid fa-tv"></i>
+
+Add Series
+
+</a>
+
+</div>
+
+</section>
+
+<!-- ======================================================
+     DASHBOARD STATS
+====================================================== -->
+
+<section class="stats-grid">
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-film"></i>
+
+</div>
+
+<div>
+
+<h2 id="movieCount">
+
+0
+
+</h2>
+
+<p>
+
+Movies
+
+</p>
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-tv"></i>
+
+</div>
+
+<div>
+
+<h2 id="seriesCount">
+
+0
+
+</h2>
+
+<p>
+
+Series
+
+</p>
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-play"></i>
+
+</div>
+
+<div>
+
+<h2 id="episodeCount">
+
+0
+
+</h2>
+
+<p>
+
+Episodes
+
+</p>
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-users"></i>
+
+</div>
+
+<div>
+
+<h2 id="userCount">
+
+0
+
+</h2>
+
+<p>
+
+Users
+
+</p>
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-eye"></i>
+
+</div>
+
+<div>
+
+<h2 id="viewCount">
+
+0
+
+</h2>
+
+<p>
+
+Views
+
+</p>
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="icon">
+
+<i class="fa-solid fa-database"></i>
+
+</div>
+
+<div>
+
+<h2 id="storageUsage">
+
+0 GB
+
+</h2>
+
+<p>
+
+Storage
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ======================================================
+     QUICK ACTIONS
+====================================================== -->
+
+<section class="quick-actions">
+
+<h2>
+
+Quick Actions
+
+</h2>
+
+<div class="action-grid">
+
+<a
+
+href="add-movie.html"
+
+class="action-card">
+
+<i class="fa-solid fa-circle-plus"></i>
+
+<h3>
+
+Upload Movie
+
+</h3>
+
+<p>
+
+Add a new movie.
+
+</p>
+
+</a>
+
+<a
+
+href="add-series.html"
+
+class="action-card">
+
+<i class="fa-solid fa-photo-film"></i>
+
+<h3>
+
+Upload Series
+
+</h3>
+
+<p>
+
+Create a TV Series.
+
+</p>
+
+</a>
+
+<a
+
+href="manage-movies.html"
+
+class="action-card">
+
+<i class="fa-solid fa-pen"></i>
+
+<h3>
+
+Edit Movies
+
+</h3>
+
+<p>
+
+Manage existing movies.
+
+</p>
+
+</a>
+
+<a
+
+href="analytics.html"
+
+class="action-card">
+
+<i class="fa-solid fa-chart-simple"></i>
+
+<h3>
+
+Analytics
+
+</h3>
+
+<p>
+
+View platform statistics.
+
+</p>
+
+</a>
+
+</div>
+
+</section>
+
+<!-- ======================================================
+     CONTENT GRID STARTS HERE
+====================================================== -->
+
+<section class="dashboard-content">
+
+<div class="left-column">
+<!-- ======================================================
+     RECENT UPLOADS
+====================================================== -->
+
+<div class="admin-panel">
+
+<div class="panel-header">
+
+<h2>
+
+Recent Uploads
+
+</h2>
+
+<a href="manage-movies.html">
+
+View All
+
+</a>
+
+</div>
+
+
+<div class="table-container">
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+<th>
+
+Poster
+
+</th>
+
+<th>
+
+Title
+
+</th>
+
+<th>
+
+Type
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Date
+
+</th>
+
+<th>
+
+Action
+
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="recentUploads">
+
+
+<tr>
+
+<td>
+
+<img
+
+src="../assets/default-poster.jpg"
+
+class="table-poster">
+
+</td>
+
+<td>
+
+Loading...
+
+</td>
+
+<td>
+
+Movie
+
+</td>
+
+<td>
+
+<span class="status success">
+
+Active
+
+</span>
+
+</td>
+
+<td>
+
+--
+
+</td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+</button>
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<!-- ======================================================
+     TMDB ENGINE STATUS
+====================================================== -->
+
+
+<div class="admin-panel tmdb-panel">
+
+
+<div class="panel-header">
+
+<h2>
+
+TMDB Auto Engine
+
+</h2>
+
+<span class="online">
+
+● Online
+
+</span>
+
+</div>
+
+
+<div class="tmdb-content">
+
+
+<div class="tmdb-item">
+
+<i class="fa-solid fa-database"></i>
+
+<div>
+
+<h4>
+
+Cached Content
+
+</h4>
+
+<p id="tmdbCached">
+
+0 Items
+
+</p>
+
+</div>
+
+</div>
+
+
+<div class="tmdb-item">
+
+<i class="fa-solid fa-image"></i>
+
+<div>
+
+<h4>
+
+Images Stored
+
+</h4>
+
+<p id="imageCached">
+
+0 Images
+
+</p>
+
+</div>
+
+</div>
+
+
+<div class="tmdb-item">
+
+<i class="fa-solid fa-rotate"></i>
+
+<div>
+
+<h4>
+
+Last Sync
+
+</h4>
+
+<p id="lastSync">
+
+Never
+
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     COMMENTS
+====================================================== -->
+
+
+<div class="admin-panel">
+
+
+<div class="panel-header">
+
+<h2>
+
+Latest Comments
+
+</h2>
+
+
+<a href="#">
+
+Manage
+
+</a>
+
+</div>
+
+
+<div id="recentComments"
+
+class="comment-list">
+
+
+<div class="empty-state">
+
+<i class="fa-solid fa-comments"></i>
+
+<p>
+
+No comments yet
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     RIGHT COLUMN
+====================================================== -->
+
+
+<div class="right-column">
+
+
+<!-- NOTIFICATIONS -->
+
+
+<div class="admin-panel">
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Notifications
+
+</h2>
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+</div>
+
+
+<div class="notification-list">
+
+
+<div class="notification">
+
+
+<i class="fa-solid fa-film"></i>
+
+
+<div>
+
+<h4>
+
+Movie Uploaded
+
+</h4>
+
+<p>
+
+The latest movie was added.
+
+</p>
+
+<span>
+
+2 minutes ago
+
+</span>
+
+</div>
+
+
+</div>
+
+
+
+<div class="notification">
+
+
+<i class="fa-solid fa-cloud-arrow-up"></i>
+
+
+<div>
+
+<h4>
+
+TMDB Sync Complete
+
+</h4>
+
+<p>
+
+Metadata updated successfully.
+
+</p>
+
+<span>
+
+10 minutes ago
+
+</span>
+
+</div>
+
+
+</div>
+
+
+
+<div class="notification">
+
+
+<i class="fa-solid fa-user-plus"></i>
+
+
+<div>
+
+<h4>
+
+New User
+
+</h4>
+
+<p>
+
+A new account was created.
+
+</p>
+
+<span>
+
+1 hour ago
+
+</span>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- STORAGE -->
+
+
+<div class="admin-panel">
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Storage
+
+</h2>
+
+
+</div>
+
+
+<div class="storage-box">
+
+
+<div class="storage-info">
+
+
+<i class="fa-solid fa-hard-drive"></i>
+
+
+<div>
+
+<h3 id="storageText">
+
+24 GB
+
+</h3>
+
+<p>
+
+Used Storage
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="progress">
+
+
+<div
+
+id="storageProgress"
+
+class="progress-bar">
+
+</div>
+
+
+</div>
+
+
+<p>
+
+Supabase Storage
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- PLATFORM STATUS -->
+
+
+<div class="admin-panel">
+
+
+<div class="panel-header">
+
+<h2>
+
+System Status
+
+</h2>
+
+</div>
+
+
+
+<div class="status-list">
+
+
+<div>
+
+<span>
+
+Website
+
+</span>
+
+
+<strong class="online">
+
+Online
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+<span>
+
+Supabase
+
+</span>
+
+
+<strong class="online">
+
+Connected
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+<span>
+
+TMDB API
+
+</span>
+
+
+<strong class="online">
+
+Active
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+<span>
+
+Cloudflare
+
+</span>
+
+
+<strong class="online">
+
+Running
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+<!-- ======================================================
+     ADMIN FOOTER
+====================================================== -->
+
+<footer class="admin-footer">
+
+<div>
+
+<img
+
+src="../assets/logo.png"
+
+alt="KivuStream"
+
+class="footer-logo">
+
+</div>
+
+
+<div>
+
+<p>
+
+© 2026 KivuStream Admin Panel
+
+</p>
+
+</div>
+
+
+<div>
+
+<span>
+
+Powered By IT HAWK_RW
+
+</span>
+
+</div>
+
+
+</footer>
+
+
+
+</div>
+<!-- END ADMIN MAIN -->
+
+</div>
+<!-- END ADMIN WRAPPER -->
+
+
+
+<!-- ======================================================
+     MOBILE BOTTOM NAVIGATION
+====================================================== -->
+
+<nav class="mobile-admin-nav">
+
+
+<a href="index.html"
+
+class="active">
+
+<i class="fa-solid fa-house"></i>
+
+<span>
+
+Home
+
+</span>
+
+</a>
+
+
+
+<a href="add-movie.html">
+
+<i class="fa-solid fa-plus"></i>
+
+<span>
+
+Add
+
+</span>
+
+</a>
+
+
+
+<a href="manage-movies.html">
+
+<i class="fa-solid fa-film"></i>
+
+<span>
+
+Movies
+
+</span>
+
+</a>
+
+
+
+<a href="analytics.html">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<span>
+
+Stats
+
+</span>
+
+</a>
+
+
+
+<a href="settings.html">
+
+<i class="fa-solid fa-gear"></i>
+
+<span>
+
+Settings
+
+</span>
+
+</a>
+
+
+</nav>
+
+
+
+
+<!-- ======================================================
+     SCRIPTS
+====================================================== -->
+
+
+<script src="../js/config.js"></script>
+
+<script src="../js/supabase.js"></script>
+
+<script src="../js/storage.js"></script>
+
+
+<!-- ADMIN SCRIPTS -->
+
+<script src="js/admin.js"></script>
+
+<script src="js/dashboard.js"></script>
+
+
+
+</body>
+
+</html>
