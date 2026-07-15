@@ -1,16 +1,33 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
 
-<title>KivuStream PRO ROOM</title>
+<title>
+KivuStream | Add Movie
+</title>
 
 
-<link rel="stylesheet" href="admin.css">
+<link
+rel="icon"
+href="../assets/logo.png">
+
+
+<link
+rel="stylesheet"
+href="css/admin.css">
+
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
 
 
 </head>
@@ -19,137 +36,308 @@
 <body>
 
 
-
-<div class="admin-container">
-
-
-
-<h1>
-🎬 Add Movie To KivuStream
-</h1>
+<div class="admin-wrapper">
 
 
 
-
-<!-- SEARCH AREA -->
-
-<section class="search-box">
-
-
-<input
-
-id="movieSearch"
-
-placeholder="Search movie title..."
-
->
+<!-- ================================
+     SIDEBAR PLACEHOLDER
+================================ -->
 
 
-<select id="contentType">
-
-<option value="movie">
-Movie
-</option>
+<aside class="sidebar">
 
 
-<option value="series">
-Series
-</option>
+<div class="sidebar-logo">
 
 
-</select>
-
-
-
-<button id="searchBtn">
-
-Search TMDB
-
-</button>
-
-
-
-</section>
-
-
-
-
-
-
-
-<!-- SEARCH RESULTS -->
-
-<section>
+<img
+src="../assets/logo.png">
 
 
 <h2>
-TMDB Results
+KivuStream
 </h2>
 
 
+<span>
+ADMIN
+</span>
 
-<div
-
-id="tmdbResults"
-
-class="tmdb-results"
-
->
 
 </div>
 
 
 
-</section>
+<nav class="sidebar-menu">
+
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+
+
+<a class="active" href="add-movie.html">
+
+<i class="fa-solid fa-film"></i>
+
+Add Movie
+
+</a>
+
+
+
+<a href="add-series.html">
+
+<i class="fa-solid fa-tv"></i>
+
+Add Series
+
+</a>
+
+
+
+<a href="manage-movies.html">
+
+<i class="fa-solid fa-database"></i>
+
+Manage Movies
+
+</a>
+
+
+
+</nav>
+
+
+</aside>
 
 
 
 
 
+<!-- ================================
+     MAIN
+================================ -->
+
+
+<main class="admin-main">
 
 
 
-<!-- SELECTED CONTENT -->
-
-<section
-
-class="import-panel"
-
->
+<header class="admin-topbar">
 
 
+<h1>
 
-<h2>
-Selected Content
-</h2>
+Add New Movie
+
+</h1>
 
 
+<div class="admin-profile">
 
 
 <img
+src="../assets/logo.png">
 
-id="selectedPoster"
 
-src="assets/logo.png"
+<span>
 
->
+Admin
 
+</span>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+<section class="dashboard-header">
 
 
 <div>
 
 
-<h3 id="selectedTitle">
+<h2>
 
-No Content Selected
+Upload Movie 🎬
 
-</h3>
+</h2>
 
 
+<p>
 
-<p id="selectedYear">
+Add movie and automatically sync TMDB data.
 
 </p>
+
+
+</div>
+
+
+</section>
+<!-- ======================================================
+     MOVIE UPLOAD FORM
+====================================================== -->
+
+
+<section class="admin-panel movie-upload-panel">
+
+
+<form id="movieUploadForm">
+
+
+
+<!-- ================= TITLE ================= -->
+
+
+<div class="form-group">
+
+
+<label>
+
+Movie Title
+
+</label>
+
+
+<div class="input-box">
+
+
+<i class="fa-solid fa-film"></i>
+
+
+<input
+
+type="text"
+
+id="movieTitle"
+
+placeholder="Enter movie title"
+
+required>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- ================= DESCRIPTION ================= -->
+
+
+<div class="form-group">
+
+
+<label>
+
+Description
+
+</label>
+
+
+<textarea
+
+id="movieDescription"
+
+placeholder="Movie description">
+
+</textarea>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ================= MEDIA ================= -->
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Poster Image
+
+</label>
+
+
+<div class="file-box">
+
+
+<i class="fa-solid fa-image"></i>
+
+
+<input
+
+type="file"
+
+id="posterFile"
+
+accept="image/*">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Backdrop Image
+
+</label>
+
+
+<div class="file-box">
+
+
+<i class="fa-solid fa-photo-film"></i>
+
+
+<input
+
+type="file"
+
+id="backdropFile"
+
+accept="image/*">
+
+
+</div>
+
+
+</div>
 
 
 
@@ -158,18 +346,19 @@ No Content Selected
 
 
 
-</section>
 
 
 
 
 
+<!-- ================= VIDEO ================= -->
+
+
+<div class="form-grid">
 
 
 
-<!-- VIDEO INFORMATION -->
-
-<section class="upload-panel">
+<div class="form-group">
 
 
 <label>
@@ -179,14 +368,80 @@ Video URL
 </label>
 
 
+<div class="input-box">
+
+
+<i class="fa-solid fa-play"></i>
+
+
 <input
 
-id="videoURL"
+type="url"
 
-placeholder="Video streaming URL"
+id="videoUrl"
 
->
+placeholder="https://video-link.com">
 
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Download URL
+
+</label>
+
+
+<div class="input-box">
+
+
+<i class="fa-solid fa-download"></i>
+
+
+<input
+
+type="url"
+
+id="downloadUrl"
+
+placeholder="Download link">
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= DETAILS ================= -->
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
 
 
 <label>
@@ -196,43 +451,504 @@ Category
 </label>
 
 
+<select id="movieCategory">
+
+
+<option value="Action">
+
+Action
+
+</option>
+
+
+<option value="Indian">
+
+Indian Movies
+
+</option>
+
+
+<option value="Highschool">
+
+High School
+
+</option>
+
+
+<option value="Comedy">
+
+Comedy
+
+</option>
+
+
+<option value="Other">
+
+Other
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Language
+
+</label>
+
+
+<select id="movieLanguage">
+
+
+<option>
+
+English
+
+</option>
+
+
+<option>
+
+French
+
+</option>
+
+
+<option>
+
+Kinyarwanda
+
+</option>
+
+
+<option>
+
+Hindi
+
+</option>
+
+
+<option>
+
+Korean
+
+</option>
+
+
+<option>
+
+Japanese
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= QUALITY ================= -->
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Quality
+
+</label>
+
+
+<select id="movieQuality">
+
+
+<option>
+
+480p
+
+</option>
+
+
+<option>
+
+720p HD
+
+</option>
+
+
+<option>
+
+1080p Full HD
+
+</option>
+
+
+<option>
+
+4K UHD
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Release Year
+
+</label>
+
+
 <input
 
-id="category"
+type="number"
 
-placeholder="Action, Comedy..."
+id="movieYear"
 
->
+placeholder="2026">
 
 
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ================= TMDB ================= -->
+
+
+<div class="tmdb-control">
+
+
+<label class="switch">
+
+
+<input
+
+type="checkbox"
+
+id="tmdbSync"
+
+checked>
+
+
+<span class="slider"></span>
+
+
+</label>
+
+
+
+<div>
+
+
+<h3>
+
+Auto TMDB Sync
+
+</h3>
+
+
+<p>
+
+Automatically fetch poster, rating and metadata.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ================= STATUS ================= -->
+
+
+<div id="uploadStatus"
+
+class="upload-status">
+
+
+Ready to upload...
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ================= BUTTON ================= -->
 
 
 <button
 
-id="importBtn"
+type="submit"
 
->
+class="primary-btn upload-btn">
 
-🚀 Import To Supabase
+
+<i class="fa-solid fa-cloud-arrow-up"></i>
+
+
+Upload Movie
+
 
 </button>
 
+
+
+</form>
+
+
+</section>
+<!-- ======================================================
+     MOVIE PREVIEW
+====================================================== -->
+
+
+<section class="admin-panel">
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Preview
+
+</h2>
+
+
+</div>
+
+
+
+<div class="movie-preview"
+
+id="moviePreview">
+
+
+
+<div class="preview-card">
+
+
+<img
+
+id="previewPoster"
+
+src="../assets/default-poster.jpg"
+
+alt="Poster">
+
+
+
+<div class="preview-info">
+
+
+<h3 id="previewTitle">
+
+Movie Title
+
+</h3>
+
+
+
+<p id="previewDescription">
+
+Movie description preview
+
+</p>
+
+
+
+<div class="preview-meta">
+
+
+<span id="previewCategory">
+
+Category
+
+</span>
+
+
+<span id="previewQuality">
+
+Quality
+
+</span>
+
+
+<span id="previewYear">
+
+Year
+
+</span>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
 
 
 </section>
 
 
 
+
+
+
+
+
+
+<!-- ======================================================
+     FOOTER
+====================================================== -->
+
+
+<footer class="admin-footer">
+
+
+<div>
+
+
+<img
+
+src="../assets/logo.png"
+
+class="footer-logo">
+
+
 </div>
 
-<script src="js/config.js"></script>
-<script src="js/supabase.js"></script>
-<script src="js/guard.js"></script>
-<script src="../js/tmdb-engine.js"></script>
 
-<script src="admin.js"></script>
+<p>
+
+© 2026 KivuStream Admin
+
+</p>
+
+
+<span>
+
+Powered by IT HAWK_RW
+
+</span>
+
+
+</footer>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     SCRIPTS
+====================================================== -->
+
+
+<script src="../js/config.js"></script>
+
+
+<script src="../js/supabase.js"></script>
+
+
+<script src="../js/storage.js"></script>
+
+
+
+<script src="js/admin.js"></script>
+
+
+<script src="js/add-movie.js"></script>
+
+
+
 
 
 </body>
+
 
 </html>
