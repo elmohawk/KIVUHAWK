@@ -1,72 +1,168 @@
-.floating-dock{
+/* =====================================
+ KIVUSTREAM FLOATING BUTTONS
+===================================== */
+
+
+.floating-container{
+
 
 position:fixed;
 
 right:25px;
 
-bottom:30px;
+bottom:25px;
 
-z-index:99999;
+z-index:9999;
 
 display:flex;
 
 flex-direction:column;
 
-align-items:center;
+gap:18px;
+
 
 }
 
-.floating-main{
 
-width:68px;
 
-height:68px;
 
-border:none;
+.floating-btn{
+
+
+width:65px;
+
+height:65px;
 
 border-radius:50%;
 
-cursor:pointer;
 
-font-size:26px;
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+
+font-size:28px;
 
 color:white;
 
-background:linear-gradient(135deg,#00C2FF,#00D084);
+text-decoration:none;
 
-box-shadow:0 15px 40px rgba(0,194,255,.4);
+
+border:none;
+
+cursor:pointer;
+
 
 position:relative;
 
-transition:.35s;
+
+animation:
+
+float3D 3s infinite ease-in-out;
+
+
+box-shadow:
+
+0 0 25px rgba(0,255,255,.5);
+
 
 }
 
-.floating-main:hover{
 
-transform:
 
-rotate(8deg)
 
-scale(1.12);
+
+
+
+
+/* ADMIN */
+
+
+.admin-float{
+
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#111,
+
+#00c2ff
+
+);
+
 
 }
 
-.wave{
+
+
+
+
+/* SUPPORT */
+
+
+.support-float{
+
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#00ff9c,
+
+#00c2ff
+
+);
+
+
+}
+
+
+
+
+
+/* WAVE EFFECT */
+
+
+.support-float::before{
+
+
+content:"";
+
 
 position:absolute;
 
-inset:0;
+
+width:100%;
+
+height:100%;
+
 
 border-radius:50%;
 
-animation:wave 2.2s infinite;
 
-border:2px solid rgba(0,194,255,.6);
+border:3px solid #00ff9c;
+
+
+animation:
+
+wave 2s infinite;
+
 
 }
 
+
+
+
+
 @keyframes wave{
+
 
 0%{
 
@@ -76,98 +172,71 @@ opacity:1;
 
 }
 
+
 100%{
 
-transform:scale(2);
+
+transform:scale(1.8);
 
 opacity:0;
 
-}
 
 }
 
-.floating-menu{
-
-display:flex;
-
-flex-direction:column;
-
-gap:14px;
-
-margin-bottom:15px;
-
-opacity:0;
-
-pointer-events:none;
-
-transform:translateY(25px);
-
-transition:.35s;
 
 }
 
-.floating-dock.active .floating-menu{
 
-opacity:1;
 
-pointer-events:auto;
 
-transform:translateY(0);
 
-}
 
-.floating-btn{
 
-width:58px;
+@keyframes float3D{
 
-height:58px;
 
-display:flex;
+0%,100%{
 
-align-items:center;
-
-justify-content:center;
-
-border-radius:50%;
-
-text-decoration:none;
-
-color:white;
-
-font-size:22px;
-
-transition:.35s;
-
-box-shadow:0 12px 30px rgba(0,0,0,.35);
-
-}
-
-.whatsapp{
-
-background:#25D366;
-
-}
-
-.channel{
-
-background:#00C2FF;
-
-}
-
-.call{
-
-background:#00D084;
-
-}
-
-.floating-btn:hover{
 
 transform:
 
-translateX(-8px)
+translateY(0)
 
-rotateY(18deg)
+rotateY(0);
 
-scale(1.08);
+
+}
+
+
+
+50%{
+
+
+transform:
+
+translateY(-12px)
+
+rotateY(20deg);
+
+
+}
+
+
+}
+
+
+
+
+
+
+.floating-btn:hover{
+
+
+transform:
+
+scale(1.15)
+
+rotate(10deg);
+
 
 }
