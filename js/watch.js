@@ -35,222 +35,867 @@ document.getElementById("seriesSection");
 let currentContent = null;
 
 /* ==========================================
-   Load Content
+   LOAD CONTENT
 ========================================== */
 
-document.addEventListener("DOMContentLoaded", init);
 
-async function init() {
+document.addEventListener(
+"DOMContentLoaded",
+init
+);
 
-    try {
 
-        currentContent = await loadContent();
 
-        if (!currentContent) {
+async function init(){
 
-            showError();
 
-            return;
+try{
 
-        }
 
-        renderContent(currentContent);
+currentContent =
+await loadContent();
 
-        await enrichTMDB(currentContent);
 
-        if (currentContent.type === "series") {
 
-            seriesSection.style.display = "block";
 
-            await loadEpisodes(currentContent.id);
 
-        } else {
+if(!currentContent){
 
-            seriesSection.style.display = "none";
 
-        }
+showError();
 
-    } catch (err) {
+return;
 
-        console.error(err);
-
-        showError();
-
-    }
 
 }
 
-/* ==========================================
-   Load Movie / Series
-========================================== */
 
-async function loadContent() {
 
-    let { data } = await supabaseClient
 
-        .from("movies")
 
-        .select("*")
+renderContent(
+currentContent
+);
 
-        .eq("id", CONTENT_ID)
 
-        .maybeSingle();
 
-    if (data) {
 
-        data.type = "movie";
 
-        return data;
 
-    }
+// TMDB AUTO ENRICH + SAVE
 
-    let result = await supabaseClient
+await enrichTMDB(
+currentContent
+);
 
-        .from("series")
 
-        .select("*")
 
-        .eq("id", CONTENT_ID)
 
-        .maybeSingle();
 
-    if (result.data) {
 
-        result.data.type = "series";
+if(
+currentContent.type === "series"
 
-        return result.data;
+){
 
-    }
 
-    return null;
+
+if(seriesSection){
+
+seriesSection.style.display =
+"block";
 
 }
 
-/* ==========================================
-   Render
-========================================== */
 
-function renderContent(movie) {
 
-    title.textContent = movie.title;
+await loadEpisodes(
+currentContent.id
+);
 
-    overview.textContent = movie.description || "";
 
-    poster.src = movie.poster;
-
-    backdrop.style.backgroundImage =
-        `url('${movie.backdrop || movie.poster}')`;
-
-    rating.textContent =
-        "⭐ " + (movie.rating || "N/A");
-
-    year.textContent =
-        movie.year || "";
-
-    runtime.textContent =
-        movie.runtime
-            ? movie.runtime + " min"
-            : "";
-
-    typeBadge.textContent =
-        movie.type.toUpperCase();
-
-    if (movie.video_url) {
-
-        player.src = movie.video_url;
-
-    }
 
 }
 
-/* ==========================================
-   TMDB
-========================================== */
+else{
 
-async function enrichTMDB(movie) {
 
-    if (!movie.tmdb_id) return;
 
-    const details =
-        await getTMDBDetails(
-            movie.tmdb_id,
-            movie.type
-        );
+if(seriesSection){
 
-    if (!details) return;
-
-    if (details.backdrop_path) {
-
-        backdrop.style.backgroundImage =
-            `url(https://image.tmdb.org/t/p/original${details.backdrop_path})`;
-
-    }
-
-    if (details.runtime) {
-
-        runtime.textContent =
-            details.runtime + " min";
-
-    }
-
-    if (details.genres) {
-
-        genres.innerHTML = "";
-
-        details.genres.forEach(g => {
-
-            genres.innerHTML +=
-                `<span>${g.name}</span>`;
-
-        });
-
-    }
+seriesSection.style.display =
+"none";
 
 }
 
-/* ==========================================
-   Episodes
-========================================== */
 
-async function loadEpisodes(seriesID) {
-
-    const { data } =
-        await supabaseClient
-
-        .from("episodes")
-
-        .select("*")
-
-        .eq("series_id", seriesID)
-
-        .order("episode");
-
-    renderEpisodes(data || []);
 
 }
 
+
+
+}
+
+catch(error){
+
+
+console.error(
+
+"WATCH INIT ERROR:",
+
+error
+
+);
+
+
+
+showError();
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
 /* ==========================================
-   Episode Renderer
+   LOAD MOVIE / SERIES
 ========================================== */
 
-function renderEpisodes(list) {
 
-    const container =
-        document.getElementById(
-            "episodesContainer"
-        );
+async function loadContent(){
 
-    container.innerHTML = "";
 
-    list.forEach(ep => {
 
-        container.innerHTML += `
+// CHECK MOVIE FIRST
 
-<div class="episode-card">
+
+const {
+
+data:movie,
+
+error:movieError
+
+}
+
+=
+
+await supabaseClient
+
+.from("movies")
+
+.select("*")
+
+.eq(
+"id",
+CONTENT_ID
+)
+
+.maybeSingle();
+
+
+
+
+
+
+if(movie){
+
+
+return {
+
+
+...movie,
+
+
+type:"movie"
+
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+// CHECK SERIES
+
+
+const {
+
+data:series,
+
+error:seriesError
+
+}
+
+=
+
+await supabaseClient
+
+.from("series")
+
+.select("*")
+
+.eq(
+"id",
+CONTENT_ID
+)
+
+.maybeSingle();
+
+
+
+
+
+
+if(series){
+
+
+return {
+
+
+...series,
+
+
+type:"series"
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+console.error(
+
+movieError ||
+seriesError
+
+);
+
+
+
+
+return null;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   RENDER CONTENT
+========================================== */
+
+
+function renderContent(item){
+
+
+
+title.textContent =
+
+item.title || "Unknown";
+
+
+
+
+
+overview.textContent =
+
+item.description || 
+"No description available";
+
+
+
+
+
+
+poster.src =
+
+item.poster ||
+
+"assets/default-poster.jpg";
+
+
+
+
+
+
+backdrop.style.backgroundImage =
+
+`
+
+url(
+"${
+
+item.backdrop ||
+
+item.poster ||
+
+'assets/default-backdrop.jpg'
+
+}"
+
+)
+
+`;
+
+
+
+
+
+
+
+
+rating.textContent =
+
+"⭐ " +
+
+(
+item.rating ||
+
+"N/A"
+
+);
+
+
+
+
+
+
+
+year.textContent =
+
+item.year || "";
+
+
+
+
+
+
+runtime.textContent =
+
+item.runtime
+
+?
+
+item.runtime+" min"
+
+:
+
+"";
+
+
+
+
+
+
+
+
+typeBadge.textContent =
+
+item.type.toUpperCase();
+
+
+
+
+
+
+
+
+
+// MOVIE PLAYER
+
+
+
+if(
+item.video_url
+
+&&
+
+player
+
+){
+
+
+player.src =
+
+item.video_url;
+
+
+
+player.poster =
+
+item.poster;
+
+
+
+}
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   TMDB AUTO ENRICH
+========================================== */
+
+
+async function enrichTMDB(item){
+
+
+
+if(!item.tmdb_id){
+
+
+
+console.log(
+
+"No TMDB ID"
+
+);
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+try{
+
+
+
+const details =
+
+await getTMDBDetails(
+
+item.tmdb_id,
+
+item.type
+
+);
+
+
+
+
+
+
+if(!details)
+return;
+
+
+
+
+
+
+
+/*
+ UPDATE UI
+*/
+
+
+
+if(details.backdrop_path){
+
+
+const backdropURL =
+
+"https://image.tmdb.org/t/p/original"
+
++
+
+details.backdrop_path;
+
+
+
+backdrop.style.backgroundImage =
+
+`
+
+url("${backdropURL}")
+
+`;
+
+
+
+}
+
+
+
+
+
+if(details.runtime){
+
+
+runtime.textContent =
+
+details.runtime +
+
+" min";
+
+
+
+}
+
+
+
+
+
+
+
+if(details.genres){
+
+
+
+genres.innerHTML="";
+
+
+
+
+
+details.genres.forEach(
+
+genre=>{
+
+
+genres.innerHTML +=
+
+
+`
+
+<span>
+
+${genre.name}
+
+</span>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+/*
+ SAVE TMDB DATA TO SUPABASE
+*/
+
+
+
+const table =
+
+item.type === "series"
+
+?
+
+"series"
+
+:
+
+"movies";
+
+
+
+
+
+
+
+await supabaseClient
+
+.from(table)
+
+.update({
+
+rating:
+
+details.vote_average,
+
+
+backdrop:
+
+details.backdrop_path
+
+?
+
+"https://image.tmdb.org/t/p/original"
+
++
+
+details.backdrop_path
+
+:
+
+item.backdrop,
+
+
+
+runtime:
+
+details.runtime || item.runtime,
+
+
+
+genres:
+
+details.genres || item.genres,
+
+
+
+updated_at:
+
+new Date()
+
+
+
+})
+
+.eq(
+
+"id",
+
+item.id
+
+);
+
+
+
+
+
+
+
+
+console.log(
+
+"TMDB DATA SAVED:",
+
+item.title
+
+);
+
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+
+"TMDB ENRICH ERROR:",
+
+error
+
+);
+
+
+
+}
+
+
+
+}
+/* ==========================================
+   LOAD SERIES EPISODES
+========================================== */
+
+
+async function loadEpisodes(seriesID){
+
+
+const {
+
+data: seasons,
+
+error
+
+}
+
+=
+
+await supabaseClient
+
+.from("seasons")
+
+.select("*")
+
+.eq(
+"series_id",
+seriesID
+)
+
+.order(
+"season_number"
+);
+
+
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+
+
+if(!seasons?.length)
+return;
+
+
+
+const seasonID =
+seasons[0].id;
+
+
+
+const {
+
+data:episodes
+
+}
+
+=
+
+await supabaseClient
+
+.from("episodes")
+
+.select("*")
+
+.eq(
+"season_id",
+seasonID
+)
+
+.order(
+"episode_number"
+);
+
+
+
+renderEpisodes(
+episodes || []
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================
+   EPISODE RENDERER
+========================================== */
+
+
+function renderEpisodes(list){
+
+
+const container =
+document.getElementById(
+"episodesContainer"
+);
+
+
+
+if(!container)
+return;
+
+
+
+container.innerHTML="";
+
+
+
+
+list.forEach(
+(ep,index)=>{
+
+
+container.innerHTML += `
+
+
+<div
+
+class="episode-card"
+
+onclick="playEpisode(${index})">
+
 
 <div class="episode-thumb">
 
-<img src="${ep.thumbnail}">
+
+<img
+
+src="${
+ep.thumbnail ||
+
+'assets/default-poster.jpg'
+
+}">
+
 
 <div class="play-overlay">
 
@@ -258,29 +903,114 @@ function renderEpisodes(list) {
 
 </div>
 
+
+
 <div class="episode-number">
 
-EP ${ep.episode}
+EP ${ep.episode_number}
 
 </div>
 
+
+
 </div>
+
+
 
 <div class="episode-info">
 
-<h3>${ep.title}</h3>
 
-<p>${ep.description || ""}</p>
+<h3>
+
+${ep.title}
+
+</h3>
+
+
+<p>
+
+${ep.description || ""}
+
+</p>
+
+
 
 </div>
 
+
 </div>
+
+
 
 `;
 
-    });
+
+
+});
+
+
+
+window.currentEpisodes=list;
+
+
 
 }
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   PLAY EPISODE
+========================================== */
+
+
+window.playEpisode=function(index){
+
+
+const ep =
+window.currentEpisodes[index];
+
+
+
+if(!ep)
+return;
+
+
+
+player.src =
+ep.video_url;
+
+
+
+player.play();
+
+
+
+const download =
+document.getElementById(
+"downloadButton"
+);
+
+
+
+if(download){
+
+
+download.href =
+ep.download_url || "#";
+
+
+}
+
+
+
+};
+
 
 /* ==========================================
    Error
