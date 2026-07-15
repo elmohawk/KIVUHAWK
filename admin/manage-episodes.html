@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+
+<title>
+
+KivuStream | Manage Episodes
+
+</title>
+
+
+
+<link
+rel="icon"
+href="../assets/logo.png">
+
+
+<link
+rel="stylesheet"
+href="css/admin.css">
+
+
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="admin-wrapper">
+
+
+
+
+
+<!-- =========================
+ SIDEBAR
+========================= -->
+
+
+<aside class="sidebar">
+
+
+<div class="sidebar-logo">
+
+
+<img src="../assets/logo.png">
+
+
+<h2>
+
+KivuStream
+
+</h2>
+
+
+<span>
+
+ADMIN
+
+</span>
+
+
+</div>
+
+
+
+
+
+<nav class="sidebar-menu">
+
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+
+
+<a href="manage-series.html">
+
+<i class="fa-solid fa-tv"></i>
+
+Series
+
+</a>
+
+
+
+
+<a class="active"
+
+href="manage-episodes.html">
+
+
+<i class="fa-solid fa-list"></i>
+
+Episodes
+
+</a>
+
+
+
+</nav>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+ MAIN
+========================= -->
+
+
+<main class="admin-main">
+
+
+
+<header class="admin-topbar">
+
+
+<h1>
+
+Episode Manager
+
+</h1>
+
+
+
+<div class="admin-profile">
+
+
+<img src="../assets/logo.png">
+
+
+<span>
+
+Admin
+
+</span>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<section class="dashboard-header">
+
+
+<div>
+
+
+<h2>
+
+Manage Episodes 🎬
+
+</h2>
+
+
+<p>
+
+Control all series episodes uploaded to KivuStream.
+
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- =========================
+ SELECT CONTROL
+========================= -->
+
+
+<section class="admin-panel">
+
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Select Series
+
+</label>
+
+
+<select id="episodeSeries">
+
+
+<option>
+
+Loading series...
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Select Season
+
+</label>
+
+
+<select id="episodeSeason">
+
+
+<option>
+
+Select season
+
+</option>
+
+
+</select>
+
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================
+ EPISODE FORM
+========================= -->
+
+
+<section class="admin-panel">
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Add Episode
+
+</h2>
+
+
+</div>
+
+<form id="episodeForm">
+  <!-- ======================================================
+     EPISODE FORM FIELDS
+====================================================== -->
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Episode Number
+
+</label>
+
+
+
+<input
+
+type="number"
+
+id="episodeNumber"
+
+placeholder="Episode 1">
+
+
+</div>
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Episode Title
+
+</label>
+
+
+
+<input
+
+type="text"
+
+id="episodeTitle"
+
+placeholder="Episode title">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Episode Description
+
+</label>
+
+
+
+<textarea
+
+id="episodeDescription"
+
+placeholder="Episode description">
+
+</textarea>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Episode Thumbnail
+
+</label>
+
+
+
+<input
+
+type="file"
+
+id="episodeThumbnail"
+
+accept="image/*">
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Video URL
+
+</label>
+
+
+
+<div class="input-box">
+
+
+<i class="fa-solid fa-play"></i>
+
+
+<input
+
+type="url"
+
+id="episodeVideo"
+
+placeholder="Episode streaming URL">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Download URL
+
+</label>
+
+
+
+<div class="input-box">
+
+
+<i class="fa-solid fa-download"></i>
+
+
+<input
+
+type="url"
+
+id="episodeDownload"
+
+placeholder="Episode download URL">
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div
+
+id="episodeStatus"
+
+class="upload-status">
+
+
+Ready...
+
+
+</div>
+
+
+
+
+
+
+
+<button
+
+type="submit"
+
+class="primary-btn">
+
+
+<i class="fa-solid fa-cloud-arrow-up"></i>
+
+
+Save Episode
+
+
+</button>
+
+
+
+
+
+</form>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ======================================================
+     EPISODE TABLE
+====================================================== -->
+
+
+<section class="admin-panel">
+
+
+
+<div class="panel-header">
+
+
+<h2>
+
+Episodes
+
+<span id="episodeTotal">
+
+0
+
+</span>
+
+
+</h2>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="table-container">
+
+
+
+<table class="admin-table">
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Thumbnail
+
+</th>
+
+
+
+<th>
+
+Episode
+
+</th>
+
+
+<th>
+
+Title
+
+</th>
+
+<th>
+
+Season
+
+</th>
+
+<th>
+
+Actions
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+<tbody id="episodeTable">
+
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+<!-- ======================================================
+     EDIT EPISODE MODAL
+====================================================== -->
+
+
+<div
+
+id="editEpisodeModal"
+
+class="admin-modal">
+
+
+
+<div class="modal-box">
+
+
+
+<div class="modal-header">
+
+
+<h2>
+
+Edit Episode
+
+</h2>
+
+
+
+<button
+
+id="closeEpisodeModal"
+
+class="close-btn">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+
+</div>
+
+<div class="form-group">
+
+
+<label>
+
+Episode Title
+
+</label>
+
+
+<input
+
+id="editEpisodeTitle"
+
+type="text">
+
+
+</div>
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Episode Number
+
+</label>
+
+
+<input
+
+id="editEpisodeNumber"
+
+type="number">
+
+
+</div>
+
+
+<div class="form-group">
+
+
+<label>
+
+Video URL
+
+</label>
+
+
+<input
+
+id="editEpisodeVideo"
+
+type="url">
+
+
+</div>
+
+
+
+</div>
+
+
+<div class="form-group">
+
+
+<label>
+
+Download URL
+
+</label>
+
+
+<input
+
+id="editEpisodeDownload"
+
+type="url">
+
+
+</div>
+
+<button
+
+id="saveEpisodeEdit"
+
+class="primary-btn">
+
+
+<i class="fa-solid fa-save"></i>
+
+
+Save Episode
+
+
+</button>
+
+</div>
+
+
+</div>
+
+<!-- ======================================================
+ FOOTER
+====================================================== -->
+
+
+<footer class="admin-footer">
+
+
+<img
+
+src="../assets/logo.png"
+
+class="footer-logo">
+
+
+
+<p>
+
+© 2026 KivuStream Admin
+
+</p>
+
+
+
+<span>
+
+Powered by IT HAWK_RW
+
+</span>
+
+
+
+</footer>
+
+</main>
+
+</div>
+
+<!-- ======================================================
+ SCRIPTS
+====================================================== -->
+
+<script src="../js/config.js"></script>
+
+
+<script src="../js/supabase.js"></script>
+
+
+<script src="../js/storage.js"></script>
+
+
+<script src="js/admin.js"></script>
+
+
+<script src="js/manage-episodes.js"></script>
+
+
+</body>
+
+</html>
