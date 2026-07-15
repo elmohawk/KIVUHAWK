@@ -1,28 +1,39 @@
-const dock =
-document.getElementById("floatingDock");
+/* =====================================
+ KIVUSTREAM FLOATING SYSTEM
+===================================== */
 
-const main =
-document.getElementById("floatingMain");
 
-main.onclick=()=>{
+document.addEventListener(
 
-dock.classList.toggle("active");
+"DOMContentLoaded",
+
+()=>{
+
+
+const btn =
+document.getElementById(
+"supportHubBtn"
+);
+
+
+
+if(btn){
+
+
+btn.onclick = ()=>{
+
+
+window.location.href =
+
+"components/support-hub.html";
+
 
 };
 
-document.addEventListener("mousemove",(e)=>{
 
-const x=
 
-(window.innerWidth-e.clientX)/40;
+}
 
-const y=
 
-(window.innerHeight-e.clientY)/40;
-
-dock.style.transform=
-
-`rotateY(${x}deg)
- rotateX(${-y}deg)`;
 
 });
