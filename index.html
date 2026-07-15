@@ -261,5 +261,32 @@ IT HAWK_RW
     <link rel="stylesheet" href="css/floating.css">
 
 <script src="js/floating.js"></script> 
+<div id="floating"></div>
+
+
+<script>
+
+
+fetch(
+"components/floating.html"
+)
+
+.then(res=>res.text())
+
+.then(data=>{
+
+
+document.getElementById(
+"floating"
+).innerHTML=data;
+
+
+});
+
+
+</script>
+
+
+<script src="js/floating.js"></script>
 </body>
 </html>
