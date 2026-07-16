@@ -1,0 +1,356 @@
+/* ==========================================================
+   KIVUSTREAM SIGNUP
+========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:#050b16;
+    color:#fff;
+}
+
+/* ==========================================================
+   ANIMATED BACKGROUND
+========================================================== */
+
+.signup-bg{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(0,194,255,.18),transparent 30%),
+        radial-gradient(circle at 80% 70%,rgba(0,255,156,.18),transparent 35%),
+        linear-gradient(135deg,#030712,#071321,#091f34);
+    animation:bgMove 18s linear infinite;
+}
+
+.signup-bg::before,
+.signup-bg::after{
+    content:"";
+    position:absolute;
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    filter:blur(90px);
+}
+
+.signup-bg::before{
+    left:-120px;
+    top:-120px;
+    background:#00C2FF55;
+}
+
+.signup-bg::after{
+    right:-120px;
+    bottom:-120px;
+    background:#00FF9C55;
+}
+
+@keyframes bgMove{
+
+0%{
+transform:scale(1) rotate(0deg);
+}
+
+50%{
+transform:scale(1.1) rotate(4deg);
+}
+
+100%{
+transform:scale(1) rotate(0deg);
+}
+
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.signup-container{
+
+width:430px;
+max-width:92%;
+
+padding:40px;
+
+border-radius:28px;
+
+background:rgba(12,18,35,.72);
+
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,.08);
+
+box-shadow:
+0 25px 60px rgba(0,0,0,.45),
+0 0 35px rgba(0,194,255,.18);
+
+position:relative;
+
+z-index:10;
+
+animation:cardFloat 5s ease-in-out infinite;
+
+}
+
+@keyframes cardFloat{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-10px);
+
+}
+
+}
+
+/* ==========================================================
+   LOGO
+========================================================== */
+
+.logo-area{
+
+text-align:center;
+
+margin-bottom:30px;
+
+}
+
+.logo-area img{
+
+width:90px;
+
+height:90px;
+
+object-fit:contain;
+
+margin-bottom:12px;
+
+}
+
+.logo-area h1{
+
+font-size:34px;
+
+font-weight:700;
+
+background:linear-gradient(90deg,#00C2FF,#00FF9C);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.logo-area p{
+
+margin-top:8px;
+
+color:#b8c7d8;
+
+font-size:15px;
+
+}
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+.input-box{
+
+position:relative;
+
+margin-bottom:18px;
+
+}
+
+.input-box i:first-child{
+
+position:absolute;
+
+left:16px;
+
+top:50%;
+
+transform:translateY(-50%);
+
+color:#00C2FF;
+
+}
+
+.input-box input{
+
+width:100%;
+
+padding:15px 48px;
+
+border:none;
+
+outline:none;
+
+border-radius:15px;
+
+background:#0d1629;
+
+color:#fff;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+.input-box input:focus{
+
+box-shadow:0 0 20px rgba(0,194,255,.4);
+
+border:1px solid #00C2FF;
+
+}
+
+.eye{
+
+position:absolute;
+
+right:18px;
+
+top:50%;
+
+transform:translateY(-50%);
+
+cursor:pointer;
+
+color:#bbb;
+
+transition:.3s;
+
+}
+
+.eye:hover{
+
+color:#00FF9C;
+
+}
+
+/* ==========================================================
+   BUTTON
+========================================================== */
+
+.signup-btn{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:15px;
+
+cursor:pointer;
+
+font-size:17px;
+
+font-weight:700;
+
+background:linear-gradient(135deg,#00C2FF,#00FF9C);
+
+color:#00151c;
+
+transition:.35s;
+
+}
+
+.signup-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 15px 35px rgba(0,255,156,.35);
+
+}
+
+/* ==========================================================
+   MESSAGE
+========================================================== */
+
+#message{
+
+margin-top:18px;
+
+text-align:center;
+
+font-size:14px;
+
+min-height:20px;
+
+}
+
+/* ==========================================================
+   LOGIN LINK
+========================================================== */
+
+.login-link{
+
+margin-top:24px;
+
+text-align:center;
+
+color:#c8d4e6;
+
+}
+
+.login-link a{
+
+color:#00FF9C;
+
+text-decoration:none;
+
+font-weight:600;
+
+}
+
+.login-link a:hover{
+
+text-decoration:underline;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:600px){
+
+.signup-container{
+
+padding:28px;
+
+}
+
+.logo-area h1{
+
+font-size:28px;
+
+}
+
+.logo-area img{
+
+width:75px;
+
+height:75px;
+
+}
+
+}
