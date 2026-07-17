@@ -39,3 +39,14 @@ Favorites
 ↓
 
 Wishlist
+score = 0
+
++2 same genre
+
++2 same category
+
++2 same language
+
++2 same country
+
++1 similar rating
