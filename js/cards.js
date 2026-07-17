@@ -354,48 +354,31 @@ document
 /* =====================================
    SAFE POSTER HANDLER
 ===================================== */
-
-
 function getPoster(movie){
 
+if(movie.poster){
 
-    if(
-
-        movie.poster &&
-
-        movie.poster.trim() !== ""
-
-    ){
-
-        return movie.poster;
-
-    }
-
-
-
-    if(
-
-        movie.backdrop &&
-
-        movie.backdrop.trim() !== ""
-
-    ){
-
-        return movie.backdrop;
-
-    }
-
-
-
-    return "assets/logo.png";
-
+return movie.poster;
 
 }
 
+if(movie.poster_path){
 
+return
 
+`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
+}
 
+if(movie.backdrop){
+
+return movie.backdrop;
+
+}
+
+return "assets/logo.png";
+
+}
 /* =====================================
    QUALITY SYSTEM
 ===================================== */
