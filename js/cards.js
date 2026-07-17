@@ -98,108 +98,56 @@ function renderCards(
 
 
 
-            <img src="${getPoster(movie)}
-            loading="lazy"
+     <img
+    src="${getPoster(movie)}"
+    loading="lazy"
+    alt="${movie.title}"
+    onerror="this.src='assets/logo.png';"
+>
 
-            >
+<div class="movie-overlay">
 
+    <h3 class="movie-title">
+        ${movie.title}
+    </h3>
 
+    <div class="movie-meta">
 
+        <span>⭐ ${movie.rating || "N/A"}</span>
 
-            <div class="movie-overlay">
+        <span>${movie.year || ""}</span>
 
+        <span>${movie.runtime ? movie.runtime + " min" : ""}</span>
 
-                <h3 class="movie-title">
+    </div>
 
-                    ${movie.title}
+    <div class="movie-genres">
+        ${movie.genres || ""}
+    </div>
 
-                </h3>
+    <div class="badges">
 
+        <span class="badge-chip hd">
+            ${movie.quality || "HD"}
+        </span>
 
+        ${
+            Number(movie.rating || 0) >= 8
+            ? `<span class="badge-chip top">TOP</span>`
+            : ""
+        }
 
-                <div class="movie-meta">
+    </div>
 
+    <div class="card-buttons">
 
-                    <span>
+        <button class="play-btn">
+            ▶ Watch
+        </button>
 
-                    ⭐ ${movie.rating || "N/A"}
+    </div>
 
-                    </span>
-
-
-
-                    <span>
-
-                    ${movie.year || ""}
-
-                    </span>
-
-
-                </div>
-
-
-
-
-                <div class="badges">
-
-
-                    <span class="badge-chip hd">
-
-                    HD
-
-                    </span>
-
-
-
-                    <span class="badge-chip k4">
-
-                    4K
-
-                    </span>
-
-
-                </div>
-
-
-
-
-                <div class="card-buttons">
-
-
-                    <button class="play-btn">
-
-                    ▶ Watch
-
-                    </button>
-
-
-                </div>
-
-
-
-            </div>
-
-
-
-        </div>
-
-
-        `;
-
-
-    });
-
-
-
-    activateCard3D();
-
-
-
-}
-
-
-
-
+</div>
 
 /* =====================================
    OPEN WATCH PAGE
@@ -356,27 +304,31 @@ document
 ===================================== */
 function getPoster(movie){
 
-if(movie.poster){
+    if (movie.poster) {
 
-return movie.poster;
+        return movie.poster;
 
-}
+    }
 
-if(movie.poster_path){
+    if (movie.poster_path) {
 
-return
+        return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
-`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    }
 
-}
+    if (movie.backdrop) {
 
-if(movie.backdrop){
+        return movie.backdrop;
 
-return movie.backdrop;
+    }
 
-}
+    if (movie.backdrop_path) {
 
-return "assets/logo.png";
+        return `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`;
+
+    }
+
+    return "assets/logo.png";
 
 }
 /* =====================================
