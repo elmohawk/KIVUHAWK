@@ -171,162 +171,110 @@ allContent
 
 
 }
-
-
-
-
 /* ==========================================================
    LOAD MOVIES + SERIES
 ========================================================== */
 
+async function getSupabaseContent() {
 
-async function getSupabaseContent(){
-
-
-
-    const [
-
-        moviesResult,
-
-        seriesResult
-
-
-    ] = await Promise.all([
-
-
+    const [moviesResult, seriesResult] = await Promise.all([
 
         supabaseClient
-
         .from("movies")
+        .select(`
+            id,
+            title,
+            category,
+            quality,
+            video_url,
+            download_url,
+            translator,
+            tmdb_id,
 
-        .select("*")
+            poster,
+            backdrop,
+            poster_path,
+            backdrop_path,
+            thumbnail,
 
-        .order(
+            overview,
+            genres,
+            runtime,
 
-            "created_at",
+            rating,
+            vote_average,
+            popularity,
 
-            {
+            release_date,
+            year,
 
-            ascending:false
+            language,
+            country,
 
-            }
+            status,
+            tagline,
 
+            views,
+            likes,
 
+            featured,
+            featured_order,
 
-        ),
+            created_at,
+            updated_at,
 
-
-
-
+            is_active
+        `)
+        .eq("is_active", true)
+        .order("created_at", {
+            ascending: false
+        }),
 
         supabaseClient
-
         .from("series")
-
-        .select("*")
-
-        .order(
-
-            "created_at",
-
-            {
-
-            ascending:false
-
-            }
-
-        )
-
-
+        .select(`
+            *,
+            is_active
+        `)
+        .eq("is_active", true)
+        .order("created_at", {
+            ascending: false
+        })
 
     ]);
 
-
-
-
-    if(moviesResult.error){
+    if (moviesResult.error) {
 
         console.error(
-
             "Movies Error:",
-
             moviesResult.error
-
         );
 
     }
 
-
-
-
-    if(seriesResult.error){
+    if (seriesResult.error) {
 
         console.error(
-
             "Series Error:",
-
             seriesResult.error
-
         );
 
     }
 
-
-
-
-
-    const movies =
-
-    (moviesResult.data || [])
-
-    .map(item=>({
-
+    const movies = (moviesResult.data || []).map(item => ({
         ...item,
-
-        type:"movie"
-
+        type: "movie"
     }));
 
-
-
-
-
-    const series =
-
-    (seriesResult.data || [])
-
-    .map(item=>({
-
+    const series = (seriesResult.data || []).map(item => ({
         ...item,
-
-        type:"series"
-
+        type: "series"
     }));
 
-
-
-
-
-    return [
-
-        ...movies,
-
-        ...series
-
-
-    ]
-
-    .sort(
-
-        (a,b)=>
-
-        new Date(b.created_at)
-
-        -
-
-        new Date(a.created_at)
-
+    return [...movies, ...series].sort((a, b) =>
+        new Date(b.created_at) - new Date(a.created_at)
     );
+
 }
 /* ==========================================================
    CATEGORY SYSTEM
