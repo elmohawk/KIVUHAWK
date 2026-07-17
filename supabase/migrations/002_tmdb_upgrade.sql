@@ -1,0 +1,42 @@
+/* ==========================================
+   MOVIES TABLE UPGRADE
+========================================== */
+
+ALTER TABLE movies
+ADD COLUMN IF NOT EXISTS imdb_id TEXT,
+
+ADD COLUMN IF NOT EXISTS budget BIGINT,
+
+ADD COLUMN IF NOT EXISTS revenue BIGINT,
+
+ADD COLUMN IF NOT EXISTS homepage TEXT,
+
+ADD COLUMN IF NOT EXISTS trailer_key TEXT,
+
+ADD COLUMN IF NOT EXISTS logo TEXT,
+
+ADD COLUMN IF NOT EXISTS collection TEXT,
+
+ADD COLUMN IF NOT EXISTS keywords TEXT,
+
+ADD COLUMN IF NOT EXISTS production_companies TEXT,
+
+ADD COLUMN IF NOT EXISTS production_countries TEXT,
+
+ADD COLUMN IF NOT EXISTS spoken_languages TEXT,
+
+ADD COLUMN IF NOT EXISTS vote_count INTEGER,
+
+ADD COLUMN IF NOT EXISTS original_title TEXT,
+
+ADD COLUMN IF NOT EXISTS original_language TEXT,
+
+ADD COLUMN IF NOT EXISTS adult BOOLEAN DEFAULT FALSE,
+
+ADD COLUMN IF NOT EXISTS popularity DOUBLE PRECISION,
+
+ADD COLUMN IF NOT EXISTS tagline TEXT,
+
+ADD COLUMN IF NOT EXISTS status TEXT,
+
+ADD COLUMN IF NOT EXISTS release_date DATE;
