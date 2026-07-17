@@ -1,10 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const TMDB_KEY =
-Deno.env.get("TMDB_API_KEY")!;
+Deno.env.get("8b8937bf3e114fa3502358a4f090c0df")!;
 
 const SUPABASE_URL =
-Deno.env.get("SUPABASE_URL")!;
+Deno.env.get("https://exjgejujfxejjlbfizgz.supabase.co")!;
 
 const SERVICE_ROLE_KEY =
 Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
