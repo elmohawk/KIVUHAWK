@@ -5,93 +5,102 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
 
-<title>KivuStream | Watch</title>
+<title>KivuStream Watch</title>
 
-<!-- Google Font -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link
+rel="icon"
+href="assets/logo.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+rel="stylesheet"
+href="css/watch.css">
 
-<!-- FontAwesome -->
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 
-<!-- Swiper -->
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
 
-<!-- CSS -->
-
-<link rel="stylesheet" href="css/style.css">
-
-<link rel="stylesheet" href="css/navbar.css">
-
-<link rel="stylesheet" href="css/watch.css">
-
-<link rel="stylesheet" href="css/responsive.css">
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 </head>
 
 <body>
 
-<!-- ==========================
+<!-- ==========================================
 3D BACKGROUND
-========================== -->
+========================================== -->
 
-<div class="brand-3d">
+<div class="animated-bg">
 
-<span>IT HAWK_RW</span>
+<div class="gradient one"></div>
+
+<div class="gradient two"></div>
+
+<div class="gradient three"></div>
 
 </div>
 
-<div class="light one"></div>
+<!-- ==========================================
+BACKDROP
+========================================== -->
 
-<div class="light two"></div>
+<div
+id="backdrop"
+class="watch-backdrop">
 
-<div class="glow left"></div>
+<div class="backdrop-overlay"></div>
 
-<div class="glow right"></div>
+</div>
 
-<!-- ==========================
+<!-- ==========================================
 NAVBAR
-========================== -->
+========================================== -->
 
-<header class="navbar">
+<header class="watch-navbar">
 
-<div class="logo">
+<a
+href="index.html"
+class="logo">
 
-<i class="fa-solid fa-play"></i>
+<img
+src="assets/logo.png">
 
 <span>KivuStream</span>
 
-</div>
+</a>
 
-<nav>
+<div class="nav-actions">
 
-<a href="index.html">Home</a>
+<button
+id="likeBtn"
+class="icon-btn">
 
-<a href="#">Movies</a>
-
-<a href="#">Series</a>
-
-<a href="#">Trending</a>
-
-</nav>
-
-<div class="nav-right">
-
-<button id="searchBtn">
-
-<i class="fa-solid fa-magnifying-glass"></i>
+<i class="fa-solid fa-heart"></i>
 
 </button>
 
-<button id="profileBtn">
+<button
+id="shareBtn"
+class="icon-btn">
 
-<i class="fa-solid fa-user"></i>
+<i class="fa-solid fa-share"></i>
+
+</button>
+
+<button
+id="wishlistBtn"
+class="icon-btn">
+
+<i class="fa-solid fa-bookmark"></i>
 
 </button>
 
@@ -99,133 +108,19 @@ NAVBAR
 
 </header>
 
-<!-- ==========================
-BACKDROP
-========================== -->
+<!-- ==========================================
+MAIN CONTAINER
+========================================== -->
 
-<section
-class="watch-hero">
+<div class="watch-container">
 
-<div
-id="backdrop"
-class="watch-backdrop">
+<!-- ==========================================
+LEFT SIDE
+========================================== -->
 
-<div class="backdrop-overlay">
+<div class="watch-left">
 
-<div class="watch-content">
-
-<div class="poster-box">
-
-<img
-id="poster"
-src=""
-
-alt="Poster">
-
-</div>
-
-<div class="movie-details">
-
-<div class="movie-type"
-id="typeBadge">
-
-MOVIE
-
-</div>
-
-<h1
-id="title">
-
-Loading...
-
-</h1>
-
-<div class="movie-meta">
-
-<span
-id="rating">
-
-⭐ 0
-
-</span>
-
-<span
-id="year">
-
-2026
-
-</span>
-
-<span
-id="runtime">
-
-0 min
-
-</span>
-
-</div>
-
-<div
-id="genres"
-class="genres">
-
-</div>
-
-<p
-id="overview">
-
-Loading movie description...
-
-</p>
-
-<div class="action-buttons">
-
-<button
-id="playMovie">
-
-<i class="fa-solid fa-play"></i>
-
-Watch Now
-
-</button>
-
-<button
-id="wishlist">
-
-<i class="fa-solid fa-bookmark"></i>
-
-My List
-
-</button>
-
-<button
-id="likeMovie">
-
-<i class="fa-solid fa-heart"></i>
-
-Like
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ==========================
-VIDEO PLAYER
-========================== -->
-
-<section class="player-section">
-
-<div class="player-wrapper">
+<div class="player-card">
 
 <video
 
@@ -235,26 +130,247 @@ controls
 
 playsinline
 
-preload="metadata"
-
-poster="">
+poster="assets/logo.png">
 
 </video>
 
 </div>
 
-</section>
+</div>
 
-<!-- ==========================
-SERIES SECTION
-========================== -->
+<!-- ==========================================
+RIGHT SIDE
+========================================== -->
+
+<div class="watch-right">
+
+<div class="poster-box">
+
+<img
+
+id="poster"
+
+src="assets/logo.png"
+
+alt="Poster">
+
+</div>
+
+<div class="movie-info">
+
+<span
+
+id="typeBadge"
+
+class="type-badge">
+
+MOVIE
+
+</span>
+
+<h1
+
+id="title">
+
+Loading...
+
+</h1>
+
+<div class="meta-row">
+
+<span id="rating">
+
+⭐ 0.0
+
+</span>
+
+<span id="year">
+
+2026
+
+</span>
+
+<span id="runtime">
+
+0 min
+
+</span>
+
+<span id="quality">
+
+HD
+
+</span>
+
+</div>
+
+<div
+
+id="genres"
+
+class="genres">
+
+</div>
+
+<p
+
+id="overview">
+
+Loading description...
+
+</p>
+
+</div>
+
+<!-- ==========================================
+ACTION BUTTONS
+========================================== -->
+
+<div class="watch-buttons">
+
+<button
+
+id="playBtn"
+
+class="watch-btn primary">
+
+<i class="fa-solid fa-play"></i>
+
+Play
+
+</button>
+
+<button
+
+id="downloadBtn"
+
+class="watch-btn">
+
+<i class="fa-solid fa-download"></i>
+
+Download
+
+</button>
+
+<button
+
+id="trailerBtn"
+
+class="watch-btn">
+
+<i class="fa-brands fa-youtube"></i>
+
+Trailer
+
+</button>
+
+</div>
+
+<!-- ==========================================
+MOVIE DETAILS
+========================================== -->
+
+<div class="details-card">
+
+<h2>
+
+Movie Details
+
+</h2>
+
+<div class="details-grid">
+
+<div>
+
+<label>Language</label>
+
+<p id="language">
+
+Unknown
+
+</p>
+
+</div>
+
+<div>
+
+<label>Country</label>
+
+<p id="country">
+
+Unknown
+
+</p>
+
+</div>
+
+<div>
+
+<label>Status</label>
+
+<p id="status">
+
+Released
+
+</p>
+
+</div>
+
+<div>
+
+<label>Translator</label>
+
+<p id="translator">
+
+KivuStream
+
+</p>
+
+</div>
+
+<div>
+
+<label>Views</label>
+
+<p id="views">
+
+0
+
+</p>
+
+</div>
+
+<div>
+
+<label>Likes</label>
+
+<p id="likes">
+
+0
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+PART 2 STARTS HERE
+========================================== -->
 
 <section
+
 id="seriesSection"
 
-class="series-section">
+class="series-section"
 
-<div class="section-header">
+style="display:none">
 
 <h2>
 
@@ -262,182 +378,259 @@ Episodes
 
 </h2>
 
-<select
-id="seasonSelector">
-
-<option>
-
-Season 1
-
-</option>
-
-</select>
-
-</div>
-
 <div
+
 id="episodesContainer"
 
-class="episode-grid">
+class="episodes-grid">
+
+</div>
+
+</section>
+<!-- ==========================================
+DOWNLOAD CENTER
+========================================== -->
+
+<section class="download-section">
+
+<h2>
+
+<i class="fa-solid fa-download"></i>
+
+Download Center
+
+</h2>
+
+<p class="section-description">
+
+Choose your download .
+
+</p>
+
+<div
+id="downloadContainer"
+class="download-container">
+
+<!-- Generated by watch.js -->
 
 </div>
 
 </section>
 
-<!-- ==========================
-CAST
-========================== -->
+<!-- ==========================================
+MULTI PART MOVIE
+========================================== -->
 
 <section
-class="movies-section">
+id="moviePartsSection"
+class="movie-parts-section"
+style="display:none;">
 
-<h2
-class="section-title">
+<h2>
 
-Cast
+Movie Parts
 
 </h2>
 
 <div
+id="moviePartsContainer"
+class="movie-parts-grid">
+
+<!-- JS -->
+
+</div>
+
+</section>
+
+<!-- ==========================================
+TRAILER
+========================================== -->
+
+<section class="trailer-section">
+
+<h2>
+
+Official Trailer
+
+</h2>
+
+<div class="trailer-card">
+
+<iframe
+
+id="trailerFrame"
+
+allowfullscreen
+
+loading="lazy">
+
+</iframe>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+CAST
+========================================== -->
+
+<section class="cast-section">
+
+<h2>
+
+Top Cast
+
+</h2>
+
+<div
+
 id="castContainer"
 
-class="cast-grid">
+class="cast-slider">
+
+<!-- JS -->
 
 </div>
 
 </section>
 
-<!-- ==========================
-MORE LIKE THIS
-========================== -->
+<!-- ==========================================
+SIMILAR CONTENT
+========================================== -->
 
-<section
-class="movies-section">
+<section class="recommend-section">
 
-<h2
-class="section-title">
+<h2>
 
-More Like This
+You May Also Like
 
 </h2>
 
 <div
-id="recommendations"
 
-class="movie-grid">
+id="recommendContainer"
+
+class="recommend-grid">
+
+<!-- JS -->
 
 </div>
 
 </section>
 
-<!-- ==========================
+<!-- ==========================================
 COMMENTS
-========================== -->
+========================================== -->
 
-<section
-class="movies-section">
+<section class="comments-section">
 
-<h2
-class="section-title">
+<h2>
 
-Comments
+Community Comments
 
 </h2>
 
-<div
-class="comment-form">
+<div class="comment-form">
 
 <textarea
 
 id="commentText"
 
-placeholder="Write something...">
+placeholder="Write your comment...">
 
 </textarea>
 
 <button
+
 id="sendComment">
 
-Post
+Post Comment
 
 </button>
 
 </div>
 
 <div
-id="commentsList">
+
+id="commentsContainer">
 
 </div>
 
 </section>
 
-<!-- ==========================
-FOOTER
-========================== -->
+<!-- ==========================================
+FLOATING BUTTONS
+========================================== -->
 
-<footer class="footer">
+<div class="floating-actions">
 
-<div class="footer-container">
+<button
 
-<div>
+id="scrollTop"
+
+class="floating-btn">
+
+<i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+<button
+
+id="nextMovie"
+
+class="floating-btn">
+
+<i class="fa-solid fa-forward"></i>
+
+</button>
+
+</div>
+
+<!-- ==========================================
+LOADING
+========================================== -->
+
+<div
+id="loadingScreen"
+class="loading-screen">
+
+<div class="loader"></div>
 
 <h2>
 
-Kivu<span>Stream</span>
+Loading KivuStream...
 
 </h2>
 
+</div>
+
+<!-- ==========================================
+FOOTER
+========================================== -->
+
+<footer class="watch-footer">
+
+<img
+
+src="assets/logo.png">
+
 <p>
 
-Powered by
-
-TMDB +
-
-Supabase
+© 2026 KivuStream
 
 </p>
-
-</div>
-
-<div>
-
-<p>
-
-© 2026
-
-IT HAWK_RW
-
-</p>
-
-</div>
-
-</div>
 
 </footer>
 
-<!-- ==========================
-LIBRARIES
-========================== -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<!-- ==========================
-PROJECT
-========================== -->
+<!-- ==========================================
+JAVASCRIPT
+========================================== -->
 
 <script src="js/config.js"></script>
 
 <script src="js/supabase.js"></script>
 
-<script src="js/tmdb.js"></script>
-
-<script src="js/navbar.js"></script>
+<script src="js/tmdb-engine.js"></script>
 
 <script src="js/watch.js"></script>
 
