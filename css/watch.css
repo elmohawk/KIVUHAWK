@@ -1204,3 +1204,20 @@ bottom:15px;
 }
 
 }
+.cinema-mode .watch-container{
+max-width:100%;
+}
+
+.lights-off{
+background:#000 !important;
+}
+
+.lights-off header,
+.lights-off footer,
+.lights-off .sidebar{
+opacity:.1;
+}
+
+.lights-off .video-player{
+z-index:999;
+}
