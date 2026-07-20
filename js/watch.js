@@ -1,3 +1,47 @@
+/* ==========================================
+LOADING
+========================================== */
+
+function showLoading(){
+
+    const loader=document.getElementById("loading");
+
+    if(loader){
+
+        loader.style.display="flex";
+
+    }
+
+}
+
+function hideLoading(){
+
+    const loader=document.getElementById("loading");
+
+    if(loader){
+
+        loader.style.display="none";
+
+    }
+
+}
+function showError(){
+
+    document.body.innerHTML=`
+
+<div class="watch-error">
+
+<h1>Content Not Found</h1>
+
+<p>This movie or series could not be loaded.</p>
+
+<a href="/">Return Home</a>
+
+</div>
+
+`;
+
+}
 /* ==========================================================
    KIVUSTREAM WATCH ENGINE V5
    PART 1
@@ -1118,7 +1162,11 @@ RESUME
 ========================================================== */
 
 function resumeWatching(){
+if(!currentContent){
 
+    return;
+
+}
     const saved=
 
     localStorage.getItem(
@@ -1277,7 +1325,11 @@ async function likeMovie(){
 }
 
 async function updateLikeCounter(){
+if(!currentContent){
 
+    return;
+
+}
     const {
 
         count
@@ -1569,7 +1621,11 @@ FAVORITES
 ========================================================== */
 
 function addFavorite(){
+if(!currentContent){
 
+    return;
+
+}
     let list = JSON.parse(
 
         localStorage.getItem(
@@ -1669,7 +1725,11 @@ TRENDING
 ========================================================== */
 
 async function updateTrending(){
+if(!currentContent){
 
+    return;
+
+}
     const score =
 
     Number(
@@ -1772,7 +1832,11 @@ RECENTLY WATCHED
 ========================================================== */
 
 function saveRecentlyWatched(){
+if(!currentContent){
 
+    return;
+
+}
     let list = JSON.parse(
 
         localStorage.getItem(
@@ -1820,7 +1884,11 @@ WATCH HISTORY
 ========================================================== */
 
 function saveWatchHistory(){
+if(!currentContent){
 
+    return;
+
+}
     const history = {
 
         id: currentContent.id,
