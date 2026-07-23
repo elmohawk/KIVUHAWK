@@ -1,101 +1,44 @@
 /* ==========================================================
-   KIVUSTREAM V4 WATCH ENGINE
-   PART 1
-   CORE INITIALIZATION
+   KIVUSTREAM WATCH ENGINE V6
+   Professional Streaming System
 ========================================================== */
 
-"use strict";
+let currentContent = null;
+let relatedContent = [];
+let currentDownloads = [];
+
+const params = new URLSearchParams(window.location.search);
+
+/*
+Supports
+
+watch.html?id=UUID&type=movie
+
+watch.html?id=UUID&type=series
+
+Future routing
+
+/movie/UUID
+
+/series/UUID
+*/
+
+let contentID = params.get("id");
+let contentType = params.get("type") || "movie";
 
 /* ==========================================================
-   GLOBAL STATE
+   DOM READY
 ========================================================== */
 
-const WatchState = {
-
-    content: null,
-
-    type: null,
-
-    id: null,
-
-    loaded: false
-
-};
-
-/* ==========================================================
-   DOM ELEMENTS
-========================================================== */
-
-const $ = (id) => document.getElementById(id);
-
-const backdrop = $("backdrop");
-const poster = $("poster");
-const player = $("videoPlayer");
-
-const title = $("title");
-const overview = $("overview");
-
-const rating = $("rating");
-const runtime = $("runtime");
-const year = $("year");
-const genres = $("genres");
-const typeBadge = $("typeBadge");
-
-const loadingScreen = $("loadingScreen");
-
-/* ==========================================================
-   START
-========================================================== */
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    bootWatchPage
-renderContent(content);
-
-await enrichFromTMDB();
-
-hideLoading();
-);
-
-/* ==========================================================
-   BOOT
-========================================================== */
-
-async function bootWatchPage(){
+document.addEventListener("DOMContentLoaded", async () => {
 
     try{
 
         showLoading();
 
-        const route = getRoute();
-
-        if(!route){
-
-            throw new Error("Invalid URL");
-
-        }
-
-        WatchState.type = route.type;
-        WatchState.id = route.id;
-
-        const content = await loadContent();
-
-        if(!content){
-
-            throw new Error("Content Not Found");
-
-        }
-
-        WatchState.content = content;
-        WatchState.loaded = true;
-
-        renderContent(content);
+        await initializeWatchPage();
 
         hideLoading();
-
-        console.log("Watch Page Ready");
 
     }
 
@@ -103,96 +46,89 @@ async function bootWatchPage(){
 
         console.error(error);
 
-        hideLoading();
-
         showError(error.message);
 
     }
 
-}
+});
 /* ==========================================================
-   URL ROUTER
+   LOADING UI
 ========================================================== */
 
-function getRoute(){
+function showLoading(){
 
-    const path =
+    const loader=document.getElementById("loading");
 
-    window.location.pathname
+    if(loader){
 
-    .replace(/^\/+/,"")
-
-    .split("/")
-
-    .filter(Boolean);
-
-    if(path.length >= 2){
-
-        if(
-
-            path[0] === "movie" ||
-
-            path[0] === "series"
-
-        ){
-
-            if(!isUUID(path[1])){
-
-                return null;
-
-            }
-
-            return{
-
-                type:path[0],
-
-                id:path[1]
-
-            };
-
-        }
+        loader.style.display="flex";
 
     }
-
-    const params = new URLSearchParams(
-
-        window.location.search
-
-    );
-
-    const id = params.get("id");
-
-    const type = params.get("type") || "movie";
-
-    if(!id){
-
-        return null;
-
-    }
-
-    if(!isUUID(id)){
-
-        return null;
-
-    }
-
-    return{
-
-        type,
-
-        id
-
-    };
 
 }
 
+function hideLoading(){
+
+    const loader=document.getElementById("loading");
+
+    if(loader){
+
+        loader.style.display="none";
+
+    }
+
+}
+
+function showError(message){
+
+    hideLoading();
+
+    const hero=document.querySelector(".watch-container");
+
+    if(hero){
+
+        hero.innerHTML=`
+
+        <div class="watch-error">
+
+            <h2>Content Not Found</h2>
+
+            <p>${message}</p>
+
+        </div>
+
+        `;
+
+    }
+
+}
 /* ==========================================================
-   UUID VALIDATOR
+   INITIALIZE PAGE
 ========================================================== */
 
-function isUUID(value){
+async function initializeWatchPage(){
 
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+    await loadContent();
+
+    if(!currentContent){
+
+        throw new Error("Content not found.");
+
+    }
+
+    renderHero();
+
+    renderDownloads();
+
+    renderMovieParts();
+
+    await renderEpisodes();
+
+    await loadRelated();
+
+    await loadComments();
+
+    hideLoading();
 
 }
 /* ==========================================================
@@ -201,23 +137,25 @@ function isUUID(value){
 
 async function loadContent(){
 
-    const table =
+    if(!contentID){
 
-    WatchState.type === "series"
-
-    ? "series"
-
-    : "movies";
-
-    const {
-
-        data,
-
-        error
+        throw new Error("Missing content id.");
 
     }
 
-    =
+    const table=
+
+    contentType==="series"
+
+    ?
+
+    "series"
+
+    :
+
+    "movies";
+
+    const {data,error}=
 
     await supabaseClient
 
@@ -225,376 +163,940 @@ async function loadContent(){
 
     .select("*")
 
-    .eq("id",WatchState.id)
+    .eq("id",contentID)
 
     .single();
 
     if(error){
 
-        throw error;
+        console.error(error);
+
+        return;
 
     }
 
-    return{
-
-        ...data,
-
-        type:WatchState.type
-
-    };
+    currentContent=data;
 
 }
 /* ==========================================================
-   LOADING
+   IMAGE ENGINE
 ========================================================== */
 
-function showLoading(){
+function imageURL(path){
 
-    if(loadingScreen){
+    if(!path){
 
-        loadingScreen.style.display="flex";
+        return "assets/logo.png";
 
     }
 
-}
+    if(path.startsWith("http")){
 
-function hideLoading(){
-
-    if(loadingScreen){
-
-        loadingScreen.style.display="none";
+        return path;
 
     }
 
-}
-
-/* ==========================================================
-   ERROR
-========================================================== */
-
-function showError(message){
-
-    document.body.innerHTML=`
-
-    <div class="watch-error">
-
-        <h1>404</h1>
-
-        <p>${message}</p>
-
-        <a href="/">Back Home</a>
-
-    </div>
-
-    `;
+    return path;
 
 }
 /* ==========================================================
-   KIVUSTREAM V4
-   CONTENT RENDERER
+   HERO RENDER ENGINE
 ========================================================== */
 
-function renderContent(content){
+function renderHero(){
 
-    if(!content) return;
+    if(!currentContent) return;
 
-    /* ---------- Basic ---------- */
+    const backdrop =
+        imageURL(
+            currentContent.backdrop ||
+            currentContent.backdrop_path
+        );
 
-    document.title = `${content.title} • KivuStream`;
+    const poster =
+        imageURL(
+            currentContent.poster ||
+            currentContent.poster_path
+        );
 
-    if(title)
-        title.textContent = content.title || "Unknown Title";
+    /* ---------- Background ---------- */
 
-    if(overview)
-        overview.textContent =
-            content.overview ||
-            content.description ||
-            "No description available.";
+    const bg = document.getElementById("heroBackdrop");
 
-    if(typeBadge){
+    if(bg){
 
-        typeBadge.textContent =
-            content.type.toUpperCase();
+        bg.style.backgroundImage =
 
-        typeBadge.className =
-            `badge ${content.type}`;
-
-    }
-
-    /* ---------- Images ---------- */
-
-    const posterURL =
-        getPoster(content);
-
-    const backdropURL =
-        getBackdrop(content);
-
-    if(poster){
-
-        poster.src = posterURL;
-
-        poster.onerror = ()=>
-            poster.src="assets/logo.png";
+        `linear-gradient(
+            rgba(2,8,18,.78),
+            rgba(2,8,18,.96)
+        ),
+        url('${backdrop}')`;
 
     }
 
-    if(backdrop){
+    /* ---------- Poster ---------- */
 
-        backdrop.style.backgroundImage =
-            `url('${backdropURL}')`;
+    const posterImage = document.getElementById("poster");
+
+    if(posterImage){
+
+        posterImage.src = poster;
+
+        posterImage.onerror = ()=>{
+
+            posterImage.src="assets/logo.png";
+
+        };
 
     }
+
+    /* ---------- Title ---------- */
+
+    setText("title",
+        currentContent.title ||
+        "Unknown Title"
+    );
+
+    /* ---------- Overview ---------- */
+
+    setText(
+        "overview",
+        currentContent.overview ||
+        "No description available."
+    );
 
     /* ---------- Rating ---------- */
 
-    if(rating){
-
-        rating.textContent =
-            Number(content.rating || 0)
-            .toFixed(1);
-
-    }
-
-    /* ---------- Runtime ---------- */
-
-    if(runtime){
-
-        runtime.textContent =
-            content.runtime
-            ?
-            `${content.runtime} min`
-            :
-            "Unknown";
-
-    }
+    setText(
+        "rating",
+        Number(
+            currentContent.rating ||
+            currentContent.vote_average ||
+            0
+        ).toFixed(1)
+    );
 
     /* ---------- Year ---------- */
 
-    if(year){
+    setText(
+        "year",
+        currentContent.year ||
+        getYear(currentContent.release_date)
+    );
 
-        year.textContent =
-            content.year ||
-            extractYear(content.release_date);
+    /* ---------- Runtime ---------- */
 
-    }
+    setText(
+        "runtime",
+        currentContent.runtime
+        ?
+        currentContent.runtime + " min"
+        :
+        "-"
+    );
+
+    /* ---------- Language ---------- */
+
+    setText(
+        "language",
+        currentContent.original_language ||
+        currentContent.language ||
+        "-"
+    );
+
+    /* ---------- Views ---------- */
+
+    setText(
+        "views",
+        formatViews(
+            currentContent.views || 0
+        )
+    );
+
+    /* ---------- Likes ---------- */
+
+    setText(
+        "likes",
+        currentContent.likes || 0
+    );
 
     /* ---------- Genres ---------- */
 
-    renderGenres(content.genres);
+    renderGenres();
 
-    /* ---------- Player ---------- */
+    /* ---------- Buttons ---------- */
 
-    loadPlayer(content);
+    setupButtons();
 
 }
 /* ==========================================================
-   POSTER
+   SMALL HELPERS
 ========================================================== */
 
-function getPoster(movie){
+function setText(id,value){
 
-    if(movie.poster)
-        return movie.poster;
+    const el=document.getElementById(id);
 
-    if(movie.poster_path){
+    if(el){
 
-        if(movie.poster_path.startsWith("http")){
-
-            return movie.poster_path;
-
-        }
-
-        return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        el.textContent=value;
 
     }
-
-    if(movie.backdrop)
-        return movie.backdrop;
-
-    return "assets/logo.png";
 
 }
 
-/* ==========================================================
-   BACKDROP
-========================================================== */
+function getYear(date){
 
-function getBackdrop(movie){
+    if(!date) return "";
 
-    if(movie.backdrop)
-        return movie.backdrop;
+    return new Date(date).getFullYear();
 
-    if(movie.backdrop_path){
+}
 
-        if(movie.backdrop_path.startsWith("http")){
+function formatViews(v){
 
-            return movie.backdrop_path;
+    v=Number(v||0);
 
-        }
+    if(v>=1000000){
 
-        return `https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
+        return (v/1000000).toFixed(1)+"M";
 
     }
 
-    return getPoster(movie);
+    if(v>=1000){
+
+        return (v/1000).toFixed(1)+"K";
+
+    }
+
+    return v;
 
 }
 /* ==========================================================
    GENRES
 ========================================================== */
 
-function renderGenres(value){
+function renderGenres(){
 
-    if(!genres)
+    const box=document.getElementById("genres");
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    if(!currentContent.genres){
+
         return;
-
-    genres.innerHTML="";
-
-    if(!value)
-        return;
-
-    let list=[];
-
-    if(Array.isArray(value)){
-
-        list=value;
 
     }
 
-    else{
+    currentContent.genres
 
-        list=value.split(",");
+    .split(",")
 
-    }
+    .forEach(g=>{
 
-    list.forEach(item=>{
+        box.innerHTML+=`
 
-        genres.innerHTML +=
+        <span class="genre-chip">
 
-        `<span class="genre-chip">
+            ${g.trim()}
 
-            ${item.trim()}
+        </span>
 
-        </span>`;
+        `;
 
     });
 
 }
 /* ==========================================================
-   YEAR
+
+   BUTTON EVENTS
 ========================================================== */
 
-function extractYear(date){
+function setupButtons(){
 
-    if(!date)
-        return "";
+    const play=document.getElementById("playMovie");
 
-    return String(date).substring(0,4);
+    if(play){
 
-}
-/* ==========================================================
-   PLAYER
-========================================================== */
-
-function loadPlayer(content){
-
-    if(!player)
-        return;
-
-    if(content.video_url){
-
-        player.src =
-            content.video_url;
+        play.onclick=playMovie;
 
     }
 
-    else{
+    const trailer=document.getElementById("watchTrailer");
 
-        player.poster =
-            getPoster(content);
+    if(trailer){
+
+        trailer.onclick=playTrailer;
 
     }
 
 }
 /* ==========================================================
-   TMDB ENRICHMENT
+   PLAY VIDEO
 ========================================================== */
 
-async function enrichFromTMDB(){
+function playMovie(){
 
-    if(!WatchState.content)
+    if(!currentContent) return;
+
+    const player=document.getElementById("videoPlayer");
+
+    if(!player) return;
+
+    player.src=
+
+        currentContent.video_url ||
+
+        currentContent.worker_url ||
+
+        "";
+
+    player.scrollIntoView({
+
+        behavior:"smooth"
+
+    });
+
+}
+/* ==========================================================
+   TMDB TRAILER
+========================================================== */
+
+function playTrailer(){
+
+    if(!currentContent.trailer_key){
+
+        alert("Trailer unavailable.");
+
         return;
 
-    if(!WatchState.content.tmdb_id)
+    }
+
+    window.open(
+
+        `https://www.youtube.com/watch?v=${currentContent.trailer_key}`,
+
+        "_blank"
+
+    );
+
+}
+/* ==========================================================
+   PLAYER ENGINE
+========================================================== */
+
+function playMovie(url = null){
+
+    if(!currentContent) return;
+
+    const player=document.getElementById("videoPlayer");
+
+    if(!player) return;
+
+    let video=
+
+        url ||
+
+        currentContent.video_url ||
+
+        currentContent.worker_url ||
+       
+
+        "";
+
+    if(video===""){
+
+        alert("Video unavailable.");
+
         return;
 
-    try{
+    }
 
-        const details =
+    player.src=video;
 
-        WatchState.type==="movie"
+    player.play();
 
-        ?
+    player.scrollIntoView({
 
-        await getTMDBMovieDetails(
+        behavior:"smooth"
 
-            WatchState.content.tmdb_id
+    });
 
-        )
+}
+/* ==========================================================
+   DOWNLOAD SECTION
+========================================================== */
 
-        :
+function renderDownloads(){
 
-        await getTMDBSeriesDetails(
+    const container=document.getElementById("downloads");
 
-            WatchState.content.tmdb_id
+    if(!container) return;
 
-        );
+    container.innerHTML="";
 
-        if(details.poster_path && !WatchState.content.poster){
+    let links=currentContent.download_links;
 
-            poster.src =
+    if(!links){
 
-            `https://image.tmdb.org/t/p/w500${details.poster_path}`;
+        container.innerHTML=
+
+        "<p>No downloads available.</p>";
+
+        return;
+
+    }
+
+    if(typeof links==="string"){
+
+        try{
+
+            links=JSON.parse(links);
 
         }
 
-        if(details.backdrop_path){
+        catch{
 
-            backdrop.style.backgroundImage =
-
-            `url(https://image.tmdb.org/t/p/original${details.backdrop_path})`;
-
-        }
-
-        if(details.runtime && runtime){
-
-            runtime.textContent =
-                details.runtime+" min";
-
-        }
-
-        if(details.genres){
-
-            renderGenres(
-
-                details.genres.map(g=>g.name)
-
-            );
+            links=[];
 
         }
 
     }
 
-    catch(error){
+    currentDownloads=links;
 
-        console.log(
+    links.forEach((item,index)=>{
 
-            "TMDB skipped",
+        container.innerHTML+=`
 
-            error
+        <div class="download-card">
 
+            <div>
+
+                <h4>${item.name || "Download "+(index+1)}</h4>
+
+            </div>
+
+            <button
+
+                onclick="downloadVideo('${item.url}')">
+
+                Download
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+/* ==========================================================
+   DOWNLOAD
+========================================================== */
+
+function downloadVideo(url){
+
+    if(!url){
+
+        alert("Download unavailable.");
+
+        return;
+
+    }
+
+    window.open(url,"_blank");
+
+}
+/* ==========================================================
+   MOVIE PARTS
+========================================================== */
+
+function renderMovieParts(){
+
+    const box=document.getElementById("movieParts");
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    let links=currentContent.download_links;
+
+    if(typeof links==="string"){
+
+        try{
+
+            links=JSON.parse(links);
+
+        }
+
+        catch{
+
+            links=[];
+
+        }
+
+    }
+
+    if(!links || links.length<=1){
+
+        return;
+
+    }
+
+    links.forEach((part,index)=>{
+
+        box.innerHTML+=`
+
+        <button
+
+        class="part-button"
+
+        onclick="playMovie('${part.url}')">
+
+        Part ${String.fromCharCode(65+index)}
+
+        </button>
+
+        `;
+
+    });
+
+}
+/* ==========================================================
+   SERIES EPISODES
+========================================================== */
+
+async function renderEpisodes(){
+
+    if(contentType!=="series") return;
+
+    const container=document.getElementById("episodes");
+
+    if(!container) return;
+
+    const {data,error}=
+
+    await supabaseClient
+
+    .from("episodes")
+
+    .select("*")
+
+    .eq("series_id",currentContent.id)
+
+    .order("episode_number");
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    container.innerHTML="";
+
+    data.forEach(ep=>{
+
+        container.innerHTML+=`
+
+        <div class="episode-card">
+
+            <img
+
+            src="${imageURL(ep.thumbnail)}">
+
+            <div>
+
+                <h4>
+
+                Episode ${ep.episode_number}
+
+                </h4>
+
+                <p>
+
+                ${ep.title}
+
+                </p>
+
+            </div>
+
+            <button
+
+            onclick="playMovie('${ep.video_url}')">
+
+            ▶ Play
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+/* ==========================================================
+   KIVUSTREAM RECOMMENDATION ENGINE
+========================================================== */
+
+/* ==========================================================
+   RELATED CONTENT
+========================================================== */
+
+async function loadRelated(){
+
+    const container=document.getElementById("relatedContainer");
+
+    if(!container) return;
+
+    let query=supabaseClient
+        .from(contentType==="series" ? "series" : "movies")
+        .select("*")
+        .neq("id",currentContent.id)
+        .limit(24);
+
+    if(currentContent.category){
+
+        query=query.eq(
+            "category",
+            currentContent.category
         );
 
     }
+
+    const {data,error}=await query;
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    relatedContent=data||[];
+
+    renderRelatedCards(relatedContent);
+
+}
+
+/* ==========================================================
+   RENDER RELATED
+========================================================== */
+
+function renderRelatedCards(list){
+
+    const container=document.getElementById("relatedContainer");
+
+    if(!container) return;
+
+    container.innerHTML="";
+
+    list.forEach(movie=>{
+
+        container.innerHTML+=`
+
+        <div class="movie-card"
+
+        onclick="openWatchPage('${movie.id}','${contentType}')">
+
+            <img
+
+            src="${getPoster(movie)}"
+
+            loading="lazy"
+
+            alt="${movie.title}"
+
+            onerror="this.src='assets/logo.png'">
+
+            <div class="movie-overlay">
+
+                <h3>${movie.title}</h3>
+
+                <div class="movie-meta">
+
+                    <span>⭐ ${movie.rating||"N/A"}</span>
+
+                    <span>${movie.year||""}</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+/* ==========================================================
+   OPEN WATCH PAGE
+========================================================== */
+
+function openWatchPage(id,type){
+
+    window.location.href=
+        `watch.html?id=${id}&type=${type}`;
+
+}
+
+/* ==========================================================
+   CONTINUE WATCHING
+========================================================== */
+
+function saveContinueWatching(){
+
+    if(!currentContent) return;
+
+    const player=document.getElementById("videoPlayer");
+
+    if(!player) return;
+
+    const item={
+
+        id:currentContent.id,
+
+        type:contentType,
+
+        title:currentContent.title,
+
+        poster:getPoster(currentContent),
+
+        position:player.currentTime,
+
+        duration:player.duration,
+
+        updated:Date.now()
+
+    };
+
+    localStorage.setItem(
+
+        `continue_${currentContent.id}`,
+
+        JSON.stringify(item)
+
+    );
+
+}
+
+function restoreContinueWatching(){
+
+    if(!currentContent) return;
+
+    const saved=localStorage.getItem(
+
+        `continue_${currentContent.id}`
+
+    );
+
+    if(!saved) return;
+
+    const data=JSON.parse(saved);
+
+    const player=document.getElementById("videoPlayer");
+
+    if(player){
+
+        player.currentTime=data.position||0;
+
+    }
+
+}
+
+/* Auto save every 5 seconds */
+
+setInterval(saveContinueWatching,5000);
+
+/* ==========================================================
+   RECENTLY WATCHED
+========================================================== */
+
+function saveRecentlyWatched(){
+
+    if(!currentContent) return;
+
+    let list=JSON.parse(
+        localStorage.getItem("recentlyWatched")
+    )||[];
+
+    list=list.filter(item=>item.id!==currentContent.id);
+
+    list.unshift({
+
+        id:currentContent.id,
+
+        type:contentType,
+
+        title:currentContent.title,
+
+        poster:getPoster(currentContent),
+
+        updated:Date.now()
+
+    });
+
+    list=list.slice(0,20);
+
+    localStorage.setItem(
+        "recentlyWatched",
+        JSON.stringify(list)
+    );
+
+}
+
+function renderContinueWatching(){
+
+    const container=document.getElementById("continueWatching");
+
+    if(!container) return;
+
+    const list=JSON.parse(
+        localStorage.getItem("recentlyWatched")
+    )||[];
+
+    container.innerHTML="";
+
+    list.forEach(item=>{
+
+        container.innerHTML+=`
+
+        <div class="continue-card"
+
+        onclick="openWatchPage('${item.id}','${item.type}')">
+
+            <img src="${item.poster}">
+
+            <h4>${item.title}</h4>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+/* ==========================================================
+   INFINITE RECOMMENDATIONS
+========================================================== */
+
+let recommendationPage=1;
+
+async function loadMoreRecommendations(){
+
+    const from=recommendationPage*24;
+
+    const to=from+23;
+
+    const {data,error}=await supabaseClient
+        .from(contentType==="series" ? "series" : "movies")
+        .select("*")
+        .neq("id",currentContent.id)
+        .range(from,to);
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    if(!data || data.length===0){
+
+        return;
+
+    }
+
+    relatedContent.push(...data);
+
+    renderRelatedCards(relatedContent);
+
+    recommendationPage++;
+
+}
+
+/* ==========================================================
+   LAZY LOAD ON SCROLL
+========================================================== */
+
+window.addEventListener("scroll",async()=>{
+
+    if(
+
+        window.innerHeight+
+        window.scrollY >
+
+        document.body.offsetHeight-800
+
+    ){
+
+        await loadMoreRecommendations();
+
+    }
+
+});
+
+/* ==========================================================
+   BOOT
+========================================================== */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    saveRecentlyWatched();
+
+    renderContinueWatching();
+
+    restoreContinueWatching();
+
+});
+/* ==========================================================
+   LIKE CONTENT
+========================================================== */
+
+async function likeContent(){
+
+    if(!currentContent) return;
+
+    const table =
+        contentType === "series"
+        ? "series"
+        : "movies";
+
+    const newLikes =
+        Number(currentContent.likes || 0) + 1;
+
+    const { error } = await supabaseClient
+
+        .from(table)
+
+        .update({
+            likes:newLikes
+        })
+
+        .eq("id",currentContent.id);
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    currentContent.likes = newLikes;
+
+    setText("likes",newLikes);
 
 }
