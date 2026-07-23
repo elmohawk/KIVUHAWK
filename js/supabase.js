@@ -2,10 +2,24 @@
    SUPABASE CLIENT
 ========================================== */
 
-const supabaseClient = window.supabase.createClient(
+if (!window.supabase) {
+
+    throw new Error(
+        "Supabase SDK failed to load."
+    );
+
+}
+
+const supabaseClient =
+window.supabase.createClient(
+
     SUPABASE_URL,
+
     SUPABASE_ANON_KEY
+
 );
+
+window.supabaseClient = supabaseClient;
 
 async function currentUser(){
 
