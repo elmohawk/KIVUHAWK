@@ -1055,39 +1055,45 @@ function renderContinueWatching(){
    INFINITE RECOMMENDATIONS
 ========================================================== */
 
-let recommendationPage=1;
+/* ==========================================================
+   LOAD MORE RECOMMENDATIONS
+========================================================== */
 
 async function loadMoreRecommendations(){
 
-    const from=recommendationPage*24;
+    // Wait until content has loaded
+    if(!currentContent){
 
-    const to=from+23;
+        console.warn("Current content not loaded yet.");
 
-    const {data,error}=await supabaseClient
-        .from(contentType==="series" ? "series" : "movies")
+        return;
+
+    }
+
+    const table =
+        currentContent.type === "series"
+        ? "series"
+        : "movies";
+
+    const { data, error } = await supabaseClient
+
+        .from(table)
+
         .select("*")
-        .neq("id",currentContent.id)
-        .range(from,to);
+
+        .neq("id", currentContent.id)
+
+        .limit(12);
 
     if(error){
 
-        console.error(error);
+        console.error("Recommendations:", error);
 
         return;
 
     }
 
-    if(!data || data.length===0){
-
-        return;
-
-    }
-
-    relatedContent.push(...data);
-
-    renderRelatedCards(relatedContent);
-
-    recommendationPage++;
+    renderRelatedCards(data || []);
 
 }
 
