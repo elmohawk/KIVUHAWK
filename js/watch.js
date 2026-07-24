@@ -112,34 +112,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 });
-/* ==========================================================
-   LOADING UI
-========================================================== */
+/* =====================================
+   LOADING SCREEN
+===================================== */
 
-function showLoading(){
+function showLoading() {
 
-    const loader=document.getElementById("loading");
+    const loading = document.getElementById("loadingScreen");
 
-    if(loader){
-
-        loader.style.display="flex";
-
+    if (loading) {
+        loading.style.display = "flex";
+        loading.style.opacity = "1";
     }
 
 }
 
-function hideLoading(){
+function hideLoading() {
 
-    const loader=document.getElementById("loading");
+    const loading = document.getElementById("loadingScreen");
 
-    if(loader){
+    if (!loading) return;
 
-        loader.style.display="none";
+    loading.style.transition = "opacity .4s ease";
+    loading.style.opacity = "0";
 
-    }
+    setTimeout(() => {
+        loading.style.display = "none";
+    }, 400);
 
 }
-
 function showError(message){
 
     hideLoading();
@@ -167,7 +168,12 @@ function showError(message){
    INITIALIZE PAGE
 ========================================================== */
 async function initializeWatchPage(){
+ showLoading();
 
+    // Hide loading after 1 second
+    setTimeout(() => {
+        hideLoading();
+    }, 1000);
     await loadContent();
 
     if(!currentContent){
