@@ -900,11 +900,17 @@ function renderRelatedCards(list){
 /* ==========================================================
    OPEN WATCH PAGE
 ========================================================== */
+function openWatchPage(id, type = "movie") {
 
-function openWatchPage(id,type){
+    if (!id) {
+        console.error("Missing movie ID.");
+        return;
+    }
 
-    window.location.href=
-        `watch.html?id=${id}&type=${type}`;
+    console.log("Opening:", id, type);
+
+    window.location.href =
+        `watch.html?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}`;
 
 }
 
