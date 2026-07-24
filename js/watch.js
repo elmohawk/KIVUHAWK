@@ -1,4 +1,157 @@
 /* ==========================================================
+   KIVUSTREAM — 3D TILT ENGINE
+   Drives the --rx / --ry / --tz custom properties consumed
+   by watch.css (.tilt-3d, .movie-card, .continue-card, etc.)
+========================================================== */
+
+(function(){
+
+  const TILT_MAX = getTiltMax();
+
+  function getTiltMax(){
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--tilt-max")
+      .trim();
+    return parseFloat(raw) || 14;
+  }
+
+  const reduceMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ----------------------------------------------------------
+     Attach tilt behavior to one element
+  ---------------------------------------------------------- */
+  function attachTilt(el, opts = {}){
+
+    if(reduceMotion) return;
+
+    const maxTilt = opts.maxTilt || TILT_MAX;
+    const maxLift = opts.maxLift ?? 24; // px, translateZ on hover peak
+
+    let frame = null;
+
+    function onMove(e){
+
+      const rect = el.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;   // 0..1
+      const py = (e.clientY - rect.top) / rect.height;   // 0..1
+
+      // Map 0..1 -> -1..1, invert Y so top tilts back
+      const rx = (0.5 - py) * 2 * maxTilt;
+      const ry = (px - 0.5) * 2 * maxTilt;
+
+      if(frame) cancelAnimationFrame(frame);
+
+      frame = requestAnimationFrame(()=>{
+        el.style.setProperty("--rx", rx.toFixed(2) + "deg");
+        el.style.setProperty("--ry", ry.toFixed(2) + "deg");
+        el.style.setProperty("--tz", maxLift + "px");
+        el.classList.add("tilt-3d");
+      });
+
+    }
+
+    function onLeave(){
+
+      if(frame) cancelAnimationFrame(frame);
+
+      el.style.setProperty("--rx", "0deg");
+      el.style.setProperty("--ry", "0deg");
+      el.style.setProperty("--tz", "0px");
+
+      // Let CSS transition ease back, then drop the override class
+      setTimeout(()=> el.classList.remove("tilt-3d"), 300);
+
+    }
+
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    el.addEventListener("mouseenter", onMove);
+
+  }
+
+  /* ----------------------------------------------------------
+     Attach to a live NodeList/selector, including elements
+     added later by watch.js (movie cards render async)
+  ---------------------------------------------------------- */
+  function attachTiltToSelector(selector, opts){
+
+    document.querySelectorAll(selector).forEach(el=>{
+      if(el.dataset.tiltBound) return;
+      el.dataset.tiltBound = "true";
+      attachTilt(el, opts);
+    });
+
+  }
+
+  function bindAll(){
+
+    // Poster gets a stronger, slower tilt
+    attachTiltToSelector(".poster-area img", { maxTilt: 16, maxLift: 30 });
+
+    // Grid cards get a snappier, smaller tilt
+    attachTiltToSelector(
+      ".movie-card, .continue-card, .episode-card, .download-card",
+      { maxTilt: 10, maxLift: 18 }
+    );
+
+  }
+
+  /* ----------------------------------------------------------
+     Hero backdrop parallax (moves opposite to poster tilt
+     for a subtle depth-of-field feel)
+  ---------------------------------------------------------- */
+  function bindHeroParallax(){
+
+    const hero = document.querySelector(".hero");
+    const backdrop = document.getElementById("backdrop");
+
+    if(!hero || !backdrop || reduceMotion) return;
+
+    hero.addEventListener("mousemove", (e)=>{
+
+      const rect = hero.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+
+      requestAnimationFrame(()=>{
+        backdrop.style.transform =
+          `translateZ(-120px) scale(1.15) translate(${px * -20}px, ${py * -14}px)`;
+      });
+
+    });
+
+    hero.addEventListener("mouseleave", ()=>{
+      backdrop.style.transform = "translateZ(-120px) scale(1.15)";
+    });
+
+  }
+
+  /* ----------------------------------------------------------
+     Bind on load, then re-scan periodically since watch.js
+     injects movie/episode/continue cards asynchronously via
+     innerHTML += (no single "cards ready" event to hook).
+  ---------------------------------------------------------- */
+  document.addEventListener("DOMContentLoaded", ()=>{
+
+    bindAll();
+    bindHeroParallax();
+
+    // Re-scan for newly injected cards for a few seconds after load,
+    // and again on scroll (loadMoreRecommendations appends more).
+    let scans = 0;
+    const rescan = setInterval(()=>{
+      bindAll();
+      scans++;
+      if(scans > 20) clearInterval(rescan); // stop after ~10s
+    }, 500);
+
+    window.addEventListener("scroll", ()=> bindAll());
+
+  });
+
+})();
+/* ==========================================================
    LOAD COMMENTS
 ========================================================== */
 
