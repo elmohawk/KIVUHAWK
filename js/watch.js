@@ -166,15 +166,12 @@ function showError(message){
 /* ==========================================================
    INITIALIZE PAGE
 ========================================================== */
-
 async function initializeWatchPage(){
 
     await loadContent();
 
     if(!currentContent){
-
         throw new Error("Content not found.");
-
     }
 
     renderHero();
@@ -189,7 +186,7 @@ async function initializeWatchPage(){
 
     await loadComments();
 
-    hideLoading();
+    await loadMoreRecommendations();
 
 }
 /* ==========================================================
