@@ -1,1234 +1,743 @@
 /* ==========================================================
-   KIVUSTREAM WATCH V4
-   GLOBAL
+   KIVUSTREAM WATCH — 3D CSS
+   Base layout + perspective-driven 3D interactions
 ========================================================== */
 
 :root{
+  --bg: #06131f;
+  --bg-alt: #0a1b2c;
+  --card: #0e2338;
+  --text: #eaf2fb;
+  --muted: #9fb4c9;
+  --accent: #ff4d6d;
+  --accent-2: #4d8dff;
+  --radius: 16px;
 
---primary:#00c8ff;
---secondary:#00ff99;
-
---bg:#050b14;
-
---card:#0b1727;
-
---glass:rgba(255,255,255,.08);
-
---border:rgba(255,255,255,.12);
-
---text:#ffffff;
-
---muted:#b7c2d0;
-
---radius:20px;
-
---shadow:
-0 15px 50px rgba(0,0,0,.45);
-
+  /* 3D globals */
+  --tilt-max: 14deg;
+  --depth-fast: 260ms;
+  --depth-slow: 600ms;
 }
 
-*{
+*{ box-sizing: border-box; }
 
-margin:0;
-padding:0;
-box-sizing:border-box;
-
+html, body{
+  margin:0;
+  padding:0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+  /* Global perspective so children with 3D transforms render consistently */
+  perspective: 1600px;
 }
 
-html{
+img{ max-width:100%; display:block; }
 
-scroll-behavior:smooth;
-
-}
-
-body{
-
-font-family:Poppins,;
-
-background:var(--bg);
-
-color:white;
-
-overflow-x:hidden;
-
+button{
+  font-family: inherit;
+  cursor:pointer;
+  border:none;
 }
 
 /* ==========================================================
-   BACKGROUND
+   3D BACKGROUND LAYERS (parallax depth)
 ========================================================== */
 
 #background3D{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
 
-position:fixed;
+#background3D .aurora,
+#background3D .gradient,
+#background3D .particles{
+  position:absolute;
+  inset:-10%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
 
-inset:0;
+#background3D .aurora{
+  background:
+    radial-gradient(circle at 20% 20%, rgba(77,141,255,.25), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(255,77,109,.18), transparent 45%);
+  transform: translateZ(-400px) scale(1.3);
+  animation: auroraDrift 18s ease-in-out infinite alternate;
+}
 
-z-index:-5;
+#background3D .gradient{
+  background: linear-gradient(180deg, transparent, var(--bg) 85%);
+  transform: translateZ(-200px) scale(1.15);
+}
 
-overflow:hidden;
+#background3D .particles{
+  background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 34px 34px;
+  transform: translateZ(-600px) scale(1.5);
+  animation: particleDrift 40s linear infinite;
+}
 
+@keyframes auroraDrift{
+  from{ transform: translateZ(-400px) scale(1.3) translate(0,0); }
+  to{ transform: translateZ(-400px) scale(1.3) translate(-3%, 2%); }
+}
+
+@keyframes particleDrift{
+  from{ transform: translateZ(-600px) scale(1.5) translate(0,0); }
+  to{ transform: translateZ(-600px) scale(1.5) translate(-4%, -4%); }
 }
 
 /* ==========================================================
-   AURORA
-========================================================== */
-
-.aurora{
-
-position:absolute;
-
-width:140vw;
-
-height:140vw;
-
-left:-30vw;
-
-top:-50vw;
-
-background:
-
-radial-gradient(circle,
-
-rgba(0,255,255,.18),
-
-transparent 60%),
-
-radial-gradient(circle,
-
-rgba(0,255,120,.16),
-
-transparent 65%);
-
-filter:blur(90px);
-
-animation:auroraMove 16s linear infinite;
-
-}
-
-@keyframes auroraMove{
-
-0%{
-
-transform:
-
-rotate(0deg)
-
-scale(1);
-
-}
-
-50%{
-
-transform:
-
-rotate(180deg)
-
-scale(1.2);
-
-}
-
-100%{
-
-transform:
-
-rotate(360deg)
-
-scale(1);
-
-}
-
-}
-
-/* ==========================================================
-   GRADIENT
-========================================================== */
-
-.gradient{
-
-position:absolute;
-
-inset:0;
-
-background:
-
-linear-gradient(
-
-180deg,
-
-rgba(0,0,0,.15),
-
-rgba(0,0,0,.75)
-
-);
-
-}
-
-/* ==========================================================
-   PARTICLES
-========================================================== */
-
-.particles{
-
-position:absolute;
-
-width:100%;
-
-height:100%;
-
-background-image:
-
-radial-gradient(#00ffff 1px,transparent 1px);
-
-background-size:50px 50px;
-
-opacity:.18;
-
-animation:particlesMove 60s linear infinite;
-
-}
-
-@keyframes particlesMove{
-
-from{
-
-transform:translateY(0);
-
-}
-
-to{
-
-transform:translateY(-400px);
-
-}
-
-}
-
-/* ==========================================================
-   LOADING
+   LOADING SCREEN — 3D rotating rings
 ========================================================== */
 
 #loadingScreen{
-
-position:fixed;
-
-inset:0;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-background:#02060d;
-
-z-index:99999;
-
+  position: fixed;
+  inset:0;
+  z-index: 999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: var(--bg);
 }
 
 .loader{
+  text-align:center;
+  transform-style: preserve-3d;
+}
 
-display:flex;
+.loader .ring{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--accent);
+  border-bottom-color: var(--accent-2);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  animation: ringSpin3D 1.6s linear infinite;
+}
 
-flex-direction:column;
+.loader .ring:nth-child(1){
+  margin: -35px 0 0 -35px;
+  animation-duration: 1.4s;
+}
+.loader .ring:nth-child(2){
+  margin: -50px 0 0 -50px;
+  width: 100px; height: 100px;
+  animation-duration: 2.1s;
+  animation-direction: reverse;
+  opacity: .7;
+}
+.loader .ring:nth-child(3){
+  margin: -65px 0 0 -65px;
+  width: 130px; height: 130px;
+  animation-duration: 2.8s;
+  opacity: .4;
+}
 
-align-items:center;
-
-gap:20px;
-
+@keyframes ringSpin3D{
+  from{ transform: rotateX(60deg) rotateZ(0deg); }
+  to{ transform: rotateX(60deg) rotateZ(360deg); }
 }
 
 .loader h2{
-
-font-size:18px;
-
-font-weight:600;
-
+  margin-top: 90px;
+  font-weight: 500;
+  color: var(--muted);
 }
 
-.ring{
-
-width:80px;
-
-height:80px;
-
-border-radius:50%;
-
-border:5px solid transparent;
-
-border-top-color:var(--primary);
-
-position:absolute;
-
-animation:spin 1s linear infinite;
-
-}
-
-.ring:nth-child(2){
-
-width:60px;
-
-height:60px;
-
-border-top-color:var(--secondary);
-
-animation-duration:1.5s;
-
-}
-
-.ring:nth-child(3){
-
-width:40px;
-
-height:40px;
-
-border-top-color:white;
-
-animation-duration:2s;
-
-}
-
-@keyframes spin{
-
-100%{
-
-transform:rotate(360deg);
-
-}
-
-}
 /* ==========================================================
-   HERO PLAYER
+   HERO — 3D parallax tilt (mouse-driven via watch-3d.js)
 ========================================================== */
 
-.watch-hero{
-
-position:relative;
-
-width:100%;
-
-height:85vh;
-
-overflow:hidden;
-
-display:flex;
-
-align-items:flex-end;
-
+.hero{
+  position: relative;
+  min-height: 70vh;
+  display:flex;
+  align-items:flex-end;
+  transform-style: preserve-3d;
 }
 
-#backdrop{
-
-position:absolute;
-
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-object-fit:cover;
-
-filter:
-
-brightness(.35)
-blur(2px);
-
-transform:scale(1.05);
-
-transition:.8s;
-
+.hero-backdrop{
+  position:absolute;
+  inset:0;
+  background-size: cover;
+  background-position: center;
+  transform: translateZ(-120px) scale(1.15);
+  transition: transform var(--depth-slow) ease-out;
 }
 
-.watch-overlay{
-
-position:absolute;
-
-inset:0;
-
-background:
-
-linear-gradient(
-
-180deg,
-
-rgba(0,0,0,.15),
-
-rgba(5,11,20,.96)
-
-);
-
+.hero-backdrop .overlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(6,19,31,.2), var(--bg) 95%);
 }
 
 .hero-content{
-
-position:relative;
-
-width:100%;
-
-padding:80px;
-
-display:flex;
-
-gap:50px;
-
-align-items:flex-end;
-
-z-index:2;
-
+  position:relative;
+  z-index: 2;
+  display:flex;
+  gap: 32px;
+  padding: 40px;
+  width:100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  transform-style: preserve-3d;
 }
 
-/* ==========================================================
-   POSTER
-========================================================== */
-
-.poster-box{
-
-width:290px;
-
-min-width:290px;
-
-height:430px;
-
-border-radius:20px;
-
-overflow:hidden;
-
-background:#111;
-
-box-shadow:var(--shadow);
-
-transform-style:preserve-3d;
-
-transition:.4s;
-
+/* Poster: the core 3D tilt element */
+.poster-area{
+  flex: 0 0 240px;
+  transform-style: preserve-3d;
+  perspective: 900px;
 }
 
-.poster-box:hover{
-
-transform:
-
-rotateY(10deg)
-
-rotateX(6deg)
-
-translateY(-10px)
-
-scale(1.03);
-
+.poster-area img{
+  border-radius: var(--radius);
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg) translateZ(0px);
+  transition: transform var(--depth-fast) cubic-bezier(.2,.8,.2,1),
+              box-shadow var(--depth-fast) ease;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.5),
+    0 0 0 rgba(77,141,255,0);
+  will-change: transform;
 }
 
-#poster{
-
-width:100%;
-height:100%;
-
-object-fit:cover;
-
-display:block;
-
+.poster-area:hover img{
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.6),
+    0 0 40px rgba(77,141,255,.25);
 }
 
-/* ==========================================================
-   INFO
-========================================================== */
-
-.hero-info{
-
-flex:1;
-
-display:flex;
-
-flex-direction:column;
-
-gap:20px;
-
+/* JS sets --rx / --ry / --tz per-frame; this class activates the effect */
+.tilt-3d{
+  transform:
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateZ(var(--tz, 0px)) !important;
 }
 
-#title{
+.info-area{
+  flex:1;
+  transform: translateZ(20px);
+}
 
-font-size:52px;
+.type-badge{
+  display:inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--accent);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  transform: translateZ(30px);
+}
 
-font-weight:700;
+.info-area h1{
+  font-size: 2.4rem;
+  margin: 14px 0;
+  transform: translateZ(40px);
+}
 
-line-height:1.05;
+.meta{
+  display:flex;
+  gap: 16px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  transform: translateZ(25px);
+}
 
+.genres{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom: 16px;
+}
+
+.genre-chip{
+  padding: 4px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+  font-size: .8rem;
+  transform: translateZ(20px);
 }
 
 #overview{
-
-font-size:16px;
-
-color:var(--muted);
-
-line-height:1.8;
-
-max-width:900px;
-
+  color: var(--muted);
+  max-width: 640px;
+  line-height: 1.6;
 }
-
-/* ==========================================================
-   META
-========================================================== */
-
-.meta-row{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:18px;
-
-font-size:15px;
-
-color:#dbe8f5;
-
-}
-
-.meta-row span{
-
-padding:8px 14px;
-
-background:var(--glass);
-
-border:1px solid var(--border);
-
-border-radius:40px;
-
-backdrop-filter:blur(10px);
-
-}
-
-/* ==========================================================
-   GENRES
-========================================================== */
-
-.genre-list{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:10px;
-
-}
-
-.genre{
-
-padding:10px 18px;
-
-background:
-
-linear-gradient(
-
-45deg,
-
-var(--primary),
-
-var(--secondary)
-
-);
-
-border-radius:30px;
-
-font-size:13px;
-
-font-weight:600;
-
-color:#00161e;
-
-}
-
-/* ==========================================================
-   ACTION BUTTONS
-========================================================== */
 
 .hero-buttons{
-
-display:flex;
-
-gap:20px;
-
-flex-wrap:wrap;
-
-margin-top:10px;
-
+  display:flex;
+  gap: 14px;
+  margin-top: 20px;
+  transform: translateZ(35px);
 }
 
 .hero-buttons button{
-
-padding:15px 30px;
-
-border:none;
-
-border-radius:60px;
-
-font-size:15px;
-
-font-weight:600;
-
-cursor:pointer;
-
-transition:.35s;
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-}
-
-.play-btn{
-
-background:
-
-linear-gradient(
-
-90deg,
-
-var(--primary),
-
-var(--secondary)
-
-);
-
-color:#00131a;
-
-}
-
-.download-btn{
-
-background:#182435;
-
-color:white;
-
-}
-
-.trailer-btn{
-
-background:#111827;
-
-color:white;
-
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font-weight: 500;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transform-style: preserve-3d;
+  transition: transform var(--depth-fast) ease, background var(--depth-fast) ease;
 }
 
 .hero-buttons button:hover{
-
-transform:
-
-translateY(-4px)
-
-scale(1.05);
-
-box-shadow:
-
-0 0 30px
-
-rgba(0,255,255,.35);
-
+  transform: translateZ(14px) translateY(-2px);
+  background: var(--accent);
 }
+
+#watchNow{ background: var(--accent); }
 
 /* ==========================================================
-   PLAYER
+   PLAYER CARD — subtle 3D lift
 ========================================================== */
 
-.player-wrapper{
+.player-section{ padding: 20px; }
 
-width:min(1500px,94%);
-
-margin:50px auto;
-
-border-radius:25px;
-
-overflow:hidden;
-
-background:#000;
-
-box-shadow:var(--shadow);
-
+.player-container{
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.player-wrapper video{
-
-width:100%;
-
-display:block;
-
-background:black;
-
+.player-card{
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: translateZ(0px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+  transition: transform var(--depth-fast) ease, box-shadow var(--depth-fast) ease;
 }
+
+.player-card:hover{
+  transform: translateZ(10px);
+  box-shadow: 0 30px 60px rgba(0,0,0,.55);
+}
+
+.player-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding: 16px 20px;
+}
+
+.player-actions{ display:flex; gap:10px; }
+
+.player-actions button{
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  transition: transform var(--depth-fast) ease;
+}
+.player-actions button:hover{ transform: translateZ(8px); }
+
+.video-wrapper{
+  position:relative;
+  background:#000;
+  aspect-ratio: 16/9;
+}
+
+.video-wrapper video{ width:100%; height:100%; }
+
+.player-loading{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,.6);
+  gap: 12px;
+}
+
+.spinner{
+  width:40px;height:40px;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.2);
+  border-top-color: var(--accent);
+  animation: ringSpin3D 1s linear infinite;
+}
+
+.player-info{
+  display:flex;
+  justify-content:space-between;
+  padding: 14px 20px;
+  color: var(--muted);
+  font-size:.9rem;
+}
+
+.watch-stats{ display:flex; gap:16px; }
 
 /* ==========================================================
-   PLAYER BAR
+   CONTENT SECTIONS — shared grid + card 3D tilt system
 ========================================================== */
 
-.player-tools{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:18px 25px;
-
-background:#09111e;
-
-border-top:1px solid var(--border);
-
+.content-section{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
 }
 
-.player-tools button{
-
-background:none;
-
-border:none;
-
-color:white;
-
-cursor:pointer;
-
-font-size:15px;
-
-transition:.3s;
-
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom: 16px;
 }
 
-.player-tools button:hover{
+.section-title a{ color: var(--accent-2); text-decoration:none; }
 
-color:var(--primary);
-
-}
-/* ==========================================================
-   DOWNLOADS
-========================================================== */
-
-.download-section{
-
-width:min(1500px,94%);
-
-margin:60px auto;
-
+.movie-parts-grid,
+.episodes-grid,
+.download-grid,
+.related-grid,
+.continue-grid,
+.cast-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+  gap: 18px;
+  /* required so children's translateZ renders with real depth */
+  perspective: 1000px;
 }
 
-.download-section h2{
-
-font-size:30px;
-
-margin-bottom:25px;
-
+/* Card 3D tilt: same mechanism as poster, driven by --rx/--ry custom props */
+.movie-card,
+.continue-card,
+.episode-card,
+.download-card{
+  position:relative;
+  background: var(--card);
+  border-radius: 12px;
+  overflow:hidden;
+  cursor:pointer;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateZ(var(--tz, 0px));
+  transition: transform var(--depth-fast) cubic-bezier(.2,.8,.2,1),
+              box-shadow var(--depth-fast) ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+  will-change: transform;
 }
 
-.download-grid{
-
-display:grid;
-
-grid-template-columns:
-
-repeat(auto-fill,minmax(260px,1fr));
-
-gap:20px;
-
+.movie-card:hover,
+.continue-card:hover,
+.episode-card:hover,
+.download-card:hover{
+  box-shadow: 0 25px 45px rgba(0,0,0,.55), 0 0 30px rgba(77,141,255,.2);
+  z-index: 5;
 }
+
+.movie-card img,
+.continue-card img,
+.episode-card img{
+  width:100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  transform: translateZ(0px);
+  transition: transform var(--depth-fast) ease;
+}
+
+/* Image + overlay separate into their own depth layers on hover */
+.movie-card:hover img{ transform: translateZ(-10px) scale(1.04); }
+
+.movie-overlay{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  padding: 14px 12px;
+  background: linear-gradient(0deg, rgba(0,0,0,.9), transparent);
+  transform: translateZ(30px);
+}
+
+.movie-overlay h3{
+  font-size: .95rem;
+  margin: 0 0 6px;
+}
+
+.movie-meta{
+  display:flex;
+  gap:10px;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.episode-card{ display:flex; flex-direction:column; }
+
+.episode-card div{ padding: 10px 12px; flex:1; }
+.episode-card h4{ margin:0 0 4px; font-size:.9rem; }
+.episode-card p{ margin:0; font-size:.8rem; color:var(--muted); }
+
+.episode-card button,
+.part-button{
+  margin: 0 12px 12px;
+  padding: 8px 0;
+  border-radius:8px;
+  background: var(--accent);
+  color:#fff;
+  transform: translateZ(15px);
+  transition: transform var(--depth-fast) ease;
+}
+.episode-card button:hover,
+.part-button:hover{ transform: translateZ(25px) translateY(-2px); }
 
 .download-card{
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.08);
-
-border-radius:18px;
-
-padding:22px;
-
-backdrop-filter:blur(12px);
-
-transition:.35s;
-
-cursor:pointer;
-
-}
-
-.download-card:hover{
-
-transform:
-
-translateY(-8px)
-
-scale(1.03);
-
-border-color:var(--primary);
-
-box-shadow:
-
-0 0 35px
-
-rgba(0,200,255,.25);
-
-}
-
-.download-title{
-
-font-size:18px;
-
-font-weight:600;
-
-margin-bottom:12px;
-
-}
-
-.download-meta{
-
-display:flex;
-
-justify-content:space-between;
-
-color:#b7c2d0;
-
-font-size:14px;
-
-margin-bottom:18px;
-
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 16px;
 }
 
 .download-card button{
-
-width:100%;
-
-padding:13px;
-
-border:none;
-
-border-radius:12px;
-
-background:
-
-linear-gradient(
-
-90deg,
-
-var(--primary),
-
-var(--secondary)
-
-);
-
-font-weight:700;
-
-cursor:pointer;
-
-color:#03131d;
-
+  padding: 8px 16px;
+  border-radius:8px;
+  background: var(--accent-2);
+  color:#fff;
+  transform: translateZ(15px);
+  transition: transform var(--depth-fast) ease;
 }
+.download-card button:hover{ transform: translateZ(25px); }
 
-/* ==========================================================
-   EPISODES
-========================================================== */
-
-.episode-grid{
-
-display:grid;
-
-grid-template-columns:
-
-repeat(auto-fill,minmax(180px,1fr));
-
-gap:18px;
-
-margin-top:30px;
-
-}
-
-.episode-card{
-
-background:#0c1828;
-
-border-radius:18px;
-
-overflow:hidden;
-
-cursor:pointer;
-
-transition:.35s;
-
-}
-
-.episode-card:hover{
-
-transform:
-
-translateY(-10px)
-
-rotateX(4deg)
-
-rotateY(4deg);
-
-box-shadow:
-
-0 0 30px
-
-rgba(0,255,255,.22);
-
-}
-
-.episode-card img{
-
-width:100%;
-
-height:110px;
-
-object-fit:cover;
-
-display:block;
-
-}
-
-.episode-info{
-
-padding:15px;
-
-}
-
-.episode-info h4{
-
-font-size:15px;
-
-margin-bottom:8px;
-
-}
-
-.episode-info span{
-
-font-size:13px;
-
-color:#aebdca;
-
-}
-
-/* ==========================================================
-   CAST
-========================================================== */
-
-.cast-section{
-
-width:min(1500px,94%);
-
-margin:70px auto;
-
-}
-
-.cast-slider{
-
-display:flex;
-
-gap:20px;
-
-overflow-x:auto;
-
-padding-bottom:10px;
-
-scrollbar-width:none;
-
-}
-
-.cast-slider::-webkit-scrollbar{
-
-display:none;
-
-}
+/* Cast */
+.cast-grid{ grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); }
 
 .cast-card{
-
-min-width:160px;
-
-background:#0d1728;
-
-border-radius:20px;
-
-overflow:hidden;
-
-transition:.3s;
-
+  text-align:center;
+  transform-style: preserve-3d;
+  transition: transform var(--depth-fast) ease;
 }
-
-.cast-card:hover{
-
-transform:
-
-translateY(-8px);
-
-}
+.cast-card:hover{ transform: rotateY(8deg) translateZ(10px); }
 
 .cast-card img{
-
-width:100%;
-
-height:220px;
-
-object-fit:cover;
-
-}
-
-.cast-card h4{
-
-padding:15px 12px 5px;
-
-font-size:15px;
-
-}
-
-.cast-card p{
-
-padding:0 12px 15px;
-
-font-size:13px;
-
-color:#b7c2d0;
-
+  border-radius:50%;
+  width:90px; height:90px;
+  object-fit:cover;
+  margin: 0 auto 8px;
 }
 
 /* ==========================================================
-   RELATED CONTENT
+   DETAILS GRID
 ========================================================== */
 
-.related-section{
-
-width:min(1500px,94%);
-
-margin:70px auto;
-
+.details-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 20px;
 }
 
-.related-grid{
+.details-grid strong{ color: var(--muted); font-size:.8rem; text-transform:uppercase; }
+.details-grid p{ margin: 4px 0 0; }
 
-display:grid;
+/* ==========================================================
+   TRAILER
+========================================================== */
 
-grid-template-columns:
-
-repeat(auto-fill,minmax(220px,1fr));
-
-gap:22px;
-
+.trailer-wrapper{
+  position:relative;
+  aspect-ratio:16/9;
+  border-radius: var(--radius);
+  overflow:hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
 }
+.trailer-wrapper iframe{ width:100%; height:100%; border:0; }
 
 /* ==========================================================
    COMMENTS
 ========================================================== */
 
-.comments{
-
-width:min(1200px,94%);
-
-margin:70px auto;
-
+.comment-form{
+  display:flex;
+  gap:10px;
+  margin-bottom: 20px;
 }
 
-.comments textarea{
-
-width:100%;
-
-height:130px;
-
-background:#101b2c;
-
-border:1px solid rgba(255,255,255,.08);
-
-border-radius:15px;
-
-padding:20px;
-
-resize:none;
-
-color:white;
-
-font-size:15px;
-
-margin-bottom:15px;
-
+.comment-form textarea{
+  flex:1;
+  min-height: 60px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: var(--card);
+  color: var(--text);
+  resize: vertical;
 }
 
-.comments button{
+.comment-form button{
+  padding: 0 20px;
+  border-radius: 10px;
+  background: var(--accent);
+  color:#fff;
+  transform: translateZ(0px);
+  transition: transform var(--depth-fast) ease;
+}
+.comment-form button:hover{ transform: translateZ(15px); }
 
-padding:14px 26px;
+.comment{
+  background: var(--card);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  transform-style: preserve-3d;
+  transition: transform var(--depth-fast) ease;
+}
+.comment:hover{ transform: translateZ(8px); }
 
-border:none;
+.comment h4{ margin:0 0 4px; font-size:.9rem; }
+.comment p{ margin:0 0 6px; color: var(--muted); }
+.comment small{ color: rgba(255,255,255,.4); }
 
-border-radius:12px;
+.empty-comments{ color: var(--muted); text-align:center; padding: 20px; }
 
-background:
+/* ==========================================================
+   FLOATING ACTION BAR — 3D dock
+========================================================== */
 
-linear-gradient(
+.floating-actions{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  z-index: 50;
+  transform-style: preserve-3d;
+  perspective: 600px;
+}
 
-90deg,
+.floating-actions button{
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size: .6rem;
+  gap: 2px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.4);
+  transform: translateZ(0px) rotateY(0deg);
+  transition: transform var(--depth-fast) cubic-bezier(.2,.8,.2,1),
+              background var(--depth-fast) ease;
+}
 
-var(--primary),
-
-var(--secondary)
-
-);
-
-font-weight:700;
-
-cursor:pointer;
-
+.floating-actions button:hover{
+  transform: translateZ(20px) rotateY(-12deg) scale(1.05);
+  background: var(--accent);
 }
 
 /* ==========================================================
-   FLOAT BUTTONS
+   FOOTER
 ========================================================== */
 
-.float-actions{
-
-position:fixed;
-
-right:25px;
-
-bottom:25px;
-
-display:flex;
-
-flex-direction:column;
-
-gap:15px;
-
-z-index:500;
-
+.watch-footer{
+  text-align:center;
+  padding: 40px 20px;
+  color: var(--muted);
+  border-top: 1px solid rgba(255,255,255,.06);
 }
 
-.float-actions button{
+.footer-logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.footer-logo img{ width:36px; height:36px; border-radius:8px; }
 
-width:58px;
+/* ==========================================================
+   TOAST + MODAL
+========================================================== */
 
-height:58px;
-
-border:none;
-
-border-radius:50%;
-
-background:
-
-linear-gradient(
-
-135deg,
-
-var(--primary),
-
-var(--secondary)
-
-);
-
-cursor:pointer;
-
-font-size:20px;
-
-box-shadow:
-
-0 8px 25px
-
-rgba(0,255,255,.25);
-
-transition:.3s;
-
+#toast{
+  position: fixed;
+  left:50%;
+  bottom: 30px;
+  transform: translate(-50%, 20px) translateZ(0);
+  background: var(--card);
+  padding: 12px 22px;
+  border-radius: 10px;
+  opacity:0;
+  pointer-events:none;
+  transition: transform var(--depth-fast) ease, opacity var(--depth-fast) ease;
+  z-index: 999;
+}
+#toast.show{
+  opacity:1;
+  transform: translate(-50%, 0) translateZ(40px);
 }
 
-.float-actions button:hover{
+.modal{
+  display:none;
+  position: fixed;
+  inset:0;
+  background: rgba(0,0,0,.7);
+  z-index: 998;
+  align-items:center;
+  justify-content:center;
+  perspective: 1200px;
+}
+.modal.show{ display:flex; }
 
-transform:
+.modal-content{
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  position:relative;
+  transform: rotateX(0deg) scale(1);
+  animation: modalIn3D var(--depth-fast) cubic-bezier(.2,.8,.2,1);
+}
 
-scale(1.15)
+@keyframes modalIn3D{
+  from{ transform: rotateX(25deg) translateZ(-100px) scale(.9); opacity:0; }
+  to{ transform: rotateX(0deg) translateZ(0px) scale(1); opacity:1; }
+}
 
-rotate(8deg);
-
+#closeModal{
+  position:absolute;
+  top:10px; right:14px;
+  background:none;
+  color: var(--text);
+  font-size: 1.4rem;
 }
 
 /* ==========================================================
    RESPONSIVE
 ========================================================== */
 
-@media(max-width:1000px){
+@media (max-width: 860px){
+  .hero-content{ flex-direction:column; padding: 24px; }
+  .poster-area{ flex:0 0 auto; width: 55%; margin: 0 auto; }
+  .info-area h1{ font-size: 1.8rem; }
 
-.hero-content{
-
-flex-direction:column;
-
-align-items:center;
-
-padding:40px 20px;
-
-text-align:center;
-
+  /* Reduce 3D intensity on touch/small screens for comfort */
+  :root{ --tilt-max: 8deg; }
 }
 
-.poster-box{
-
-width:240px;
-
-height:360px;
-
-}
-
-#title{
-
-font-size:38px;
-
-}
-
-.hero-buttons{
-
-justify-content:center;
-
-}
-
-}
-
-@media(max-width:700px){
-
-.watch-hero{
-
-height:auto;
-
-padding-top:90px;
-
-}
-
-.player-wrapper{
-
-width:100%;
-
-border-radius:0;
-
-}
-
-.download-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.episode-grid{
-
-grid-template-columns:
-
-repeat(2,1fr);
-
-}
-
-.cast-card{
-
-min-width:130px;
-
-}
-
-#title{
-
-font-size:30px;
-
-}
-
-#overview{
-
-font-size:14px;
-
-}
-
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation: none !important;
+    transition: none !important;
+  }
 }
