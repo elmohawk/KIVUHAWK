@@ -1,4 +1,65 @@
 /* ==========================================================
+   LOAD COMMENTS
+========================================================== */
+
+async function loadComments(){
+
+    const container = document.getElementById("comments");
+
+    if(!container || !currentContent){
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+
+        .from("comments")
+
+        .select("*")
+
+        .eq("content_id", currentContent.id)
+
+        .order("created_at", { ascending: false });
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    if(!data.length){
+
+        container.innerHTML = `
+            <div class="empty-comments">
+                No comments yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(comment=>{
+
+        container.innerHTML += `
+            <div class="comment">
+
+                <h4>${comment.username || "Anonymous"}</h4>
+
+                <p>${comment.comment}</p>
+
+                <small>${new Date(comment.created_at).toLocaleString()}</small>
+
+            </div>
+        `;
+
+    });
+
+}
+/* ==========================================================
    KIVUSTREAM WATCH ENGINE V6
    Professional Streaming System
 ========================================================== */
