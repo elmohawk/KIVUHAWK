@@ -1159,46 +1159,75 @@ async function playEpisode(id){
 /* ==========================================================
    DOWNLOADS
 ========================================================== */
+async function loadDownloads() {
 
-function loadDownloads(){
+    const container = document.getElementById("downloadContainer");
 
-    const container=
+    if (!container || !currentContent) return;
 
-    document.getElementById(
+    container.innerHTML = "<p>Loading downloads...</p>";
 
-        "downloadContainer"
+    const { data, error } = await supabaseClient
+        .from("downloads")
+        .select("*")
+        .eq("content_id", currentContent.id)
+        .eq("content_type", contentType)
+        .order("quality");
 
-    );
+    if (error) {
 
-    if(!container) return;
+        console.error(error);
 
-    container.innerHTML="";
+        container.innerHTML = `
+            <div class="download-error">
+                No downloads available.
+            </div>
+        `;
 
-    const downloads=
+        return;
+    }
 
-    currentContent.downloads || [];
+    if (!data.length) {
 
-    downloads.forEach(item=>{
+        container.innerHTML = `
+            <div class="download-error">
+                Downloads not added yet.
+            </div>
+        `;
 
-        container.innerHTML+=`
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(file => {
+
+        container.innerHTML += `
 
         <div class="download-card">
 
             <span class="download-quality">
 
-                ${item.quality}
+                ${file.quality}
 
             </span>
 
-            <p class="download-size">
+            <p>
 
-                ${item.size}
+                ${file.size}
 
             </p>
 
-            <button
+            <small>
 
-            onclick="downloadFile('${item.url}')">
+                ${file.server}
+
+            </small>
+
+            <button
+                onclick="downloadFile('${file.url}')">
+
+                <i class="fa-solid fa-download"></i>
 
                 Download
 
@@ -1218,16 +1247,17 @@ function loadDownloads(){
 
 function downloadFile(url){
 
-    window.open(
+    if(!url){
 
-        url,
+        showToast("Download unavailable.");
 
-        "_blank"
+        return;
 
-    );
+    }
+
+    window.open(url,"_blank");
 
 }
-
 /* ==========================================================
    AUTO NEXT EPISODE
 ========================================================== */
