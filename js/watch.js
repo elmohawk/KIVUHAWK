@@ -1,805 +1,1204 @@
 /* ==========================================================
-   KIVUSTREAM — 3D TILT ENGINE
-   Drives the --rx / --ry / --tz custom properties consumed
-   by watch.css (.tilt-3d, .movie-card, .continue-card, etc.)
+   KIVUSTREAM WATCH ENGINE V4
+   PART 1 - CORE ENGINE
 ========================================================== */
 
-(function(){
+"use strict";
 
-  const TILT_MAX = getTiltMax();
-
-  function getTiltMax(){
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue("--tilt-max")
-      .trim();
-    return parseFloat(raw) || 14;
-  }
-
-  const reduceMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ----------------------------------------------------------
-     Attach tilt behavior to one element
-  ---------------------------------------------------------- */
-  function attachTilt(el, opts = {}){
-
-    if(reduceMotion) return;
-
-    const maxTilt = opts.maxTilt || TILT_MAX;
-    const maxLift = opts.maxLift ?? 24; // px, translateZ on hover peak
-
-    let frame = null;
-
-    function onMove(e){
-
-      const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;   // 0..1
-      const py = (e.clientY - rect.top) / rect.height;   // 0..1
-
-      // Map 0..1 -> -1..1, invert Y so top tilts back
-      const rx = (0.5 - py) * 2 * maxTilt;
-      const ry = (px - 0.5) * 2 * maxTilt;
-
-      if(frame) cancelAnimationFrame(frame);
-
-      frame = requestAnimationFrame(()=>{
-        el.style.setProperty("--rx", rx.toFixed(2) + "deg");
-        el.style.setProperty("--ry", ry.toFixed(2) + "deg");
-        el.style.setProperty("--tz", maxLift + "px");
-        el.classList.add("tilt-3d");
-      });
-
-    }
-
-    function onLeave(){
-
-      if(frame) cancelAnimationFrame(frame);
-
-      el.style.setProperty("--rx", "0deg");
-      el.style.setProperty("--ry", "0deg");
-      el.style.setProperty("--tz", "0px");
-
-      // Let CSS transition ease back, then drop the override class
-      setTimeout(()=> el.classList.remove("tilt-3d"), 300);
-
-    }
-
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
-    el.addEventListener("mouseenter", onMove);
-
-  }
-
-  /* ----------------------------------------------------------
-     Attach to a live NodeList/selector, including elements
-     added later by watch.js (movie cards render async)
-  ---------------------------------------------------------- */
-  function attachTiltToSelector(selector, opts){
-
-    document.querySelectorAll(selector).forEach(el=>{
-      if(el.dataset.tiltBound) return;
-      el.dataset.tiltBound = "true";
-      attachTilt(el, opts);
-    });
-
-  }
-
-  function bindAll(){
-
-    // Poster gets a stronger, slower tilt
-    attachTiltToSelector(".poster-area img", { maxTilt: 16, maxLift: 30 });
-
-    // Grid cards get a snappier, smaller tilt
-    attachTiltToSelector(
-      ".movie-card, .continue-card, .episode-card, .download-card",
-      { maxTilt: 10, maxLift: 18 }
-    );
-
-  }
-
-  /* ----------------------------------------------------------
-     Hero backdrop parallax (moves opposite to poster tilt
-     for a subtle depth-of-field feel)
-  ---------------------------------------------------------- */
-  function bindHeroParallax(){
-
-    const hero = document.querySelector(".hero");
-    const backdrop = document.getElementById("backdrop");
-
-    if(!hero || !backdrop || reduceMotion) return;
-
-    hero.addEventListener("mousemove", (e)=>{
-
-      const rect = hero.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-
-      requestAnimationFrame(()=>{
-        backdrop.style.transform =
-          `translateZ(-120px) scale(1.15) translate(${px * -20}px, ${py * -14}px)`;
-      });
-
-    });
-
-    hero.addEventListener("mouseleave", ()=>{
-      backdrop.style.transform = "translateZ(-120px) scale(1.15)";
-    });
-
-  }
-
-  /* ----------------------------------------------------------
-     Bind on load, then re-scan periodically since watch.js
-     injects movie/episode/continue cards asynchronously via
-     innerHTML += (no single "cards ready" event to hook).
-  ---------------------------------------------------------- */
-  document.addEventListener("DOMContentLoaded", ()=>{
-
-    bindAll();
-    bindHeroParallax();
-
-    // Re-scan for newly injected cards for a few seconds after load,
-    // and again on scroll (loadMoreRecommendations appends more).
-    let scans = 0;
-    const rescan = setInterval(()=>{
-      bindAll();
-      scans++;
-      if(scans > 20) clearInterval(rescan); // stop after ~10s
-    }, 500);
-
-    window.addEventListener("scroll", ()=> bindAll());
-
-  });
-
-})();
 /* ==========================================================
-   LOAD COMMENTS
-========================================================== */
-
-async function loadComments(){
-
-    const container = document.getElementById("comments");
-
-    if(!container || !currentContent){
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-
-        .from("comments")
-
-        .select("*")
-
-        .eq("content_id", currentContent.id)
-
-        .order("created_at", { ascending: false });
-
-    if(error){
-
-        console.error(error);
-
-        return;
-
-    }
-
-    if(!data.length){
-
-        container.innerHTML = `
-            <div class="empty-comments">
-                No comments yet.
-            </div>
-        `;
-
-        return;
-
-    }
-
-    container.innerHTML = "";
-
-    data.forEach(comment=>{
-
-        container.innerHTML += `
-            <div class="comment">
-
-                <h4>${comment.username || "Anonymous"}</h4>
-
-                <p>${comment.comment}</p>
-
-                <small>${new Date(comment.created_at).toLocaleString()}</small>
-
-            </div>
-        `;
-
-    });
-
-}
-/* ==========================================================
-   KIVUSTREAM WATCH ENGINE V6
-   Professional Streaming System
+   GLOBAL STATE
 ========================================================== */
 
 let currentContent = null;
-let relatedContent = [];
-let currentDownloads = [];
+let contentID = null;
+let contentType = "movie";
 
-const params = new URLSearchParams(window.location.search);
+let currentSeason = 1;
+let currentEpisode = 1;
 
-/*
-Supports
-
-watch.html?id=UUID&type=movie
-
-watch.html?id=UUID&type=series
-
-Future routing
-
-/movie/UUID
-
-/series/UUID
-*/
-
-let contentID = params.get("id");
-let contentType = params.get("type") || "movie";
+let isCinemaMode = false;
+let isFavorite = false;
 
 /* ==========================================================
    DOM READY
 ========================================================== */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+    initializeWatchPage();
+});
 
-    try{
+/* ==========================================================
+   INITIALIZE
+========================================================== */
+
+async function initializeWatchPage() {
+
+    try {
 
         showLoading();
 
-        await initializeWatchPage();
+        parseURL();
+
+        checkSupabase();
+
+        await loadContent();
+
+        if (!currentContent) {
+            throw new Error("Content not found.");
+        }
+
+        renderHero();
 
         hideLoading();
 
-    }
+    } catch (err) {
 
-    catch(error){
+        console.error(err);
 
-        console.error(error);
-
-        showError(error.message);
+        showError(err.message || "Unable to load content.");
 
     }
 
-});
-/* =====================================
-   LOADING SCREEN
-===================================== */
+}
+
+/* ==========================================================
+   URL ROUTER
+========================================================== */
+
+function parseURL() {
+
+    const url = new URL(window.location.href);
+
+    /* Query format
+       watch.html?id=123&type=movie
+    */
+
+    const id = url.searchParams.get("id");
+    const type = url.searchParams.get("type");
+
+    if (id) {
+
+        contentID = id;
+
+        contentType = type || "movie";
+
+        return;
+
+    }
+
+    /* Cloudflare Worker format
+
+       /movie/123
+
+       /series/uuid
+
+    */
+
+    const path = window.location.pathname
+        .replace(/^\/+|\/+$/g, "")
+        .split("/");
+
+    if (path.length >= 2) {
+
+        contentType = path[0].toLowerCase();
+
+        contentID = path[1];
+
+    }
+
+}
+
+/* ==========================================================
+   CHECK SUPABASE
+========================================================== */
+
+function checkSupabase() {
+
+    if (typeof supabaseClient === "undefined") {
+
+        throw new Error("Supabase Client not loaded.");
+
+    }
+
+}
+
+/* ==========================================================
+   LOADING
+========================================================== */
 
 function showLoading() {
 
-    const loading = document.getElementById("loadingScreen");
+    const loader = document.getElementById("loadingScreen");
 
-    if (loading) {
-        loading.style.display = "flex";
-        loading.style.opacity = "1";
+    if (loader) {
+
+        loader.style.display = "flex";
+
     }
 
 }
 
 function hideLoading() {
 
-    const loading = document.getElementById("loadingScreen");
+    const loader = document.getElementById("loadingScreen");
 
-    if (!loading) return;
-
-    loading.style.transition = "opacity .4s ease";
-    loading.style.opacity = "0";
+    if (!loader) return;
 
     setTimeout(() => {
-        loading.style.display = "none";
-    }, 400);
+
+        loader.style.opacity = "0";
+
+        setTimeout(() => {
+
+            loader.style.display = "none";
+
+            document.body.classList.add("loaded");
+
+        }, 500);
+
+    }, 1000);
 
 }
-function showError(message){
+
+/* ==========================================================
+   ERROR PAGE
+========================================================== */
+
+function showError(message) {
 
     hideLoading();
 
-    const hero=document.querySelector(".watch-container");
+    document.body.innerHTML = `
 
-    if(hero){
+    <div style="
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:#071521;
+        color:white;
+        font-family:Poppins,sans-serif;
+        text-align:center;
+        padding:40px;
+    ">
 
-        hero.innerHTML=`
+        <div>
 
-        <div class="watch-error">
+            <h1 style="font-size:40px;margin-bottom:15px;">
+                ⚠ Error
+            </h1>
 
-            <h2>Content Not Found</h2>
+            <p style="opacity:.8;">
+                ${message}
+            </p>
 
-            <p>${message}</p>
+            <br>
+
+            <a href="index.html"
+               style="
+                    display:inline-block;
+                    padding:14px 30px;
+                    border-radius:30px;
+                    background:#00d4ff;
+                    color:#04131f;
+                    text-decoration:none;
+                    font-weight:700;
+               ">
+               Back Home
+            </a>
 
         </div>
 
-        `;
+    </div>
 
-    }
+    `;
+
+}
+
+/* ==========================================================
+   TOAST
+========================================================== */
+
+function showToast(message = "Done") {
+
+    const toast = document.getElementById("toast");
+    const text = document.getElementById("toastMessage");
+
+    if (!toast || !text) return;
+
+    text.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 3000);
 
 }
 /* ==========================================================
-   INITIALIZE PAGE
+   PART 2 - LOAD CONTENT + HERO
 ========================================================== */
-async function initializeWatchPage(){
- showLoading();
 
-    // Hide loading after 1 second
-    setTimeout(() => {
-        hideLoading();
-    }, 1000);
-    await loadContent();
-
-    if(!currentContent){
-        throw new Error("Content not found.");
-    }
-
-    renderHero();
-
-    renderDownloads();
-
-    renderMovieParts();
-
-    await renderEpisodes();
-
-    await loadRelated();
-
-    await loadComments();
-
-    await loadMoreRecommendations();
-
-}
 /* ==========================================================
    LOAD CONTENT
 ========================================================== */
 
-async function loadContent(){
+async function loadContent() {
 
-    if(!contentID){
-
-        throw new Error("Missing content id.");
-
+    if (!contentID) {
+        throw new Error("Missing content ID.");
     }
 
-    const table=
+    const table =
+        contentType === "series"
+            ? "series"
+            : "movies";
 
-    contentType==="series"
+    let query = supabaseClient
+        .from(table)
+        .select("*");
 
-    ?
+    /*
+      Support UUID and numeric IDs.
+      If your database column is UUID, the string ID works.
+      If it's integer, numeric strings are converted.
+    */
 
-    "series"
+    if (/^\d+$/.test(contentID)) {
+        query = query.eq("id", Number(contentID));
+    } else {
+        query = query.eq("id", contentID);
+    }
 
-    :
+    const { data, error } = await query.limit(1);
 
-    "movies";
-
-    const {data,error}=
-
-    await supabaseClient
-
-    .from(table)
-
-    .select("*")
-
-    .eq("id",contentID)
-
-    .single();
-
-    if(error){
-
+    if (error) {
         console.error(error);
-
-        return;
-
+        throw new Error("Unable to load content.");
     }
 
-    currentContent=data;
+    if (!data || data.length === 0) {
+        throw new Error("Content not found.");
+    }
+
+    currentContent = data[0];
+
+    console.log("Loaded:", currentContent);
 
 }
+
 /* ==========================================================
-   IMAGE ENGINE
+   HERO
 ========================================================== */
 
-function imageURL(path){
+function renderHero() {
 
-    if(!path){
+    if (!currentContent) return;
+
+    setText("title", currentContent.title);
+
+    setText(
+        "overview",
+        currentContent.overview || "No description available."
+    );
+
+    setText(
+        "rating",
+        currentContent.rating || "N/A"
+    );
+
+    setText(
+        "runtime",
+        currentContent.runtime
+            ? currentContent.runtime + " min"
+            : "--"
+    );
+
+    setText(
+        "year",
+        currentContent.year ||
+        extractYear(currentContent.release_date)
+    );
+
+    setText(
+        "typeBadge",
+        currentContent.type || contentType
+    );
+
+    setText(
+        "status",
+        currentContent.status || "Released"
+    );
+
+    setPoster();
+
+    setBackdrop();
+
+    renderGenres();
+
+}
+
+/* ==========================================================
+   POSTER
+========================================================== */
+
+function setPoster() {
+
+    const poster = document.getElementById("poster");
+
+    if (!poster) return;
+
+    poster.src = getPoster(currentContent);
+
+}
+
+/* ==========================================================
+   BACKDROP
+========================================================== */
+
+function setBackdrop() {
+
+    const hero = document.getElementById("backdrop");
+
+    if (!hero) return;
+
+    hero.style.backgroundImage =
+        `url('${getBackdrop(currentContent)}')`;
+
+}
+
+/* ==========================================================
+   GENRES
+========================================================== */
+
+function renderGenres() {
+
+    const container =
+        document.getElementById("genres");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    let genres = currentContent.genres;
+
+    if (!genres) return;
+
+    if (typeof genres === "string") {
+
+        genres = genres.split(",");
+
+    }
+
+    genres.forEach(g => {
+
+        container.innerHTML += `
+
+            <span>
+
+                ${g}
+
+            </span>
+
+        `;
+
+    });
+
+}
+
+/* ==========================================================
+   IMAGE HELPERS
+========================================================== */
+
+function getPoster(movie) {
+
+    if (!movie) {
 
         return "assets/logo.png";
 
     }
 
-    if(path.startsWith("http")){
+    if (movie.poster) {
 
-        return path;
+        return movie.poster;
 
     }
 
-    return path;
+    if (movie.poster_path) {
+
+        return IMAGE_BASE + movie.poster_path;
+
+    }
+
+    return "assets/logo.png";
+
+}
+
+function getBackdrop(movie) {
+
+    if (!movie) {
+
+        return "assets/logo.png";
+
+    }
+
+    if (movie.backdrop) {
+
+        return movie.backdrop;
+
+    }
+
+    if (movie.backdrop_path) {
+
+        return IMAGE_BASE.replace("/w500", "/original")
+            + movie.backdrop_path;
+
+    }
+
+    return getPoster(movie);
+
+}
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function setText(id, value) {
+
+    const el = document.getElementById(id);
+
+    if (el) {
+
+        el.textContent = value ?? "";
+
+    }
+
+}
+
+function extractYear(date) {
+
+    if (!date) return "--";
+
+    return String(date).substring(0, 4);
 
 }
 /* ==========================================================
-   HERO RENDER ENGINE
+   PART 3
+   VIDEO PLAYER ENGINE
 ========================================================== */
 
-function renderHero(){
+const videoPlayer = document.getElementById("videoPlayer");
+
+/* ==========================================================
+   INITIALIZE PLAYER
+========================================================== */
+
+function initializePlayer(){
+
+    if(!videoPlayer) return;
+
+    loadVideoSource();
+
+    restoreProgress();
+
+    registerPlayerEvents();
+
+}
+
+/* ==========================================================
+   LOAD VIDEO
+========================================================== */
+
+function loadVideoSource(){
 
     if(!currentContent) return;
 
-    const backdrop =
-        imageURL(
-            currentContent.backdrop ||
-            currentContent.backdrop_path
-        );
+    /*
+       Priority
 
-    const poster =
-        imageURL(
-            currentContent.poster ||
-            currentContent.poster_path
-        );
+       video_url
 
-    /* ---------- Background ---------- */
+       stream_url
 
-    const bg = document.getElementById("heroBackdrop");
+       source
 
-    if(bg){
+       video
 
-        bg.style.backgroundImage =
+    */
 
-        `linear-gradient(
-            rgba(2,8,18,.78),
-            rgba(2,8,18,.96)
-        ),
-        url('${backdrop}')`;
+    const src=
 
-    }
+    currentContent.video_url ||
 
-    /* ---------- Poster ---------- */
+    currentContent.stream_url ||
 
-    const posterImage = document.getElementById("poster");
+    currentContent.source ||
 
-    if(posterImage){
+    currentContent.video ||
 
-        posterImage.src = poster;
+    "";
 
-        posterImage.onerror = ()=>{
+    if(!src){
 
-            posterImage.src="assets/logo.png";
-
-        };
-
-    }
-
-    /* ---------- Title ---------- */
-
-    setText("title",
-        currentContent.title ||
-        "Unknown Title"
-    );
-
-    /* ---------- Overview ---------- */
-
-    setText(
-        "overview",
-        currentContent.overview ||
-        "No description available."
-    );
-
-    /* ---------- Rating ---------- */
-
-    setText(
-        "rating",
-        Number(
-            currentContent.rating ||
-            currentContent.vote_average ||
-            0
-        ).toFixed(1)
-    );
-
-    /* ---------- Year ---------- */
-
-    setText(
-        "year",
-        currentContent.year ||
-        getYear(currentContent.release_date)
-    );
-
-    /* ---------- Runtime ---------- */
-
-    setText(
-        "runtime",
-        currentContent.runtime
-        ?
-        currentContent.runtime + " min"
-        :
-        "-"
-    );
-
-    /* ---------- Language ---------- */
-
-    setText(
-        "language",
-        currentContent.original_language ||
-        currentContent.language ||
-        "-"
-    );
-
-    /* ---------- Views ---------- */
-
-    setText(
-        "views",
-        formatViews(
-            currentContent.views || 0
-        )
-    );
-
-    /* ---------- Likes ---------- */
-
-    setText(
-        "likes",
-        currentContent.likes || 0
-    );
-
-    /* ---------- Genres ---------- */
-
-    renderGenres();
-
-    /* ---------- Buttons ---------- */
-
-    setupButtons();
-
-}
-/* ==========================================================
-   SMALL HELPERS
-========================================================== */
-
-function setText(id,value){
-
-    const el=document.getElementById(id);
-
-    if(el){
-
-        el.textContent=value;
-
-    }
-
-}
-
-function getYear(date){
-
-    if(!date) return "";
-
-    return new Date(date).getFullYear();
-
-}
-
-function formatViews(v){
-
-    v=Number(v||0);
-
-    if(v>=1000000){
-
-        return (v/1000000).toFixed(1)+"M";
-
-    }
-
-    if(v>=1000){
-
-        return (v/1000).toFixed(1)+"K";
-
-    }
-
-    return v;
-
-}
-/* ==========================================================
-   GENRES
-========================================================== */
-
-function renderGenres(){
-
-    const box=document.getElementById("genres");
-
-    if(!box) return;
-
-    box.innerHTML="";
-
-    if(!currentContent.genres){
+        showToast("Video unavailable.");
 
         return;
 
     }
 
-    currentContent.genres
+    videoPlayer.src=src;
 
-    .split(",")
+}
 
-    .forEach(g=>{
+/* ==========================================================
+   PLAYER EVENTS
+========================================================== */
 
-        box.innerHTML+=`
+function registerPlayerEvents(){
 
-        <span class="genre-chip">
+    videoPlayer.addEventListener(
 
-            ${g.trim()}
+        "loadedmetadata",
 
-        </span>
+        ()=>{
+
+            hidePlayerLoading();
+
+        }
+
+    );
+
+    videoPlayer.addEventListener(
+
+        "play",
+
+        ()=>{
+
+            increaseViews();
+
+        }
+
+    );
+
+    videoPlayer.addEventListener(
+
+        "timeupdate",
+
+        ()=>{
+
+            saveProgress();
+
+        }
+
+    );
+
+    videoPlayer.addEventListener(
+
+        "ended",
+
+        ()=>{
+
+            removeProgress();
+
+        }
+
+    );
+
+}
+
+/* ==========================================================
+   PLAYER LOADER
+========================================================== */
+
+function hidePlayerLoading(){
+
+    const loader=
+
+    document.getElementById("playerLoading");
+
+    if(loader){
+
+        loader.style.display="none";
+
+    }
+
+}
+
+/* ==========================================================
+   SAVE WATCH PROGRESS
+========================================================== */
+
+function saveProgress(){
+
+    if(!currentContent) return;
+
+    localStorage.setItem(
+
+        "watch-"+currentContent.id,
+
+        JSON.stringify({
+
+            time:videoPlayer.currentTime,
+
+            duration:videoPlayer.duration
+
+        })
+
+    );
+
+}
+
+/* ==========================================================
+   RESTORE PROGRESS
+========================================================== */
+
+function restoreProgress(){
+
+    if(!currentContent) return;
+
+    const saved=
+
+    JSON.parse(
+
+        localStorage.getItem(
+
+            "watch-"+currentContent.id
+
+        )
+
+    );
+
+    if(saved){
+
+        videoPlayer.currentTime=saved.time||0;
+
+    }
+
+}
+
+/* ==========================================================
+   REMOVE PROGRESS
+========================================================== */
+
+function removeProgress(){
+
+    if(!currentContent) return;
+
+    localStorage.removeItem(
+
+        "watch-"+currentContent.id
+
+    );
+
+}
+
+/* ==========================================================
+   CONTINUE WATCHING
+========================================================== */
+
+function saveContinueWatching(){
+
+    if(!currentContent) return;
+
+    let list=
+
+    JSON.parse(
+
+        localStorage.getItem(
+
+            "recentlyWatched"
+
+        )
+
+    )||[];
+
+    list=list.filter(
+
+        item=>item.id!==currentContent.id
+
+    );
+
+    list.unshift({
+
+        id:currentContent.id,
+
+        type:contentType,
+
+        title:currentContent.title,
+
+        poster:getPoster(currentContent)
+
+    });
+
+    if(list.length>20){
+
+        list.length=20;
+
+    }
+
+    localStorage.setItem(
+
+        "recentlyWatched",
+
+        JSON.stringify(list)
+
+    );
+
+}
+
+/* ==========================================================
+   CINEMA MODE
+========================================================== */
+
+const cinemaBtn=
+
+document.getElementById(
+
+    "cinemaMode"
+
+);
+
+if(cinemaBtn){
+
+cinemaBtn.onclick=()=>{
+
+    document.body.classList.toggle(
+
+        "cinema-mode"
+
+    );
+
+};
+
+}
+
+/* ==========================================================
+   FULLSCREEN
+========================================================== */
+
+const fullscreenBtn=
+
+document.getElementById(
+
+    "fullscreenBtn"
+
+);
+
+if(fullscreenBtn){
+
+fullscreenBtn.onclick=()=>{
+
+    if(videoPlayer.requestFullscreen){
+
+        videoPlayer.requestFullscreen();
+
+    }
+
+};
+
+}
+
+/* ==========================================================
+   WATCH NOW
+========================================================== */
+
+const watchBtn=
+
+document.getElementById(
+
+    "watchNow"
+
+);
+
+if(watchBtn){
+
+watchBtn.onclick=()=>{
+
+    videoPlayer.scrollIntoView({
+
+        behavior:"smooth"
+
+    });
+
+    videoPlayer.play();
+
+};
+
+}
+
+/* ==========================================================
+   VIEWS
+========================================================== */
+
+async function increaseViews(){
+
+    if(!currentContent) return;
+
+    try{
+
+        const views=
+
+        (currentContent.views||0)+1;
+
+        await supabaseClient
+
+        .from(contentType==="series"
+
+        ?"series"
+
+        :"movies")
+
+        .update({
+
+            views:views
+
+        })
+
+        .eq(
+
+            "id",
+
+            currentContent.id
+
+        );
+
+        currentContent.views=views;
+
+        const counter=
+
+        document.getElementById(
+
+            "viewCount"
+
+        );
+
+        if(counter){
+
+            counter.textContent=views;
+
+        }
+
+    }
+
+    catch(e){
+
+        console.log(e);
+
+    }
+
+}
+
+/* ==========================================================
+   START PLAYER
+========================================================== */
+
+initializePlayer();
+
+saveContinueWatching();
+/* ==========================================================
+   PART 4
+   MOVIE PARTS + EPISODES + DOWNLOAD CENTER
+========================================================== */
+
+/* ==========================================================
+   LOAD CONTENT DETAILS
+========================================================== */
+
+async function loadContentExtras(){
+
+    if(!currentContent) return;
+
+    if(contentType==="movie"){
+
+        loadMovieParts();
+
+    }else{
+
+        loadEpisodes();
+
+    }
+
+    loadDownloads();
+
+}
+
+/* ==========================================================
+   MOVIE PARTS
+========================================================== */
+
+function loadMovieParts(){
+
+    const section=document.getElementById("moviePartsSection");
+    const container=document.getElementById("movieParts");
+
+    if(!section || !container) return;
+
+    const parts=currentContent.parts || [];
+
+    if(parts.length===0){
+
+        section.style.display="none";
+
+        return;
+
+    }
+
+    section.style.display="block";
+
+    container.innerHTML="";
+
+    parts.forEach((part,index)=>{
+
+        container.innerHTML+=`
+
+        <div class="movie-part-card">
+
+            <h3>
+
+                Part ${String.fromCharCode(65+index)}
+
+            </h3>
+
+            <p>
+
+                ${part.name || "Movie Part"}
+
+            </p>
+
+            <button
+            onclick="playMoviePart(${index})">
+
+                ▶ Watch
+
+            </button>
+
+        </div>
 
         `;
 
     });
 
 }
-/* ==========================================================
 
-   BUTTON EVENTS
+/* ==========================================================
+   PLAY PART
 ========================================================== */
 
-function setupButtons(){
+function playMoviePart(index){
 
-    const play=document.getElementById("playMovie");
+    const parts=currentContent.parts||[];
 
-    if(play){
+    if(!parts[index]) return;
 
-        play.onclick=playMovie;
+    videoPlayer.src=
 
-    }
+    parts[index].video ||
 
-    const trailer=document.getElementById("watchTrailer");
+    parts[index].url;
 
-    if(trailer){
+    videoPlayer.play();
 
-        trailer.onclick=playTrailer;
+    showToast(
 
-    }
-
-}
-/* ==========================================================
-   PLAY VIDEO
-========================================================== */
-
-function playMovie(){
-
-    if(!currentContent) return;
-
-    const player=document.getElementById("videoPlayer");
-
-    if(!player) return;
-
-    player.src=
-
-        currentContent.video_url ||
-
-        currentContent.worker_url ||
-
-        "";
-
-    player.scrollIntoView({
-
-        behavior:"smooth"
-
-    });
-
-}
-/* ==========================================================
-   TMDB TRAILER
-========================================================== */
-
-function playTrailer(){
-
-    if(!currentContent.trailer_key){
-
-        alert("Trailer unavailable.");
-
-        return;
-
-    }
-
-    window.open(
-
-        `https://www.youtube.com/watch?v=${currentContent.trailer_key}`,
-
-        "_blank"
+        "Playing Part "+String.fromCharCode(65+index)
 
     );
 
 }
+
 /* ==========================================================
-   PLAYER ENGINE
+   SERIES
 ========================================================== */
 
-function playMovie(url = null){
+async function loadEpisodes(){
 
-    if(!currentContent) return;
+    const section=
 
-    const player=document.getElementById("videoPlayer");
+    document.getElementById(
 
-    if(!player) return;
+        "episodesSection"
 
-    let video=
+    );
 
-        url ||
+    const grid=
 
-        currentContent.video_url ||
+    document.getElementById(
 
-        currentContent.worker_url ||
-       
+        "episodesGrid"
 
-        "";
+    );
 
-    if(video===""){
+    if(!section || !grid) return;
 
-        alert("Video unavailable.");
+    section.style.display="block";
+
+    const {
+
+        data,
+
+        error
+
+    }=
+
+    await supabaseClient
+
+    .from("episodes")
+
+    .select("*")
+
+    .eq(
+
+        "series_id",
+
+        currentContent.id
+
+    )
+
+    .order(
+
+        "episode_number"
+
+    );
+
+    if(error){
+
+        console.log(error);
 
         return;
 
     }
 
-    player.src=video;
+    grid.innerHTML="";
 
-    player.play();
+    data.forEach(ep=>{
 
-    player.scrollIntoView({
+        grid.innerHTML+=`
 
-        behavior:"smooth"
+        <div class="episode-card"
+
+        onclick="playEpisode('${ep.id}')">
+
+            <img
+
+            src="${
+                ep.thumbnail ||
+
+                getPoster(currentContent)
+            }">
+
+            <div class="episode-info">
+
+                <h3>
+
+                    Episode ${ep.episode_number}
+
+                </h3>
+
+                <p>
+
+                    ${ep.title}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        `;
 
     });
 
 }
+
 /* ==========================================================
-   DOWNLOAD SECTION
+   PLAY EPISODE
 ========================================================== */
 
-function renderDownloads(){
+async function playEpisode(id){
 
-    const container=document.getElementById("downloads");
+    const{
+
+        data
+
+    }=
+
+    await supabaseClient
+
+    .from("episodes")
+
+    .select("*")
+
+    .eq("id",id)
+
+    .single();
+
+    if(!data) return;
+
+    videoPlayer.src=
+
+    data.video_url ||
+
+    data.video;
+
+    videoPlayer.play();
+
+    currentEpisode=
+
+    data.episode_number;
+
+    showToast(
+
+        "Episode "+currentEpisode
+
+    );
+
+}
+
+/* ==========================================================
+   DOWNLOADS
+========================================================== */
+
+function loadDownloads(){
+
+    const container=
+
+    document.getElementById(
+
+        "downloadContainer"
+
+    );
 
     if(!container) return;
 
     container.innerHTML="";
 
-    let links=currentContent.download_links;
+    const downloads=
 
-    if(!links){
+    currentContent.downloads || [];
 
-        container.innerHTML=
-
-        "<p>No downloads available.</p>";
-
-        return;
-
-    }
-
-    if(typeof links==="string"){
-
-        try{
-
-            links=JSON.parse(links);
-
-        }
-
-        catch{
-
-            links=[];
-
-        }
-
-    }
-
-    currentDownloads=links;
-
-    links.forEach((item,index)=>{
+    downloads.forEach(item=>{
 
         container.innerHTML+=`
 
         <div class="download-card">
 
-            <div>
+            <span class="download-quality">
 
-                <h4>${item.name || "Download "+(index+1)}</h4>
+                ${item.quality}
 
-            </div>
+            </span>
+
+            <p class="download-size">
+
+                ${item.size}
+
+            </p>
 
             <button
 
-                onclick="downloadVideo('${item.url}')">
+            onclick="downloadFile('${item.url}')">
 
                 Download
 
@@ -812,91 +1211,46 @@ function renderDownloads(){
     });
 
 }
+
 /* ==========================================================
    DOWNLOAD
 ========================================================== */
 
-function downloadVideo(url){
+function downloadFile(url){
 
-    if(!url){
+    window.open(
 
-        alert("Download unavailable.");
+        url,
 
-        return;
+        "_blank"
 
-    }
-
-    window.open(url,"_blank");
+    );
 
 }
+
 /* ==========================================================
-   MOVIE PARTS
+   AUTO NEXT EPISODE
 ========================================================== */
 
-function renderMovieParts(){
+videoPlayer?.addEventListener(
 
-    const box=document.getElementById("movieParts");
+"ended",
 
-    if(!box) return;
-
-    box.innerHTML="";
-
-    let links=currentContent.download_links;
-
-    if(typeof links==="string"){
-
-        try{
-
-            links=JSON.parse(links);
-
-        }
-
-        catch{
-
-            links=[];
-
-        }
-
-    }
-
-    if(!links || links.length<=1){
-
-        return;
-
-    }
-
-    links.forEach((part,index)=>{
-
-        box.innerHTML+=`
-
-        <button
-
-        class="part-button"
-
-        onclick="playMovie('${part.url}')">
-
-        Part ${String.fromCharCode(65+index)}
-
-        </button>
-
-        `;
-
-    });
-
-}
-/* ==========================================================
-   SERIES EPISODES
-========================================================== */
-
-async function renderEpisodes(){
+()=>{
 
     if(contentType!=="series") return;
 
-    const container=document.getElementById("episodes");
+    playNextEpisode();
 
-    if(!container) return;
+});
 
-    const {data,error}=
+async function playNextEpisode(){
+
+    const{
+
+        data
+
+    }=
 
     await supabaseClient
 
@@ -904,428 +1258,42 @@ async function renderEpisodes(){
 
     .select("*")
 
-    .eq("series_id",currentContent.id)
+    .eq(
 
-    .order("episode_number");
+        "series_id",
 
-    if(error){
+        currentContent.id
 
-        console.error(error);
+    )
 
-        return;
+    .eq(
 
-    }
+        "episode_number",
 
-    container.innerHTML="";
+        currentEpisode+1
 
-    data.forEach(ep=>{
+    )
 
-        container.innerHTML+=`
+    .single();
 
-        <div class="episode-card">
+    if(!data){
 
-            <img
+        showToast(
 
-            src="${imageURL(ep.thumbnail)}">
+            "Series Finished"
 
-            <div>
-
-                <h4>
-
-                Episode ${ep.episode_number}
-
-                </h4>
-
-                <p>
-
-                ${ep.title}
-
-                </p>
-
-            </div>
-
-            <button
-
-            onclick="playMovie('${ep.video_url}')">
-
-            ▶ Play
-
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-}
-/* ==========================================================
-   KIVUSTREAM RECOMMENDATION ENGINE
-========================================================== */
-
-/* ==========================================================
-   RELATED CONTENT
-========================================================== */
-
-async function loadRelated(){
-
-    const container=document.getElementById("relatedContainer");
-
-    if(!container) return;
-
-    let query=supabaseClient
-        .from(contentType==="series" ? "series" : "movies")
-        .select("*")
-        .neq("id",currentContent.id)
-        .limit(24);
-
-    if(currentContent.category){
-
-        query=query.eq(
-            "category",
-            currentContent.category
         );
 
-    }
-
-    const {data,error}=await query;
-
-    if(error){
-
-        console.error(error);
-
         return;
 
     }
 
-    relatedContent=data||[];
-
-    renderRelatedCards(relatedContent);
+    playEpisode(data.id);
 
 }
 
 /* ==========================================================
-   RENDER RELATED
+   START
 ========================================================== */
 
-function renderRelatedCards(list){
-
-    const container=document.getElementById("relatedContainer");
-
-    if(!container) return;
-
-    container.innerHTML="";
-
-    list.forEach(movie=>{
-
-        container.innerHTML+=`
-
-        <div class="movie-card"
-
-        onclick="openWatchPage('${movie.id}','${contentType}')">
-
-            <img
-
-            src="${getPoster(movie)}"
-
-            loading="lazy"
-
-            alt="${movie.title}"
-
-            onerror="this.src='assets/logo.png'">
-
-            <div class="movie-overlay">
-
-                <h3>${movie.title}</h3>
-
-                <div class="movie-meta">
-
-                    <span>⭐ ${movie.rating||"N/A"}</span>
-
-                    <span>${movie.year||""}</span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-/* ==========================================================
-   OPEN WATCH PAGE
-========================================================== */
-function openWatchPage(id, type = "movie") {
-
-    if (!id) {
-        console.error("Missing movie ID.");
-        return;
-    }
-
-    console.log("Opening:", id, type);
-
-    window.location.href =
-        `watch.html?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}`;
-
-}
-
-/* ==========================================================
-   CONTINUE WATCHING
-========================================================== */
-
-function saveContinueWatching(){
-
-    if(!currentContent) return;
-
-    const player=document.getElementById("videoPlayer");
-
-    if(!player) return;
-
-    const item={
-
-        id:currentContent.id,
-
-        type:contentType,
-
-        title:currentContent.title,
-
-        poster:getPoster(currentContent),
-
-        position:player.currentTime,
-
-        duration:player.duration,
-
-        updated:Date.now()
-
-    };
-
-    localStorage.setItem(
-
-        `continue_${currentContent.id}`,
-
-        JSON.stringify(item)
-
-    );
-
-}
-
-function restoreContinueWatching(){
-
-    if(!currentContent) return;
-
-    const saved=localStorage.getItem(
-
-        `continue_${currentContent.id}`
-
-    );
-
-    if(!saved) return;
-
-    const data=JSON.parse(saved);
-
-    const player=document.getElementById("videoPlayer");
-
-    if(player){
-
-        player.currentTime=data.position||0;
-
-    }
-
-}
-
-/* Auto save every 5 seconds */
-
-setInterval(saveContinueWatching,5000);
-
-/* ==========================================================
-   RECENTLY WATCHED
-========================================================== */
-
-function saveRecentlyWatched(){
-
-    if(!currentContent) return;
-
-    let list=JSON.parse(
-        localStorage.getItem("recentlyWatched")
-    )||[];
-
-    list=list.filter(item=>item.id!==currentContent.id);
-
-    list.unshift({
-
-        id:currentContent.id,
-
-        type:contentType,
-
-        title:currentContent.title,
-
-        poster:getPoster(currentContent),
-
-        updated:Date.now()
-
-    });
-
-    list=list.slice(0,20);
-
-    localStorage.setItem(
-        "recentlyWatched",
-        JSON.stringify(list)
-    );
-
-}
-
-function renderContinueWatching(){
-
-    const container=document.getElementById("continueWatching");
-
-    if(!container) return;
-
-    const list=JSON.parse(
-        localStorage.getItem("recentlyWatched")
-    )||[];
-
-    container.innerHTML="";
-
-    list.forEach(item=>{
-
-        container.innerHTML+=`
-
-        <div class="continue-card"
-
-        onclick="openWatchPage('${item.id}','${item.type}')">
-
-            <img src="${item.poster}">
-
-            <h4>${item.title}</h4>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-/* ==========================================================
-   INFINITE RECOMMENDATIONS
-========================================================== */
-
-/* ==========================================================
-   LOAD MORE RECOMMENDATIONS
-========================================================== */
-
-async function loadMoreRecommendations(){
-
-    // Wait until content has loaded
-    if(!currentContent){
-
-        console.warn("Current content not loaded yet.");
-
-        return;
-
-    }
-
-    const table =
-        currentContent.type === "series"
-        ? "series"
-        : "movies";
-
-    const { data, error } = await supabaseClient
-
-        .from(table)
-
-        .select("*")
-
-        .neq("id", currentContent.id)
-
-        .limit(12);
-
-    if(error){
-
-        console.error("Recommendations:", error);
-
-        return;
-
-    }
-
-    renderRelatedCards(data || []);
-
-}
-
-/* ==========================================================
-   LAZY LOAD ON SCROLL
-========================================================== */
-
-window.addEventListener("scroll",async()=>{
-
-    if(
-
-        window.innerHeight+
-        window.scrollY >
-
-        document.body.offsetHeight-800
-
-    ){
-
-        await loadMoreRecommendations();
-
-    }
-
-});
-
-/* ==========================================================
-   BOOT
-========================================================== */
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    saveRecentlyWatched();
-
-    renderContinueWatching();
-
-    restoreContinueWatching();
-
-});
-/* ==========================================================
-   LIKE CONTENT
-========================================================== */
-
-async function likeContent(){
-
-    if(!currentContent) return;
-
-    const table =
-        contentType === "series"
-        ? "series"
-        : "movies";
-
-    const newLikes =
-        Number(currentContent.likes || 0) + 1;
-
-    const { error } = await supabaseClient
-
-        .from(table)
-
-        .update({
-            likes:newLikes
-        })
-
-        .eq("id",currentContent.id);
-
-    if(error){
-
-        console.error(error);
-
-        return;
-
-    }
-
-    currentContent.likes = newLikes;
-
-    setText("likes",newLikes);
-
-}
+loadContentExtras();
