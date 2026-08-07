@@ -17,48 +17,30 @@ KivuStream | Manage Series
 
 </title>
 
-
-
 <link rel="icon"
 href="../assets/logo.png">
-
-
 
 <link rel="stylesheet"
 href="css/admin.css">
 
-
-
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
 
-
 </head>
-
 
 <body>
 
 
-
 <div class="admin-wrapper">
-
-
-
-
 
 <!-- =========================
  SIDEBAR
 ========================= -->
-
-
 <aside class="sidebar">
-
 
 <div class="sidebar-logo">
 
-
 <img src="../assets/logo.png">
-
 
 <h2>
 
@@ -77,11 +59,7 @@ ADMIN
 </div>
 
 
-
-
-
 <nav class="sidebar-menu">
-
 
 <a href="index.html">
 
@@ -91,9 +69,6 @@ Dashboard
 
 </a>
 
-
-
-
 <a href="add-series.html">
 
 <i class="fa-solid fa-plus"></i>
@@ -102,23 +77,15 @@ Add Series
 
 </a>
 
-
-
-
-
 <a class="active"
 
 href="manage-series.html">
-
 
 <i class="fa-solid fa-tv"></i>
 
 Manage Series
 
 </a>
-
-
-
 
 
 <a href="manage-episodes.html">
@@ -131,44 +98,23 @@ Episodes
 </a>
 
 
-
-
 </nav>
 
 
-
 </aside>
-
-
-
-
-
-
-
-
 
 <!-- =========================
  MAIN
 ========================= -->
 
-
 <main class="admin-main">
 
-
-
-
-
 <header class="admin-topbar">
-
-
 <h1>
 
 Manage Series
 
 </h1>
-
-
-
 
 <div class="admin-profile">
 
@@ -188,16 +134,7 @@ Admin
 
 </header>
 
-
-
-
-
-
-
-
-
 <section class="dashboard-header">
-
 
 <div>
 
@@ -234,32 +171,18 @@ Add Series
 </a>
 
 
-
 </section>
-
-
-
-
-
-
-
-
 
 <!-- =========================
  TOOLBAR
 ========================= -->
 
-
 <section class="admin-panel">
-
 
 
 <div class="manage-toolbar">
 
-
-
 <div class="search-box">
-
 
 <i class="fa-solid fa-search"></i>
 
@@ -270,24 +193,16 @@ id="seriesSearch"
 
 placeholder="Search series...">
 
-
 </div>
 
-
-
-
-
-
-
+ 
 <select id="seriesFilter">
-
 
 <option value="all">
 
 All Categories
 
 </option>
-
 
 <option>
 
@@ -316,7 +231,6 @@ Drama
 
 </option>
 
-
 <option>
 
 Highschool
@@ -326,34 +240,19 @@ Highschool
 
 </select>
 
-
-
-
 </div>
 
 
-
 </section>
-
-
-
-
-
-
-
 
 
 <!-- =========================
  TABLE
 ========================= -->
 
-
 <section class="admin-panel">
 
-
-
 <div class="panel-header">
-
 
 <h2>
 
@@ -368,8 +267,6 @@ Series
 
 </h2>
 
-
-
 </div>
 
 <div class="table-container">
@@ -379,16 +276,13 @@ Series
 
 <thead>
 
-
 <tr>
-
 
 <th>
 
 Poster
 
 </th>
-
 
 
 <th>
@@ -406,7 +300,6 @@ Category
 </th>
 
 
-
 <th>
 
 Seasons
@@ -420,8 +313,6 @@ Seasons
 TMDB
 
 </th>
-
-
 
 <th>
 
@@ -440,20 +331,14 @@ Actions
 
 </tbody>
 
-
-
 </table>
 
-
-
 </div>
-
 
 </section>
 /* ======================================================
    EDIT SERIES MODAL
 ====================================================== */
-
 
 <div
 
@@ -461,14 +346,9 @@ id="editSeriesModal"
 
 class="admin-modal">
 
-
-
 <div class="modal-box">
 
-
-
 <div class="modal-header">
-
 
 <h2>
 
@@ -476,32 +356,19 @@ Edit Series
 
 </h2>
 
-
-
 <button
 
 id="closeSeriesModal"
 
 class="close-btn">
 
-
 <i class="fa-solid fa-xmark"></i>
-
 
 </button>
 
-
 </div>
 
-
-
-
-
-
-
-
 <div class="form-group">
-
 
 <label>
 
@@ -519,21 +386,13 @@ type="text">
 
 </div>
 
-
-
-
-
-
-
 <div class="form-group">
-
 
 <label>
 
 Description
 
 </label>
-
 
 <textarea
 
@@ -544,29 +403,16 @@ id="editSeriesDescription">
 
 </div>
 
-
-
-
-
-
-
 <div class="form-grid">
 
-
-
 <div class="form-group">
-
-
 <label>
 
 Category
 
 </label>
 
-
-
 <select id="editSeriesCategory">
-
 
 <option>
 
